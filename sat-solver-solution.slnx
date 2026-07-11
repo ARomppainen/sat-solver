@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SatSolverCore.Tests/SatSolverCore.Tests.csproj" />
+  <Project Path="SatSolverCore/SatSolverCore.csproj" />
+</Solution>
