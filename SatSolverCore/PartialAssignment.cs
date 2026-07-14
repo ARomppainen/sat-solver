@@ -2,12 +2,14 @@ namespace SatSolverCore;
 
 public class PartialAssignment
 {
-    private Stack<int> _stack;
+    private Stack<ValueTuple<int, bool>> _stack;
     private HashSet<int> _set;
+
+    public int Count { get { return _stack.Count; } }
 
     private PartialAssignment()
     {
-        _stack = new Stack<int>();
+        _stack = new Stack<ValueTuple<int, bool>>();
         _set = new HashSet<int>();
     }
 
@@ -18,54 +20,65 @@ public class PartialAssignment
 
     public bool DecideUnaryClauses(List<int> unaryClauses)
     {
-        foreach (int unary in unaryClauses)
+        foreach (int literal in unaryClauses)
         {
-            if (_set.Contains(unary))
+            if (_set.Contains(literal))
             {
                 continue;
             }
 
-            if (_set.Contains(-unary))
+            if (_set.Contains(-literal))
             {
                 // conflict
                 return true;
             }
 
-            Push(unary);
+            Decide(literal);
         }
 
         return false;
     }
 
-    public void Push(int variable)
+    public void Decide(int literal)
     {
-        _stack.Push(variable);
-        _set.Add(variable);
+        _stack.Push(ValueTuple.Create(literal, false));
+        _set.Add(literal);
     }
 
-    public void Pop()
+    public void Propagate(int literal)
     {
-        int value = _stack.Pop();
-        _set.Remove(value);
+        _stack.Push(ValueTuple.Create(literal, true));
+        _set.Add(literal);
     }
 
-    public bool IsAssignedTrue(int variable)
+    public void Backtrack()
     {
-        return _set.Contains(variable);
+        bool propagated;
+
+        do
+        {
+            (int literal, propagated) = _stack.Pop();
+            _set.Remove(literal);
+        } while (propagated);
     }
 
-    public bool IsAssignedFalse(int variable)
+    public bool IsAssignedTrue(int literal)
     {
-        return _set.Contains(-variable);
+        return _set.Contains(literal);
     }
 
-    public bool IsUnassigned(int variable)
+    public bool IsAssignedFalse(int literal)
     {
-        return !_set.Contains(variable) && !_set.Contains(-variable);
+        return _set.Contains(-literal);
+    }
+
+    public bool IsUnassigned(int literal)
+    {
+        return !_set.Contains(literal) && !_set.Contains(-literal);
     }
 
     public List<int> ToList()
     {
-        return [.. _stack];
+        return [.. _stack.Select(t => t.Item1)];
     }
 }
