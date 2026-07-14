@@ -1,6 +1,6 @@
 namespace SatSolverCore;
 
-public class Solver
+public static class Solver
 {
     public static SolveResult Solve(Formula formula)
     {

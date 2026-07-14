@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace SatSolverCore;
 
-public class DimacsParser
+public static class DimacsParser
 {
     public static Formula Parse(IEnumerable<string> data)
     {
