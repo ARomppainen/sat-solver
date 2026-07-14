@@ -4,17 +4,27 @@ public static class Solver
 {
     public static SolveResult Solve(Formula formula)
     {
-        return Solve(formula, PartialAssignment.Empty());
-    }
 
-    private static SolveResult Solve(Formula formula, PartialAssignment assignment)
-    {
-        if (formula.Clauses.Any(clause => IsFalsified(clause, assignment)))
+        var assignment = PartialAssignment.Empty();
+
+        bool conflict = assignment.DecideUnaryClauses(formula.UnaryClauses);
+
+        if (conflict)
         {
             return SolveResult.Unsat();
         }
 
-        if (formula.Clauses.All(clause => IsSatisfied(clause, assignment)))
+        return Solve(formula, assignment);
+    }
+
+    private static SolveResult Solve(Formula formula, PartialAssignment assignment)
+    {
+        if (formula.Clauses.Any(clause => clause.IsFalsified(assignment)))
+        {
+            return SolveResult.Unsat();
+        }
+
+        if (formula.Clauses.All(clause => clause.IsSatisfied(assignment)))
         {
             return SolveResult.Sat(assignment.ToList());
         }
@@ -38,16 +48,6 @@ public static class Solver
         assignment.Pop();
 
         return SolveResult.Unsat();
-    }
-
-    private static bool IsFalsified(List<int> clause, PartialAssignment assignment)
-    {
-        return clause.All(assignment.IsAssignedFalse);
-    }
-
-    private static bool IsSatisfied(List<int> clause, PartialAssignment assignment)
-    {
-        return clause.Any(assignment.IsAssignedTrue);
     }
 
     private static int ChooseUnassignedLiteral(Formula formula, PartialAssignment assignment)

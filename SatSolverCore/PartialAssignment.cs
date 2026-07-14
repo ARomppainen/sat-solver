@@ -16,6 +16,27 @@ public class PartialAssignment
         return new PartialAssignment();
     }
 
+    public bool DecideUnaryClauses(List<int> unaryClauses)
+    {
+        foreach (int unary in unaryClauses)
+        {
+            if (_set.Contains(unary))
+            {
+                continue;
+            }
+
+            if (_set.Contains(-unary))
+            {
+                // conflict
+                return true;
+            }
+
+            Push(unary);
+        }
+
+        return false;
+    }
+
     public void Push(int variable)
     {
         _stack.Push(variable);

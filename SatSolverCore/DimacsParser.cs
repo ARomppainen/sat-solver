@@ -23,7 +23,8 @@ public static class DimacsParser
 
         (int numberOfVars, int numberOfClauses) = ParseProblemLine(lines.Current);
 
-        var clauses = new List<List<int>>(numberOfClauses);
+        var clauses = new List<Clause>(numberOfClauses);
+        var unaryClauses = new List<int>();
 
         for (int i = 0; i < numberOfClauses; ++i)
         {
@@ -32,11 +33,18 @@ public static class DimacsParser
                 throw new DimacsParseError("Unexpected end of input");
             }
 
-            var clause = ParseClause(lines.Current, numberOfVars);
-            clauses.Add(clause);
+            var literals = ParseLiterals(lines.Current, numberOfVars);
+            if (literals.Count == 1)
+            {
+                unaryClauses.Add(literals[0]);
+            }
+            else
+            {
+                clauses.Add(new Clause(literals));
+            }
         }
 
-        return new Formula(numberOfVars, clauses);
+        return new Formula(numberOfVars, clauses, unaryClauses);
     }
 
     private static bool IsComment(string line)
@@ -75,9 +83,9 @@ public static class DimacsParser
         return Tuple.Create(numberOfVars, numberOfClauses);
     }
 
-    private static List<int> ParseClause(string line, int numberOfVars)
+    private static List<int> ParseLiterals(string line, int numberOfVars)
     {
-        var clause = new List<int>();
+        var literals = new List<int>();
 
         foreach (var part in line.Split(" "))
         {
@@ -96,9 +104,9 @@ public static class DimacsParser
                 throw new DimacsParseError($"Value out of range: {value}");
             }
 
-            clause.Add(value);
+            literals.Add(value);
         }
 
-        return clause;
+        return literals;
     }
 }
