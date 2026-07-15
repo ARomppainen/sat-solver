@@ -4,7 +4,7 @@ namespace SatSolverCore;
 
 public static class DimacsParser
 {
-    public static Formula Parse(IEnumerable<string> data)
+    public static Formula Parse(string name, IEnumerable<string> data)
     {
         using var lines = data.GetEnumerator();
 
@@ -13,7 +13,7 @@ public static class DimacsParser
             throw new DimacsParseError("Unexpected end of input");
         }
 
-        while (IsComment(lines.Current))
+        while (IsCommentOrWhiteSpace(lines.Current))
         {
             if (!lines.MoveNext())
             {
@@ -33,6 +33,11 @@ public static class DimacsParser
                 throw new DimacsParseError("Unexpected end of input");
             }
 
+            if (lines.Current.IsWhiteSpace())
+            {
+                continue;
+            }
+
             var literals = ParseLiterals(lines.Current, numberOfVars);
             if (literals.Count == 1)
             {
@@ -44,12 +49,12 @@ public static class DimacsParser
             }
         }
 
-        return new Formula(numberOfVars, clauses, unaryClauses);
+        return new Formula(name, numberOfVars, clauses, unaryClauses);
     }
 
-    private static bool IsComment(string line)
+    private static bool IsCommentOrWhiteSpace(string line)
     {
-        return !string.IsNullOrEmpty(line) && line[0] == 'c';
+        return !string.IsNullOrEmpty(line) && line[0] == 'c' || line.IsWhiteSpace();
     }
 
     private static Tuple<int, int> ParseProblemLine(string line)
@@ -65,9 +70,9 @@ public static class DimacsParser
             throw new DimacsParseError($"Expected an integer: {parts[2]}");
         }
 
-        if (numberOfVars <= 0)
+        if (numberOfVars < 0)
         {
-            throw new DimacsParseError($"Value should be positive: {numberOfVars}");
+            throw new DimacsParseError($"Value should not be negative: {numberOfVars}");
         }
 
         if (!int.TryParse(parts[3], out int numberOfClauses))
@@ -75,9 +80,9 @@ public static class DimacsParser
             throw new DimacsParseError($"Expected an integer: {parts[3]}");
         }
 
-        if (numberOfClauses <= 0)
+        if (numberOfClauses < 0)
         {
-            throw new DimacsParseError($"Value should be positive: {numberOfClauses}");
+            throw new DimacsParseError($"Value should not be negative: {numberOfClauses}");
         }
 
         return Tuple.Create(numberOfVars, numberOfClauses);

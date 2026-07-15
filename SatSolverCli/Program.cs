@@ -32,7 +32,7 @@ if (parseResult.GetValue(fileOption) is FileInfo parsedFile)
 
     using StreamReader reader = parsedFile.OpenText();
 
-    Formula formula = DimacsParser.Parse(reader.Lines());
+    Formula formula = DimacsParser.Parse(parsedFile.FullName, reader.Lines());
     SolveResult result = Solver.Solve(formula);
 
     Console.WriteLine(result);

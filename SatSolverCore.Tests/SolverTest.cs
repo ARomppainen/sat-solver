@@ -3,9 +3,8 @@ namespace SatSolverCore.Tests;
 public class SolverTest
 {
     [Theory]
-    [DimacsFileData("testdata/sample.cnf")]
-    [DimacsFileData("testdata/sample2.cnf")]
-    public void TestSolverSat(Formula formula)
+    [DimacsFileData("testdata/kissat/sat")]
+    public void TestSolverKissatSat(Formula formula)
     {
         var result = Solver.Solve(formula);
 
@@ -13,8 +12,8 @@ public class SolverTest
     }
 
     [Theory]
-    [DimacsFileData("testdata/nosolution.cnf")]
-    public void TestSolverUnsat(Formula formula)
+    [DimacsFileData("testdata/kissat/unsat")]
+    public void TestSolverKissatUnsat(Formula formula)
     {
         var result = Solver.Solve(formula);
 

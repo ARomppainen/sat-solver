@@ -16,16 +16,33 @@ public class DimacsFileDataAttribute(string filePath) : DataAttribute
             ? _filePath
             : Path.GetRelativePath(Directory.GetCurrentDirectory(), _filePath);
 
-        if (!File.Exists(path))
+        if (File.Exists(path))
         {
-            throw new ArgumentException($"File does not exist: {path}");
+            using StreamReader reader = File.OpenText(path);
+            Formula formula = DimacsParser.Parse(path, reader.Lines());
+            return [new TheoryDataRow<Formula>(formula)];
         }
 
-        using StreamReader reader = File.OpenText(path);
+        if (Directory.Exists(path))
+        {
+            List<TheoryDataRow<Formula>> formulas = [];
 
-        Formula formula = DimacsParser.Parse(reader.Lines());
+            foreach (string filepath in Directory.GetFiles(path, "*.cnf"))
+            {
+                using StreamReader reader = File.OpenText(filepath);
+                Formula formula = DimacsParser.Parse(filepath, reader.Lines());
+                formulas.Add(new TheoryDataRow<Formula>(formula));
+            }
 
-        return [new TheoryDataRow<Formula>(formula)];
+            if (formulas.Count == 0)
+            {
+                throw new ArgumentException($"No .cnf files found in the directory: {path}");
+            }
+
+            return formulas;
+        }
+
+        throw new ArgumentException($"File or directory does not exist: {path}");
     }
 
     public override bool SupportsDiscoveryEnumeration()
