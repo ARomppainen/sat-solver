@@ -79,6 +79,6 @@ public class PartialAssignment
 
     public List<int> ToList()
     {
-        return [.. _stack.Select(t => t.Item1)];
+        return [.. _stack.Select(t => t.Item1).OrderBy(Math.Abs)];
     }
 }
