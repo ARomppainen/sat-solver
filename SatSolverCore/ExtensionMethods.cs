@@ -1,4 +1,4 @@
-namespace SatSolverCore.Tests;
+namespace SatSolverCore;
 
 public static class ExtensionMethods
 {

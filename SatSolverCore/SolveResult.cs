@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace SatSolverCore;
 
 public class SolveResult
@@ -32,10 +30,6 @@ public class SolveResult
             return "unsat";
         }
 
-        return _assignment.Aggregate(
-            new StringBuilder(),
-            (agg, next) => agg.Append(' ').Append(next),
-            agg => agg.ToString()
-        );
+        return string.Join(' ', _assignment);
     }
 }
