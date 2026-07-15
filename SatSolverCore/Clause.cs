@@ -73,7 +73,7 @@ public class Clause(List<int> literals)
                 continue;
             }
 
-            if (assignment.IsUnassigned(Literals[j]))
+            if (!assignment.IsAssignedFalse(Literals[j]))
             {
                 _watched1 = j;
                 watched = Literals[j];
@@ -120,7 +120,7 @@ public class Clause(List<int> literals)
                 continue;
             }
 
-            if (assignment.IsUnassigned(Literals[j]))
+            if (!assignment.IsAssignedFalse(Literals[j]))
             {
                 _watched2 = j;
                 watched = Literals[j];
