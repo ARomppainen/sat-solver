@@ -30,7 +30,7 @@ public class WatchedLiterals
 
     public bool TryAssignToFalse(int literal, PartialAssignment assignment, out List<int> propagated)
     {
-        HashSet<int> result = [];
+        propagated = [];
 
         if (watchlist.TryGetValue(literal, out var list))
         {
@@ -49,7 +49,7 @@ public class WatchedLiterals
 
                 if (propagate != 0)
                 {
-                    result.Add(propagate);
+                    propagated.Add(propagate);
                 }
 
                 if (watched != 0)
@@ -66,7 +66,6 @@ public class WatchedLiterals
             }
         }
 
-        propagated = [.. result];
         return true;
     }
 }

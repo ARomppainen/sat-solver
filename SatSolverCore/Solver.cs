@@ -30,20 +30,22 @@ public static class Solver
         while (i < propagated.Count)
         {
             int p = propagated[i];
-
-            if (!watched.TryAssignToFalse(-p, assignment, out List<int> more))
-            {
-                return SolveResult.Unsat();
-            }
-
-            assignment.Propagate(p);
-
-            foreach (int p2 in more)
-            {
-                propagated.Add(p2);
-            }
-
             ++i;
+
+            if (assignment.IsUnassigned(p))
+            {
+                if (!watched.TryAssignToFalse(-p, assignment, out List<int> more))
+                {
+                    return SolveResult.Unsat();
+                }
+
+                assignment.Propagate(p);
+
+                foreach (int p2 in more)
+                {
+                    propagated.Add(p2);
+                }
+            }
         }
 
         if (formula.Clauses.All(clause => clause.IsSatisfied(assignment)))
