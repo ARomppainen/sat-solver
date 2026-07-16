@@ -9,6 +9,7 @@ public class SolverTest
         var result = Solver.Solve(formula);
 
         Assert.True(result.IsSat);
+        Assert.Equal(formula.NumberOfVars, result.Assignment.Count);
     }
 
     [Theory]

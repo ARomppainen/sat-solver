@@ -54,6 +54,8 @@ public static class Solver
 
         if (formula.Clauses.All(clause => clause.IsSatisfied(assignment)))
         {
+            AssignRemainingLiteralsToTrue(formula, assignment);
+
             return SolveResult.Sat(assignment.ToList());
         }
 
@@ -102,5 +104,16 @@ public static class Solver
         }
 
         return formula.NumberOfVars;
+    }
+
+    private static void AssignRemainingLiteralsToTrue(Formula formula, PartialAssignment assignment)
+    {
+        for (int i = 1; i <= formula.NumberOfVars; ++i)
+        {
+            if (assignment.IsUnassigned(i))
+            {
+                assignment.Decide(i);
+            }
+        }
     }
 }

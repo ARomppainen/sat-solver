@@ -7,6 +7,8 @@ public class SolveResult
 
     public bool IsSat { get { return _sat; } }
 
+    public List<int> Assignment { get { return _assignment; } }
+
     private SolveResult(bool type, List<int> assignment)
     {
         _sat = type;
