@@ -9,7 +9,7 @@ public static class Solver
             return SolveResult.Unsat();
         }
 
-        var assignment = PartialAssignment.Empty();
+        PartialAssignment assignment = new(formula.NumberOfVars);
 
         bool conflict = assignment.DecideUnaryClauses(formula.UnaryClauses);
 

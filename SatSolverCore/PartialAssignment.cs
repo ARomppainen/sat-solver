@@ -1,22 +1,11 @@
 namespace SatSolverCore;
 
-public class PartialAssignment
+public class PartialAssignment(int numberOfVars)
 {
-    private Stack<ValueTuple<int, bool>> _stack;
-    private HashSet<int> _set;
+    private readonly Stack<ValueTuple<int, bool>> _stack = new(numberOfVars);
+    private readonly HashSet<int> _set = new(numberOfVars);
 
     public int Count { get { return _stack.Count; } }
-
-    private PartialAssignment()
-    {
-        _stack = new Stack<ValueTuple<int, bool>>();
-        _set = new HashSet<int>();
-    }
-
-    public static PartialAssignment Empty()
-    {
-        return new PartialAssignment();
-    }
 
     public bool DecideUnaryClauses(List<int> unaryClauses)
     {
