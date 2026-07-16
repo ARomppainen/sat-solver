@@ -23,8 +23,9 @@ public static class DimacsParser
 
         (int numberOfVars, int numberOfClauses) = ParseProblemLine(lines.Current);
 
-        var clauses = new List<Clause>(numberOfClauses);
-        var unaryClauses = new List<int>();
+        List<Clause> clauses = new(numberOfClauses);
+        List<int> unaryClauses = [];
+        bool emptyClause = false;
 
         for (int i = 0; i < numberOfClauses; ++i)
         {
@@ -39,7 +40,12 @@ public static class DimacsParser
             }
 
             var literals = ParseLiterals(lines.Current, numberOfVars);
-            if (literals.Count == 1)
+
+            if (literals.Count == 0)
+            {
+                emptyClause = true;
+            }
+            else if (literals.Count == 1)
             {
                 unaryClauses.Add(literals[0]);
             }
@@ -49,7 +55,7 @@ public static class DimacsParser
             }
         }
 
-        return new Formula(name, numberOfVars, clauses, unaryClauses);
+        return new Formula(name, numberOfVars, clauses, unaryClauses, emptyClause);
     }
 
     private static bool IsCommentOrWhiteSpace(string line)

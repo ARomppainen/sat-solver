@@ -4,6 +4,10 @@ public static class Solver
 {
     public static SolveResult Solve(Formula formula)
     {
+        if (formula.HasEmptyClause)
+        {
+            return SolveResult.Unsat();
+        }
 
         var assignment = PartialAssignment.Empty();
 
