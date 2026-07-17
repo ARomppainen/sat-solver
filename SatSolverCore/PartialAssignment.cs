@@ -5,27 +5,19 @@ public class PartialAssignment(int numberOfVars)
     private readonly Stack<ValueTuple<int, bool>> _stack = new(numberOfVars);
     private readonly HashSet<int> _set = new(numberOfVars);
 
-    public int Count { get { return _stack.Count; } }
-
-    public bool DecideUnaryClauses(List<int> unaryClauses)
+    public bool IsAssignedTrue(int literal)
     {
-        foreach (int literal in unaryClauses)
-        {
-            if (_set.Contains(literal))
-            {
-                continue;
-            }
+        return _set.Contains(literal);
+    }
 
-            if (_set.Contains(-literal))
-            {
-                // conflict
-                return true;
-            }
+    public bool IsAssignedFalse(int literal)
+    {
+        return _set.Contains(-literal);
+    }
 
-            Decide(literal);
-        }
-
-        return false;
+    public bool IsUnassigned(int literal)
+    {
+        return !_set.Contains(literal) && !_set.Contains(-literal);
     }
 
     public void Decide(int literal)
@@ -51,19 +43,15 @@ public class PartialAssignment(int numberOfVars)
         } while (propagated);
     }
 
-    public bool IsAssignedTrue(int literal)
+    public void AssignRemainingLiteralsToTrue(Formula formula)
     {
-        return _set.Contains(literal);
-    }
-
-    public bool IsAssignedFalse(int literal)
-    {
-        return _set.Contains(-literal);
-    }
-
-    public bool IsUnassigned(int literal)
-    {
-        return !_set.Contains(literal) && !_set.Contains(-literal);
+        for (int i = 1; i <= formula.NumberOfVars; ++i)
+        {
+            if (IsUnassigned(i))
+            {
+                _stack.Push(ValueTuple.Create(i, false));
+            }
+        }
     }
 
     public List<int> ToList()
