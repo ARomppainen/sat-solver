@@ -20,7 +20,7 @@ public class Clause(List<int> literals)
 
     public bool IsFalsified(PartialAssignment assignment)
     {
-        return Literals.All(assignment.IsAssignedFalse);
+        return assignment.IsAssignedFalse(Watched1) && assignment.IsAssignedFalse(Watched2);
     }
 
     public bool IsSatisfied(PartialAssignment assignment)
