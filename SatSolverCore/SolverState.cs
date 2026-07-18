@@ -63,13 +63,14 @@ public class SolverState
 
     public bool Decide(int literal)
     {
+        _assignment.Decide(literal);
+
         if (!TryAssignToFalse(-literal, out List<int> propagated))
         {
             _propagated = [];
             return true;
         }
 
-        _assignment.Decide(literal);
         _propagated = propagated;
 
         return false;
@@ -85,13 +86,14 @@ public class SolverState
 
             if (_assignment.IsUnassigned(literal))
             {
+                _assignment.Propagate(literal);
+
                 if (!TryAssignToFalse(-literal, out List<int> propagated))
                 {
                     _propagated = [];
                     return true;
                 }
 
-                _assignment.Propagate(literal);
                 _propagated.AddRange(propagated);
             }
         }
@@ -154,6 +156,7 @@ public class SolverState
 
                 if (conflict)
                 {
+                    LearnClause();
                     propagated = [];
                     return false;
                 }
@@ -178,5 +181,20 @@ public class SolverState
         }
 
         return true;
+    }
+
+    private void LearnClause()
+    {
+        List<int> literals = _assignment.GetConflictTrail();
+
+        if (literals.Count > 1)
+        {
+            Clause clause = new(literals);
+            WatchedClause watched = new(clause);
+            _clauses.Add(watched);
+
+            AddToWatchlist(watched.Watched1, watched);
+            AddToWatchlist(watched.Watched2, watched);
+        }
     }
 }

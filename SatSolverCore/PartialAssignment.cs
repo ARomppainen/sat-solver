@@ -2,7 +2,7 @@ namespace SatSolverCore;
 
 public class PartialAssignment(int numberOfVars)
 {
-    private readonly Stack<ValueTuple<int, bool>> _stack = new(numberOfVars);
+    private readonly Stack<ValueTuple<int, bool>> _trail = new(numberOfVars);
     private readonly HashSet<int> _set = new(numberOfVars);
 
     public bool IsAssignedTrue(int literal)
@@ -22,13 +22,13 @@ public class PartialAssignment(int numberOfVars)
 
     public void Decide(int literal)
     {
-        _stack.Push(ValueTuple.Create(literal, false));
+        _trail.Push(ValueTuple.Create(literal, false));
         _set.Add(literal);
     }
 
     public void Propagate(int literal)
     {
-        _stack.Push(ValueTuple.Create(literal, true));
+        _trail.Push(ValueTuple.Create(literal, true));
         _set.Add(literal);
     }
 
@@ -38,7 +38,7 @@ public class PartialAssignment(int numberOfVars)
 
         do
         {
-            (int literal, propagated) = _stack.Pop();
+            (int literal, propagated) = _trail.Pop();
             _set.Remove(literal);
         } while (propagated);
     }
@@ -49,13 +49,18 @@ public class PartialAssignment(int numberOfVars)
         {
             if (IsUnassigned(i))
             {
-                _stack.Push(ValueTuple.Create(i, false));
+                _trail.Push(ValueTuple.Create(i, false));
             }
         }
     }
 
+    public List<int> GetConflictTrail()
+    {
+        return [.. _trail.Where(t => !t.Item2).Select(t => -t.Item1)];
+    }
+
     public List<int> ToList()
     {
-        return [.. _stack.Select(t => t.Item1).OrderBy(Math.Abs)];
+        return [.. _trail.Select(t => t.Item1).OrderBy(Math.Abs)];
     }
 }
