@@ -16,58 +16,54 @@ public static class Solver
             return SolveResult.Unsat();
         }
 
-        return Solve(state);
-    }
-
-    private static SolveResult Solve(SolverState state)
-    {
-        if (state.IsFalsified())
-        {
-            return SolveResult.Unsat();
-        }
-
-        if (state.Propagate())
-        {
-            return SolveResult.Unsat();
-        }
-
         if (state.IsSatisfied())
         {
             state.AssignRemainingLiteralsToTrue();
-
             return SolveResult.Sat(state.Assignment());
         }
 
+        Stack<ValueTuple<int, int>> decisions = new();
+        int currentLevel = 0;
+
         int literal = state.ChooseUnassignedLiteral();
-        SolveResult res;
+        decisions.Push(ValueTuple.Create(-literal, 1));
+        decisions.Push(ValueTuple.Create(literal, 1));
 
-        // BEGIN decide true
-        if (state.Decide(literal))
+        while (decisions.Count > 0)
         {
-            return SolveResult.Unsat();
-        }
+            (int decision, int level) = decisions.Pop();
 
-        res = Solve(state);
-        if (res.IsSat)
-        {
-            return res;
-        }
-        state.Backtrack();
-        // END decide true
+            int backtrack = currentLevel - level + 1;
 
-        // BEGIN decide false
-        if (state.Decide(-literal))
-        {
-            return SolveResult.Unsat();
-        }
+            for (int i = 0; i < backtrack; ++i)
+            {
+                state.Backtrack();
+            }
 
-        res = Solve(state);
-        if (res.IsSat)
-        {
-            return res;
+            currentLevel = level - 1;
+
+            if (state.Decide(decision))
+            {
+                continue;
+            }
+
+            currentLevel = level;
+
+            if (state.Propagate())
+            {
+                continue;
+            }
+
+            if (state.IsSatisfied())
+            {
+                state.AssignRemainingLiteralsToTrue();
+                return SolveResult.Sat(state.Assignment());
+            }
+
+            literal = state.ChooseUnassignedLiteral();
+            decisions.Push(ValueTuple.Create(-literal, level + 1));
+            decisions.Push(ValueTuple.Create(literal, level + 1));
         }
-        state.Backtrack();
-        // END decide false
 
         return SolveResult.Unsat();
     }
