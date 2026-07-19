@@ -33,6 +33,17 @@ Windows
 dotnet run --project SatSolverCli -- --file SatSolverCore.Tests\testdata\kissat\sat\and1.cnf
 ```
 
+### Code style
+
+Apply style preferences and static analysis recommendations to solution
+
+```
+dotnet format
+```
+
+For more information, see the following guide:
+https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-format
+
 ### Test execution
 
 Execute test suites (without code coverage)
