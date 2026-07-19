@@ -1,16 +1,23 @@
 namespace SatSolverCore;
 
-public class PartialAssignment(int numberOfVars)
+public class PartialAssignment(int numberOfVars) : IPartialAssignment
 {
-    private readonly Stack<ValueTuple<int, bool>> _trail = new(numberOfVars);
+    private readonly Stack<TrailElement> _trail = new(numberOfVars);
     private readonly HashSet<int> _set = new(numberOfVars);
 
-    public bool IsAssignedTrue(int literal)
+    public int Count => _trail.Count;
+
+    public int LastDecision()
+    {
+        return _trail.Where(t => t.IsDecided).Select(t => t.Literal).FirstOrDefault(0);
+    }
+
+    public bool IsTrue(int literal)
     {
         return _set.Contains(literal);
     }
 
-    public bool IsAssignedFalse(int literal)
+    public bool IsFalse(int literal)
     {
         return _set.Contains(-literal);
     }
@@ -20,47 +27,51 @@ public class PartialAssignment(int numberOfVars)
         return !_set.Contains(literal) && !_set.Contains(-literal);
     }
 
-    public void Decide(int literal)
+    public void AddDecision(int literal, int level)
     {
-        _trail.Push(ValueTuple.Create(literal, false));
+        _trail.Push(new(literal, level, true));
         _set.Add(literal);
     }
 
-    public void Propagate(int literal)
+    public void AddPropagated(int literal, int level)
     {
-        _trail.Push(ValueTuple.Create(literal, true));
+        _trail.Push(new(literal, level, false));
         _set.Add(literal);
     }
 
-    public void Backtrack()
+    public void Backjump(int level)
     {
-        bool propagated;
-
-        do
+        while (_trail.Count > 0)
         {
-            (int literal, propagated) = _trail.Pop();
-            _set.Remove(literal);
-        } while (propagated);
-    }
+            (int lit, int lvl, _) = _trail.Peek();
 
-    public void AssignRemainingLiteralsToTrue(Formula formula)
-    {
-        for (int i = 1; i <= formula.NumberOfVars; ++i)
-        {
-            if (IsUnassigned(i))
+            if (lvl <= level)
             {
-                _trail.Push(ValueTuple.Create(i, false));
+                break;
             }
+
+            _trail.Pop();
+            _set.Remove(lit);
         }
     }
 
-    public List<int> GetConflictTrail()
+    public (List<int>, int) GetConflictClause()
     {
-        return [.. _trail.Where(t => !t.Item2).Select(t => -t.Item1)];
+        List<TrailElement> decisions = [.. _trail.Where(t => t.IsDecided)];
+        int level = decisions.Count > 1 ? decisions[1].Level : 0;
+        List<int> clause = [.. decisions.Select(t => -t.Literal)];
+        return (clause, level);
     }
 
     public List<int> ToList()
     {
-        return [.. _trail.Select(t => t.Item1).OrderBy(Math.Abs)];
+        return [.. _trail.Select(t => t.Literal).OrderBy(Math.Abs)];
     }
+
+    public override string ToString()
+    {
+        return $"[{string.Join(", ", _trail.Select(t => t.Literal).Reverse())}]";
+    }
+
+    private record struct TrailElement(int Literal, int Level, bool IsDecided);
 }

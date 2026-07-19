@@ -3,7 +3,7 @@ namespace SatSolverCore;
 /// <summary>
 /// Propositional logic formula in conjunctive normal form
 /// </summary>
-public record Formula(string Name, int NumberOfVars, List<Clause> Clauses, List<int> UnaryClauses, bool HasEmptyClause)
+public record Formula(string Name, int NumberOfVars, List<List<int>> Clauses)
 {
     public override string ToString()
     {

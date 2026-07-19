@@ -1,127 +1,88 @@
+using SatSolverCore.Clause;
+
 namespace SatSolverCore;
 
 public class SolverState
 {
-    private readonly Formula _formula;
+    private readonly int _numberOfVars;
     private readonly PartialAssignment _assignment;
+    private readonly List<int> _unaryClauses;
+    private readonly WatchedLiterals _watched;
+    private readonly IDecisionMaker _decisionMaker;
+    private bool _hasEmptyClause;
+    private int _decisionLevel;
 
-    private readonly List<WatchedClause> _clauses;
+    public int DecisionLevel => _decisionLevel;
+    public bool HasEmptyClause => _hasEmptyClause;
+    public bool AllVariablesHaveValues => _assignment.Count == _numberOfVars;
 
-    private readonly Dictionary<int, LinkedList<WatchedClause>> _watchlist;
-
-    private List<int> _propagated;
-
-    public SolverState(Formula formula)
+    public SolverState(Formula formula, IDecisionMaker decisionMaker)
     {
-        _formula = formula;
+        _numberOfVars = formula.NumberOfVars;
         _assignment = new(formula.NumberOfVars);
-        _clauses = new(formula.Clauses.Count);
-        _watchlist = [];
-        _propagated = [];
+        _unaryClauses = [];
+        _watched = new();
+        _hasEmptyClause = false;
+        _decisionLevel = 0;
+        _decisionMaker = decisionMaker;
 
+        formula.Clauses.ForEach(AddClause);
+    }
 
-        foreach (Clause clause in formula.Clauses)
+    public void MakeDecision()
+    {
+        ++_decisionLevel;
+        int literal = _decisionMaker.ChooseUnassignedLiteral(_assignment);
+        _assignment.AddDecision(literal, _decisionLevel);
+    }
+
+    public bool UnitPropagate()
+    {
+        List<int> literals = [];
+
+        int lastDecision = _assignment.LastDecision();
+        if (lastDecision != 0)
         {
-            WatchedClause watched = new(clause);
-            _clauses.Add(watched);
+            if (!_watched.TryFindUnitLiterals(-lastDecision, _assignment, out List<int> unitLiterals))
+            {
+                return true;
+            }
 
-            AddToWatchlist(watched.Watched1, watched);
-            AddToWatchlist(watched.Watched2, watched);
+            unitLiterals.ForEach(literals.Add);
         }
-    }
 
-    public bool IsFalsified()
-    {
-        return _clauses.Any(clause => clause.IsFalsified(_assignment));
-    }
-
-    public bool IsSatisfied()
-    {
-        return _clauses.All(clause => clause.IsSatisfied(_assignment));
-    }
-
-    public bool DecideUnaryClauses()
-    {
-        foreach (int literal in _formula.UnaryClauses)
+        if (_decisionLevel == 0)
         {
-            if (_assignment.IsAssignedTrue(literal))
+            _unaryClauses.ForEach(literals.Add);
+        }
+
+        int i = 0;
+        while (i < literals.Count)
+        {
+            int literal = literals[i];
+            ++i;
+
+            if (_assignment.IsTrue(literal))
             {
                 continue;
             }
 
-            if (_assignment.IsAssignedTrue(-literal))
+            if (!_watched.TryFindUnitLiterals(-literal, _assignment, out List<int> unitLiterals))
             {
-                // conflict
                 return true;
             }
 
-            _assignment.Decide(literal);
+            _assignment.AddPropagated(literal, _decisionLevel);
+            unitLiterals.ForEach(literals.Add);
         }
 
         return false;
     }
 
-    public bool Decide(int literal)
+    public void Backjump(int level)
     {
-        _assignment.Decide(literal);
-
-        if (!TryAssignToFalse(-literal, out List<int> propagated))
-        {
-            _propagated = [];
-            return true;
-        }
-
-        _propagated = propagated;
-
-        return false;
-    }
-
-    public bool Propagate()
-    {
-        int i = 0;
-        while (i < _propagated.Count)
-        {
-            int literal = _propagated[i];
-            ++i;
-
-            if (_assignment.IsUnassigned(literal))
-            {
-                _assignment.Propagate(literal);
-
-                if (!TryAssignToFalse(-literal, out List<int> propagated))
-                {
-                    _propagated = [];
-                    return true;
-                }
-
-                _propagated.AddRange(propagated);
-            }
-        }
-
-        return false;
-    }
-
-    public void Backtrack()
-    {
-        _assignment.Backtrack();
-    }
-
-    public int ChooseUnassignedLiteral()
-    {
-        for (int i = 1; i < _formula.NumberOfVars; ++i)
-        {
-            if (_assignment.IsUnassigned(i))
-            {
-                return i;
-            }
-        }
-
-        return _formula.NumberOfVars;
-    }
-
-    public void AssignRemainingLiteralsToTrue()
-    {
-        _assignment.AssignRemainingLiteralsToTrue(_formula);
+        _assignment.Backjump(level);
+        _decisionLevel = level;
     }
 
     public List<int> Assignment()
@@ -129,72 +90,24 @@ public class SolverState
         return _assignment.ToList();
     }
 
-    private void AddToWatchlist(int literal, WatchedClause clause)
+    public void AddClause(List<int> literals)
     {
-        if (_watchlist.TryGetValue(literal, out var list))
+        IClause clause = ClauseFactory.Create(literals);
+
+        if (literals.Count == 0)
         {
-            list.AddLast(new LinkedListNode<WatchedClause>(clause));
+            _hasEmptyClause = true;
         }
-        else
+        else if (literals.Count == 1)
         {
-            _watchlist.Add(literal, new LinkedList<WatchedClause>([clause]));
+            _unaryClauses.Add(literals[0]);
         }
+
+        _watched.Add(clause);
     }
 
-    private bool TryAssignToFalse(int literal, out List<int> propagated)
+    public (List<int>, int) AnalyzeConflict()
     {
-        propagated = [];
-
-        if (_watchlist.TryGetValue(literal, out var list))
-        {
-            var node = list.First;
-            while (node != null)
-            {
-                var clause = node.ValueRef;
-
-                (bool conflict, int propagate, int watched) = clause.AssignToFalse(literal, _assignment);
-
-                if (conflict)
-                {
-                    LearnClause();
-                    propagated = [];
-                    return false;
-                }
-
-                if (propagate != 0)
-                {
-                    propagated.Add(propagate);
-                }
-
-                if (watched != 0)
-                {
-                    AddToWatchlist(watched, clause);
-                    var remove = node;
-                    node = remove.Next;
-                    list.Remove(remove);
-                }
-                else
-                {
-                    node = node.Next;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private void LearnClause()
-    {
-        List<int> literals = _assignment.GetConflictTrail();
-
-        if (literals.Count > 1)
-        {
-            Clause clause = new(literals);
-            WatchedClause watched = new(clause);
-            _clauses.Add(watched);
-
-            AddToWatchlist(watched.Watched1, watched);
-            AddToWatchlist(watched.Watched2, watched);
-        }
+        return _assignment.GetConflictClause();
     }
 }

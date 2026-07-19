@@ -23,9 +23,7 @@ public static class DimacsParser
 
         (int numberOfVars, int numberOfClauses) = ParseProblemLine(lines.Current);
 
-        List<Clause> clauses = new(numberOfClauses);
-        List<int> unaryClauses = [];
-        bool emptyClause = false;
+        List<List<int>> clauses = new(numberOfClauses);
 
         for (int i = 0; i < numberOfClauses; ++i)
         {
@@ -40,22 +38,10 @@ public static class DimacsParser
             }
 
             var literals = ParseLiterals(lines.Current, numberOfVars);
-
-            if (literals.Count == 0)
-            {
-                emptyClause = true;
-            }
-            else if (literals.Count == 1)
-            {
-                unaryClauses.Add(literals[0]);
-            }
-            else
-            {
-                clauses.Add(new Clause(literals));
-            }
+            clauses.Add(literals);
         }
 
-        return new Formula(name, numberOfVars, clauses, unaryClauses, emptyClause);
+        return new Formula(name, numberOfVars, clauses);
     }
 
     private static bool IsCommentOrWhiteSpace(string line)
@@ -63,7 +49,7 @@ public static class DimacsParser
         return !string.IsNullOrEmpty(line) && line[0] == 'c' || line.IsWhiteSpace();
     }
 
-    private static Tuple<int, int> ParseProblemLine(string line)
+    private static (int, int) ParseProblemLine(string line)
     {
         var parts = line.Split(" ");
 
@@ -91,7 +77,7 @@ public static class DimacsParser
             throw new DimacsParseError($"Value should not be negative: {numberOfClauses}");
         }
 
-        return Tuple.Create(numberOfVars, numberOfClauses);
+        return (numberOfVars, numberOfClauses);
     }
 
     private static List<int> ParseLiterals(string line, int numberOfVars)
