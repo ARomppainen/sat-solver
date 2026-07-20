@@ -1,5 +1,8 @@
 # SAT-solver
 
+[![CI](https://github.com/ARomppainen/sat-solver/actions/workflows/main.yml/badge.svg)](https://github.com/ARomppainen/sat-solver/actions/workflows/main.yml)
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=ARomppainen_sat-solver&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ARomppainen_sat-solver)
+
 Aineopintojen harjoitustyö: Algoritmit ja tekoäly, 2026 (heinä-elokuu).
 
 ## Documentation
@@ -46,45 +49,12 @@ https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-format
 
 ### Test execution
 
-Execute test suites (without code coverage)
+Execute test suites
 
 ```
 dotnet test
 ```
 
-### Code coverage report generation
+### Code quality metrics
 
-Ensure that [ReportGenerator](https://github.com/danielpalme/ReportGenerator) tool is installed
-
-```cmd
-dotnet tool install --global dotnet-reportgenerator-globaltool
-```
-
-If you are working on a Linux system, add the dotnet tools directory to `PATH` environment variable.
-
-```sh
-export PATH="$HOME/.dotnet/tools:$PATH"
-```
-
-Generate a coverage report in XML format
-
-```cmd
-dotnet run --project SatSolverCore.Tests -- --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
-```
-
-Convert the XML report into an HTML report
-
-Linux
-
-```sh
-reportgenerator -reports:SatSolverCore.Tests/bin/Debug/net10.0/TestResults/coverage.cobertura.xml -targetdir:CoverageReport
-```
-
-Windows
-
-```cmd
-ReportGenerator -reports:SatSolverCore.Tests\bin\Debug\net10.0\TestResults\coverage.cobertura.xml -targetdir:CoverageReport
-```
-
-For more information, see the following guide:
-https://xunit.net/docs/getting-started/v3/code-coverage-with-mtp
+Code quality metrics are available at [SonarQube Cloud](https://sonarcloud.io/project/overview?id=ARomppainen_sat-solver).
