@@ -17,7 +17,7 @@ if (parseResult.Errors.Count > 0)
 {
     foreach (ParseError parseError in parseResult.Errors)
     {
-        Console.Error.WriteLine(parseError.Message);
+        await Console.Error.WriteLineAsync(parseError.Message);
     }
     return 1;
 }
@@ -26,7 +26,7 @@ if (parseResult.GetValue(fileOption) is FileInfo parsedFile)
 {
     if (!parsedFile.Exists)
     {
-        Console.Error.WriteLine($"File does not exist: {parsedFile.FullName}");
+        await Console.Error.WriteLineAsync($"File does not exist: {parsedFile.FullName}");
         return 1;
     }
 
