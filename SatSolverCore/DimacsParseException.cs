@@ -3,7 +3,6 @@ namespace SatSolverCore;
 /// <summary>
 /// Represents error that occur during parsing of DIMACS formatted input.
 /// </summary>
-[Serializable]
 public class DimacsParseException : Exception
 {
     /// <summary>
