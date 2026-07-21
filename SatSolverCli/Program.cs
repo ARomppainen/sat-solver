@@ -3,7 +3,7 @@ using System.CommandLine.Parsing;
 
 using SatSolverCore;
 
-Option<FileInfo> fileOption = new("--file", ["-f"])
+Option<FileInfo> fileOption = new("--file", "-f")
 {
     Description = "The path to a DIMACS file to be used as input."
 };
