@@ -2,22 +2,36 @@ using System.Diagnostics;
 
 namespace SatSolverCore;
 
+/// <summary>
+/// Parser for DIMACS formatted data.
+/// </summary>
+/// <remarks>
+/// See <see href="https://acl2.org/doc/?topic=SATLINK____DIMACS"/> for a
+/// detailed explanation about the input format.
+/// </remarks>
 public static class DimacsParser
 {
+    /// <summary>
+    /// Parses DIMACS formatted input into a formula.
+    /// </summary>
+    /// <param name="name">See <see cref="Formula.Name"/></param>
+    /// <param name="data">DIMACS data</param>
+    /// <returns>parsed formula</returns>
+    /// <exception cref="DimacsParseException"></exception>
     public static Formula Parse(string name, IEnumerable<string> data)
     {
         using var lines = data.GetEnumerator();
 
         if (!lines.MoveNext())
         {
-            throw new DimacsParseError("Unexpected end of input");
+            throw new DimacsParseException("Unexpected end of input");
         }
 
         while (IsCommentOrWhiteSpace(lines.Current))
         {
             if (!lines.MoveNext())
             {
-                throw new DimacsParseError("Unexpected end of input");
+                throw new DimacsParseException("Unexpected end of input");
             }
         }
 
@@ -29,7 +43,7 @@ public static class DimacsParser
         {
             if (!lines.MoveNext())
             {
-                throw new DimacsParseError("Unexpected end of input");
+                throw new DimacsParseException("Unexpected end of input");
             }
 
             if (lines.Current.IsWhiteSpace())
@@ -59,22 +73,22 @@ public static class DimacsParser
 
         if (!int.TryParse(parts[2], out int numberOfVars))
         {
-            throw new DimacsParseError($"Expected an integer: {parts[2]}");
+            throw new DimacsParseException($"Expected an integer: {parts[2]}");
         }
 
         if (numberOfVars < 0)
         {
-            throw new DimacsParseError($"Value should not be negative: {numberOfVars}");
+            throw new DimacsParseException($"Value should not be negative: {numberOfVars}");
         }
 
         if (!int.TryParse(parts[3], out int numberOfClauses))
         {
-            throw new DimacsParseError($"Expected an integer: {parts[3]}");
+            throw new DimacsParseException($"Expected an integer: {parts[3]}");
         }
 
         if (numberOfClauses < 0)
         {
-            throw new DimacsParseError($"Value should not be negative: {numberOfClauses}");
+            throw new DimacsParseException($"Value should not be negative: {numberOfClauses}");
         }
 
         return (numberOfVars, numberOfClauses);
@@ -88,7 +102,7 @@ public static class DimacsParser
         {
             if (!int.TryParse(part, out int value))
             {
-                throw new DimacsParseError($"Expected an integer: {part}");
+                throw new DimacsParseException($"Expected an integer: {part}");
             }
 
             if (value == 0)
@@ -98,7 +112,7 @@ public static class DimacsParser
 
             if (value > numberOfVars || value < -numberOfVars)
             {
-                throw new DimacsParseError($"Value out of range: {value}");
+                throw new DimacsParseException($"Value out of range: {value}");
             }
 
             literals.Add(value);

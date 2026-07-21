@@ -1,15 +1,24 @@
 namespace SatSolverCore;
 
+/// <summary>
+/// This class is the main entry point for interacting with the SAT solver.
+/// </summary>
 public static class Solver
 {
+    /// <summary>
+    /// Tries to find a satistying truth assignment for a given propositional
+    /// logic formula using conflict-driven clause learning (CDCL) algorithm.
+    /// </summary>
+    /// <param name="formula">The propositional logic formula to be solved.</param>
+    /// <returns>'satisfiable' result with a truth assignment or 'unsatisfiable' result</returns>
     public static SolveResult Solve(Formula formula)
     {
-        IDecisionMaker decisionMaker = new DecisionMaker(formula.NumberOfVars);
+        IDecisionMaker decisionMaker = new SequentialDecisionMaker(formula.NumberOfVars);
         SolverState state = new(formula, decisionMaker);
 
         if (state.HasEmptyClause)
         {
-            return SolveResult.Unsat();
+            return SolveResult.Unsatisfiable();
         }
 
         while (true)
@@ -20,7 +29,7 @@ public static class Solver
             {
                 if (state.DecisionLevel == 0)
                 {
-                    return SolveResult.Unsat();
+                    return SolveResult.Unsatisfiable();
                 }
 
                 (List<int> clause, int level) = state.AnalyzeConflict();
@@ -32,7 +41,7 @@ public static class Solver
             {
                 if (state.AllVariablesHaveValues)
                 {
-                    return SolveResult.Sat(state.Assignment());
+                    return SolveResult.Satisfiable(state.Assignment());
                 }
 
                 state.MakeDecision();

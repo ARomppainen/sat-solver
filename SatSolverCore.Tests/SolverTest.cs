@@ -8,7 +8,7 @@ public class SolverTest
     {
         var result = Solver.Solve(formula);
 
-        Assert.True(result.IsSat);
+        Assert.True(result.IsSatisfiable);
         Assert.Equal(formula.NumberOfVars, result.Assignment.Count);
     }
 
@@ -18,6 +18,6 @@ public class SolverTest
     {
         var result = Solver.Solve(formula);
 
-        Assert.False(result.IsSat);
+        Assert.False(result.IsSatisfiable);
     }
 }

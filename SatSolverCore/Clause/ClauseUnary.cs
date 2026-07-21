@@ -1,23 +1,33 @@
 namespace SatSolverCore.Clause;
 
+/// <summary>
+/// Represents a clause with one literal.
+/// </summary>
+/// <param name="literal">the literal value</param>
 internal class ClauseUnary(int literal) : IClause
 {
+    /// <inheritdoc />
     public int Literal => literal;
 
+    /// <inheritdoc />
     public int Watched1 => literal;
 
+    /// <inheritdoc />
     public int Watched2 => 0;
 
-    public (bool, int, int) FalsifyFirst(IPartialAssignment assignment)
+    /// <inheritdoc />
+    public FalsifyResult FalsifyFirst(IPartialAssignment assignment)
     {
-        return (true, 0, 0);
+        return FalsifyResult.Conflict();
     }
 
-    public (bool, int, int) FalsifySecond(IPartialAssignment assignment)
+    /// <inheritdoc />
+    public FalsifyResult FalsifySecond(IPartialAssignment assignment)
     {
         throw new NotSupportedException("Not supported by Unary clauses");
     }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return $"[{Literal}]";

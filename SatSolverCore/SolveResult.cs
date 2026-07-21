@@ -1,37 +1,53 @@
 namespace SatSolverCore;
 
+/// <summary>
+/// Represents possible return values of <see cref="Solver.Solve(Formula)"/>.
+/// </summary>
 public class SolveResult
 {
-    private readonly bool _sat;
-    private readonly List<int> _assignment;
+    /// <summary>
+    /// true if the formula was satisfiable; otherwise, false.
+    /// </summary>
+    public bool IsSatisfiable { get; }
 
-    public bool IsSat { get { return _sat; } }
-
-    public List<int> Assignment { get { return _assignment; } }
+    /// <summary>
+    /// The satisfying assignment if the formula was satisfiable.
+    /// </summary>
+    public List<int> Assignment { get; }
 
     private SolveResult(bool type, List<int> assignment)
     {
-        _sat = type;
-        _assignment = assignment;
+        IsSatisfiable = type;
+        Assignment = assignment;
     }
 
-    public static SolveResult Sat(List<int> assignment)
+    /// <summary>
+    /// Create satisfiable result instance.
+    /// </summary>
+    /// <param name="assignment">the satisfying assignment</param>
+    /// <returns>SolveResult instance</returns>
+    public static SolveResult Satisfiable(List<int> assignment)
     {
         return new SolveResult(true, assignment);
     }
 
-    public static SolveResult Unsat()
+    /// <summary>
+    /// Create unsatisfiable result instance.
+    /// </summary>
+    /// <returns>SolveResult instance</returns>
+    public static SolveResult Unsatisfiable()
     {
         return new SolveResult(false, []);
     }
 
+    /// <inheritdoc />
     public override string ToString()
     {
-        if (!_sat)
+        if (!IsSatisfiable)
         {
             return "unsat";
         }
 
-        return string.Join(' ', _assignment);
+        return string.Join(' ', Assignment);
     }
 }

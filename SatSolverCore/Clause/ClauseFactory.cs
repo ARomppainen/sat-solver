@@ -1,7 +1,15 @@
 namespace SatSolverCore.Clause;
 
+/// <summary>
+/// Factory for instantiating <see cref="IClause"/> instances.
+/// </summary>
 public static class ClauseFactory
 {
+    /// <summary>
+    /// Create a new <see cref="IClause"/> instance based on list of literals.
+    /// </summary>
+    /// <param name="literals">list of literals</param>
+    /// <returns>new concrete <see cref="IClause"/> instance</returns>
     public static IClause Create(List<int> literals)
     {
         return literals.Count switch

@@ -1,5 +1,9 @@
 namespace SatSolverCore.Clause;
 
+/// <summary>
+/// Represents a clause with N literals.
+/// </summary>
+/// <param name="literals">list of literals</param>
 internal class ClauseNary(List<int> literals) : IClause
 {
     private readonly List<int> _literals = literals;
@@ -14,27 +18,27 @@ internal class ClauseNary(List<int> literals) : IClause
     /// </summary>
     private int _watched2 = 1;
 
+    /// <inheritdoc />
     public int Watched1 => _literals[_watched1];
 
+    /// <inheritdoc />
     public int Watched2 => _literals[_watched2];
 
-    public (bool, int, int) FalsifyFirst(IPartialAssignment assignment)
+    /// <inheritdoc />
+    public FalsifyResult FalsifyFirst(IPartialAssignment assignment)
     {
-        if (assignment.IsTrue(Watched2))
+        if (assignment.IsAssigned(-Watched2))
         {
-            // clause already satisfied, no need to reassign watched literals
-            return (false, 0, 0);
+            return FalsifyResult.Conflict();
         }
 
-        if (assignment.IsFalse(Watched2))
+        if (assignment.IsAssigned(Watched2))
         {
-            // conflict
-            return (true, 0, 0);
+            // clause already satisfied, no need to reassign watched literals
+            return FalsifyResult.NoChanges();
         }
 
         int n = _literals.Count;
-        int propagate = Watched2;
-        int watched = 0;
 
         for (int i = 0; i < n; ++i)
         {
@@ -45,35 +49,31 @@ internal class ClauseNary(List<int> literals) : IClause
                 continue;
             }
 
-            if (!assignment.IsFalse(_literals[j]))
+            if (!assignment.IsAssigned(-_literals[j]))
             {
-                propagate = 0;
                 _watched1 = j;
-                watched = _literals[j];
-                break;
+                return FalsifyResult.UpdateWatchlist(Watched1);
             }
         }
 
-        return (false, propagate, watched);
+        return FalsifyResult.Propagate(Watched2);
     }
 
-    public (bool, int, int) FalsifySecond(IPartialAssignment assignment)
+    /// <inheritdoc />
+    public FalsifyResult FalsifySecond(IPartialAssignment assignment)
     {
-        if (assignment.IsTrue(Watched1))
+        if (assignment.IsAssigned(-Watched1))
         {
-            // clause already satisfied, no need to reassign watched literals
-            return (false, 0, 0);
+            return FalsifyResult.Conflict();
         }
 
-        if (assignment.IsFalse(Watched1))
+        if (assignment.IsAssigned(Watched1))
         {
-            // conflict
-            return (true, 0, 0);
+            // clause already satisfied, no need to reassign watched literals
+            return FalsifyResult.NoChanges();
         }
 
         int n = _literals.Count;
-        int propagate = Watched1;
-        int watched = 0;
 
         for (int i = 0; i < n; ++i)
         {
@@ -84,18 +84,17 @@ internal class ClauseNary(List<int> literals) : IClause
                 continue;
             }
 
-            if (!assignment.IsFalse(_literals[j]))
+            if (!assignment.IsAssigned(-_literals[j]))
             {
-                propagate = 0;
                 _watched2 = j;
-                watched = _literals[j];
-                break;
+                return FalsifyResult.UpdateWatchlist(Watched2);
             }
         }
 
-        return (false, propagate, watched);
+        return FalsifyResult.Propagate(Watched1);
     }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return $"[{string.Join(", ", _literals)}]";

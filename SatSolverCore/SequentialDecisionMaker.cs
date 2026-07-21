@@ -1,9 +1,14 @@
 namespace SatSolverCore;
 
-public class DecisionMaker(int numberOfVars) : IDecisionMaker
+/// <summary>
+/// Decision maker implementation that generates decisions in a deterministic sequence.
+/// </summary>
+/// <param name="numberOfVars">The number of variables in the formula.</param>
+public class SequentialDecisionMaker(int numberOfVars) : IDecisionMaker
 {
     private readonly IEnumerator<int> _sequence = Sequence(numberOfVars).GetEnumerator();
 
+    /// <inheritdoc />
     public int ChooseUnassignedLiteral(IPartialAssignment assignment)
     {
         while (true)

@@ -2,6 +2,9 @@ using SatSolverCore.Clause;
 
 namespace SatSolverCore;
 
+/// <summary>
+/// Data structure that orchestrates the two-watched-literal scheme.
+/// </summary>
 public class WatchedLiterals
 {
     private readonly Dictionary<int, LinkedList<IClause>> _watchlist1;
@@ -13,6 +16,11 @@ public class WatchedLiterals
         _watchlist2 = [];
     }
 
+    /// <summary>
+    /// Add new clause to be tracked. This can be an initial clause found in the
+    /// formula or a learned clause.
+    /// </summary>
+    /// <param name="clause">The clause to be tracked.</param>
     public void Add(IClause clause)
     {
         int w1 = clause.Watched1;
@@ -40,6 +48,13 @@ public class WatchedLiterals
         }
     }
 
+    /// <summary>
+    /// Tries to find new unit literals after the given literal is set to false.
+    /// </summary>
+    /// <param name="literal">The literal that is set to false.</param>
+    /// <param name="assignment">The current partial assignment.</param>
+    /// <param name="unitLiterals">The list of found unit literals.</param>
+    /// <returns>true if a conflicting clause was not detected; otherwise, false.</returns>
     public bool TryFindUnitLiterals(int literal, IPartialAssignment assignment, out List<int> unitLiterals)
     {
         unitLiterals = [];
@@ -64,7 +79,7 @@ public class WatchedLiterals
         int literal,
         IPartialAssignment assignment,
         Dictionary<int, LinkedList<IClause>> watchlist,
-        Func<IClause, IPartialAssignment, (bool, int, int)> falsifyLiteral
+        Func<IClause, IPartialAssignment, FalsifyResult> falsifyLiteral
     )
     {
         if (!watchlist.TryGetValue(literal, out var list))
@@ -78,24 +93,24 @@ public class WatchedLiterals
         {
             var clause = node.ValueRef;
 
-            (bool conflict, int propagate, int watched) = falsifyLiteral(clause, assignment);
+            var result = falsifyLiteral(clause, assignment);
 
-            if (conflict)
+            if (result.IsConflict)
             {
                 return true;
             }
 
-            if (propagate != 0)
+            if (result.PropagatedLiteral != 0)
             {
-                unitLiterals.Add(propagate);
+                unitLiterals.Add(result.PropagatedLiteral);
             }
 
-            if (watched != 0)
+            if (result.NewWatchedLiteral != 0)
             {
-                Add(watched, clause, watchlist);
-                var remove = node;
+                Add(result.NewWatchedLiteral, clause, watchlist);
+                var previous = node;
                 node = node.Next;
-                list.Remove(remove);
+                list.Remove(previous);
             }
             else
             {
@@ -106,12 +121,12 @@ public class WatchedLiterals
         return false;
     }
 
-    private static (bool, int, int) FalsifyFirst(IClause clause, IPartialAssignment assignment)
+    private static FalsifyResult FalsifyFirst(IClause clause, IPartialAssignment assignment)
     {
         return clause.FalsifyFirst(assignment);
     }
 
-    private static (bool, int, int) FalsifySecond(IClause clause, IPartialAssignment assignment)
+    private static FalsifyResult FalsifySecond(IClause clause, IPartialAssignment assignment)
     {
         return clause.FalsifySecond(assignment);
     }
