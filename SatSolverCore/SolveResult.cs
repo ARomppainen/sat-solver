@@ -39,15 +39,4 @@ public class SolveResult
     {
         return new SolveResult(false, []);
     }
-
-    /// <inheritdoc />
-    public override string ToString()
-    {
-        if (!IsSatisfiable)
-        {
-            return "unsat";
-        }
-
-        return string.Join(' ', Assignment);
-    }
 }

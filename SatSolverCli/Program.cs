@@ -35,7 +35,23 @@ if (parseResult.GetValue(fileOption) is FileInfo parsedFile)
     Formula formula = DimacsParser.Parse(parsedFile.FullName, reader.Lines());
     SolveResult result = Solver.Solve(formula);
 
-    Console.WriteLine(result);
+    if (result.IsSatisfiable)
+    {
+        Console.WriteLine("s SATISFIABLE");
+        if (result.Assignment.Count > 0)
+        {
+            Console.WriteLine($"v {string.Join(' ', result.Assignment)} 0");
+        }
+        else
+        {
+            Console.WriteLine("v 0");
+        }
+    }
+    else
+    {
+        Console.WriteLine("s UNSATISFIABLE");
+    }
+
     return 0;
 }
 
