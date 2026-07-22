@@ -10,6 +10,7 @@ public class SolverState
     private readonly int _numberOfVars;
     private readonly PartialAssignment _assignment;
     private readonly List<int> _unaryClauses;
+    private readonly Queue<int> _unitLiterals;
     private readonly WatchedLiterals _watched;
     private readonly IDecisionMaker _decisionMaker;
 
@@ -40,6 +41,7 @@ public class SolverState
         _numberOfVars = formula.NumberOfVars;
         _assignment = new(formula.NumberOfVars);
         _unaryClauses = [];
+        _unitLiterals = [];
         _watched = new();
         _decisionMaker = decisionMaker;
 
@@ -65,42 +67,37 @@ public class SolverState
     /// <returns>true if the last decision lead to a conflict; otherwise, false.</returns>
     public bool UnitPropagate()
     {
-        List<int> literals = [];
+        _unitLiterals.Clear();
 
         int lastDecision = _assignment.GetLastDecision();
         if (lastDecision != 0)
         {
-            if (!_watched.TryFindUnitLiterals(-lastDecision, _assignment, out List<int> unitLiterals))
+            if (!_watched.TryFindUnitLiterals(-lastDecision, _assignment, _unitLiterals))
             {
                 return true;
             }
-
-            unitLiterals.ForEach(literals.Add);
         }
 
         if (DecisionLevel == 0)
         {
-            _unaryClauses.ForEach(literals.Add);
+            _unaryClauses.ForEach(_unitLiterals.Enqueue);
         }
 
-        int i = 0;
-        while (i < literals.Count)
+        while (_unitLiterals.Count > 0)
         {
-            int literal = literals[i];
-            ++i;
+            int literal = _unitLiterals.Dequeue();
 
             if (_assignment.IsAssigned(literal))
             {
                 continue;
             }
 
-            if (!_watched.TryFindUnitLiterals(-literal, _assignment, out List<int> unitLiterals))
+            if (!_watched.TryFindUnitLiterals(-literal, _assignment, _unitLiterals))
             {
                 return true;
             }
 
             _assignment.AddPropagated(literal, DecisionLevel);
-            unitLiterals.ForEach(literals.Add);
         }
 
         return false;

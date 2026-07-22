@@ -53,21 +53,17 @@ public class WatchedLiterals
     /// </summary>
     /// <param name="literal">The literal that is set to false.</param>
     /// <param name="assignment">The current partial assignment.</param>
-    /// <param name="unitLiterals">The list of found unit literals.</param>
+    /// <param name="unitLiterals">The queue of unit literals to append.</param>
     /// <returns>true if a conflicting clause was not detected; otherwise, false.</returns>
-    public bool TryFindUnitLiterals(int literal, IPartialAssignment assignment, out List<int> unitLiterals)
+    public bool TryFindUnitLiterals(int literal, IPartialAssignment assignment, Queue<int> unitLiterals)
     {
-        unitLiterals = [];
-
         if (FindUnitLiterals(unitLiterals, literal, assignment, _watchlist1, FalsifyFirst))
         {
-            unitLiterals = [];
             return false;
         }
 
         if (FindUnitLiterals(unitLiterals, literal, assignment, _watchlist2, FalsifySecond))
         {
-            unitLiterals = [];
             return false;
         }
 
@@ -75,7 +71,7 @@ public class WatchedLiterals
     }
 
     private static bool FindUnitLiterals(
-        List<int> unitLiterals,
+        Queue<int> unitLiterals,
         int literal,
         IPartialAssignment assignment,
         Dictionary<int, LinkedList<IClause>> watchlist,
@@ -102,7 +98,7 @@ public class WatchedLiterals
 
             if (result.PropagatedLiteral != 0)
             {
-                unitLiterals.Add(result.PropagatedLiteral);
+                unitLiterals.Enqueue(result.PropagatedLiteral);
             }
 
             if (result.NewWatchedLiteral != 0)
