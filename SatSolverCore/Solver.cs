@@ -1,3 +1,5 @@
+using SatSolverCore.Decision;
+
 namespace SatSolverCore;
 
 /// <summary>
@@ -13,7 +15,8 @@ public static class Solver
     /// <returns>'satisfiable' result with a truth assignment or 'unsatisfiable' result</returns>
     public static SolveResult Solve(Formula formula)
     {
-        IDecisionMaker decisionMaker = new SequentialDecisionMaker(formula.NumberOfVars);
+        // IDecisionMaker decisionMaker = new Looping(formula.NumberOfVars);
+        IDecisionMaker decisionMaker = new PrioritizeOccurrences(formula);
         SolverState state = new(formula, decisionMaker);
 
         if (state.HasEmptyClause)
