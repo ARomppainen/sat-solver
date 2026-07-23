@@ -105,7 +105,6 @@ public class SolverState
     public void Backjump(int level)
     {
         _assignment.Backjump(level);
-        _decisionMaker.Backjump(_assignment.GetLastDecision());
         DecisionLevel = level;
     }
 

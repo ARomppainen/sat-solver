@@ -10,7 +10,6 @@ public class PrioritizeOccurrences : IDecisionMaker
     private readonly int[] _sequence;
     private readonly int[] _scores;
     private readonly int[] _literalIndexInSequence;
-    private int _index;
 
     /// <summary>
     /// Initializes a new instance of the PrioritizeOccurrences class.
@@ -47,7 +46,7 @@ public class PrioritizeOccurrences : IDecisionMaker
     /// <inheritdoc />
     public int ChooseUnassignedLiteral(IPartialAssignment assignment)
     {
-        for (int i = _index; i < _nVars - 1; ++i)
+        for (int i = 0; i < _nVars - 1; ++i)
         {
             if (assignment.IsUnassigned(_sequence[i]))
             {
@@ -56,11 +55,5 @@ public class PrioritizeOccurrences : IDecisionMaker
         }
 
         return _sequence[_nVars - 1];
-    }
-
-    /// <inheritdoc />
-    public void Backjump(int lastDecision)
-    {
-        _index = _literalIndexInSequence[Math.Abs(lastDecision)];
     }
 }

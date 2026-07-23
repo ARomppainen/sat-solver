@@ -14,10 +14,4 @@ public interface IDecisionMaker
     /// <param name="assignment">current partial truth assignment</param>
     /// <returns>the literal value to be assigned</returns>
     int ChooseUnassignedLiteral(IPartialAssignment assignment);
-
-    /// <summary>
-    /// Update state after a backjump if needed.
-    /// </summary>
-    /// <param name="lastDecision">Last decided literal after the backjump (or zero)</param>
-    void Backjump(int lastDecision);
 }

@@ -33,9 +33,4 @@ public class Looping(int numberOfVars) : IDecisionMaker
 
         return _literal;
     }
-
-    public void Backjump(int lastDecision)
-    {
-        // Do nothing
-    }
 }

@@ -54,12 +54,6 @@ public class VSIDS : IDecisionMaker
         return literal;
     }
 
-    /// <inheritdoc />
-    public void Backjump(int lastDecision)
-    {
-        // Do nothing
-    }
-
     /// <summary>
     /// Update variable scores after a new clause is learned.
     /// </summary>
