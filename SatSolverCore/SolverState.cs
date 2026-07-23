@@ -10,8 +10,8 @@ public class SolverState
 {
     private readonly int _numberOfVars;
     private readonly PartialAssignment _assignment;
-    private readonly List<int> _unaryClauses;
-    private readonly Queue<int> _unitLiterals;
+    private readonly List<ClauseUnary> _unaryClauses;
+    private readonly Queue<(int, IClause)> _unitLiterals;
     private readonly WatchedLiterals _watched;
     private readonly IDecisionMaker _decisionMaker;
 
@@ -75,12 +75,12 @@ public class SolverState
 
         if (DecisionLevel == 0)
         {
-            _unaryClauses.ForEach(_unitLiterals.Enqueue);
+            _unaryClauses.ForEach(unary => _unitLiterals.Enqueue((unary.Literal, unary)));
         }
 
         while (_unitLiterals.Count > 0)
         {
-            int literal = _unitLiterals.Dequeue();
+            (int literal, IClause reason) = _unitLiterals.Dequeue();
 
             if (_assignment.IsAssigned(literal))
             {
@@ -92,7 +92,7 @@ public class SolverState
                 return true;
             }
 
-            _assignment.AddPropagated(literal, DecisionLevel);
+            _assignment.AddPropagated(literal, DecisionLevel, reason);
         }
 
         return false;
@@ -125,9 +125,9 @@ public class SolverState
     {
         IClause clause = ClauseFactory.Create(literals);
 
-        if (literals.Count == 1)
+        if (clause is ClauseUnary unary)
         {
-            _unaryClauses.Add(literals[0]);
+            _unaryClauses.Add(unary);
         }
 
         _watched.Add(clause);

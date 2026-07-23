@@ -1,8 +1,12 @@
+using SatSolverCore.Clause;
+
 namespace SatSolverCore;
 
 public class PartialAssignment(int numberOfVars) : IPartialAssignment
 {
-    private readonly Stack<TrailElement> _trail = new(numberOfVars);
+    private readonly Stack<int> _trail = new(numberOfVars);
+    private readonly int[] _level = new int[numberOfVars + 1];
+    private readonly IClause?[] _reason = new IClause?[numberOfVars + 1];
     private readonly HashSet<int> _assignment = new(numberOfVars);
 
     /// <summary>
@@ -29,7 +33,9 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     /// <param name="level">decision level (non-negative integer)</param>
     public void AddDecision(int literal, int level)
     {
-        _trail.Push(new(literal, level, true));
+        _trail.Push(literal);
+        _level[Math.Abs(literal)] = level;
+        _reason[Math.Abs(literal)] = null;
         _assignment.Add(literal);
     }
 
@@ -38,9 +44,12 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     /// </summary>
     /// <param name="literal">literal value (a non-zero integer)</param>
     /// <param name="level">decision level (non-negative integer)</param>
-    public void AddPropagated(int literal, int level)
+    /// <param name="reason">the clause the was the reason for the propagated literal</param>
+    public void AddPropagated(int literal, int level, IClause reason)
     {
-        _trail.Push(new(literal, level, false));
+        _trail.Push(literal);
+        _level[Math.Abs(literal)] = level;
+        _reason[Math.Abs(literal)] = reason;
         _assignment.Add(literal);
     }
 
@@ -50,7 +59,7 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     /// <returns>the last decided literal (or zero if there are not decisions)</returns>
     public int GetLastDecision()
     {
-        return _trail.Where(t => t.IsDecided).Select(t => t.Literal).FirstOrDefault(0);
+        return _trail.Where(t => _reason[Math.Abs(t)] == null).FirstOrDefault(0);
     }
 
     /// <summary>
@@ -62,15 +71,18 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     {
         while (_trail.Count > 0)
         {
-            (int lit, int lvl, _) = _trail.Peek();
+            int lit = _trail.Peek();
+            int v = Math.Abs(lit);
 
-            if (lvl <= level)
+            if (_level[v] <= level)
             {
                 break;
             }
 
             _trail.Pop();
             _assignment.Remove(lit);
+            _level[v] = 0;
+            _reason[v] = null;
         }
     }
 
@@ -84,10 +96,10 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     /// </returns>
     public (List<int>, int) GetConflictClause()
     {
-        List<TrailElement> decisions = [.. _trail.Where(t => t.IsDecided)];
+        List<int> decisions = [.. _trail.Where(t => _reason[Math.Abs(t)] == null)];
 
         // Backjump into the second highest decision level
-        int level = decisions.Count > 1 ? decisions[1].Level : 0;
+        int level = decisions.Count > 1 ? _level[Math.Abs(decisions[1])] : 0;
 
         // Note that the literals in the clause are in reverse decision order.
         // E.g., if the decisions are 4, -2 and 5, the clause will be [5, -2, 4].
@@ -95,7 +107,7 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
         // or more literals will always be assigned to "watch" the first two
         // literals in the list. Since backjump will remove the literal "5" from
         // the trail, the learned clause will become a unit literal.
-        List<int> clause = [.. decisions.Select(t => -t.Literal)];
+        List<int> clause = [.. decisions.Select(t => -t)];
 
         return (clause, level);
     }
@@ -106,14 +118,12 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     /// <returns>A list representation of the assignment.</returns>
     public List<int> ToList()
     {
-        return [.. _trail.Select(t => t.Literal).OrderBy(Math.Abs)];
+        return [.. _trail.OrderBy(Math.Abs)];
     }
 
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[{string.Join(", ", _trail.Select(t => t.Literal).Reverse())}]";
+        return $"[{string.Join(", ", _trail.Reverse())}]";
     }
-
-    private record struct TrailElement(int Literal, int Level, bool IsDecided);
 }
