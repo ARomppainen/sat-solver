@@ -14,7 +14,7 @@ public static class ClauseFactory
     {
         return literals.Count switch
         {
-            0 => new ClauseEmpty(),
+            0 => throw new ArgumentException("Empty clauses are not supported."),
             1 => new ClauseUnary(literals[0]),
             2 => new ClauseBinary(literals[0], literals[1]),
             _ => new ClauseNary(literals)

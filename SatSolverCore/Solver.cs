@@ -15,14 +15,15 @@ public static class Solver
     /// <returns>'satisfiable' result with a truth assignment or 'unsatisfiable' result</returns>
     public static SolveResult Solve(Formula formula)
     {
+        if (formula.Clauses.Any(clause => clause.Count == 0))
+        {
+            // Formulas with an empty clause are unsatisfiable
+            return SolveResult.Unsatisfiable();
+        }
+
         // IDecisionMaker decisionMaker = new Looping(formula.NumberOfVars);
         IDecisionMaker decisionMaker = new PrioritizeOccurrences(formula);
         SolverState state = new(formula, decisionMaker);
-
-        if (state.HasEmptyClause)
-        {
-            return SolveResult.Unsatisfiable();
-        }
 
         while (true)
         {

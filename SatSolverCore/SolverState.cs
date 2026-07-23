@@ -21,11 +21,6 @@ public class SolverState
     public int DecisionLevel { get; private set; }
 
     /// <summary>
-    /// true if the formula contains an empty clause; otherwise, false.
-    /// </summary>
-    public bool HasEmptyClause { get; private set; }
-
-    /// <summary>
     /// true if the current truth assignment contains values for all the
     /// variables in the formula; otherwise, false.
     /// </summary>
@@ -46,7 +41,6 @@ public class SolverState
         _watched = new();
         _decisionMaker = decisionMaker;
 
-        HasEmptyClause = false;
         DecisionLevel = 0;
 
         formula.Clauses.ForEach(AddClause);
@@ -132,11 +126,7 @@ public class SolverState
     {
         IClause clause = ClauseFactory.Create(literals);
 
-        if (literals.Count == 0)
-        {
-            HasEmptyClause = true;
-        }
-        else if (literals.Count == 1)
+        if (literals.Count == 1)
         {
             _unaryClauses.Add(literals[0]);
         }
