@@ -21,9 +21,8 @@ public static class Solver
             return SolveResult.Unsatisfiable();
         }
 
-        // IDecisionMaker decisionMaker = new Looping(formula.NumberOfVars);
-        IDecisionMaker decisionMaker = new PrioritizeOccurrences(formula);
-        SolverState state = new(formula, decisionMaker);
+        VSIDS vsids = new(formula);
+        SolverState state = new(formula, vsids);
 
         while (true)
         {
@@ -40,6 +39,7 @@ public static class Solver
 
                 state.AddClause(clause);
                 state.Backjump(level);
+                vsids.Update(clause);
             }
             else
             {
