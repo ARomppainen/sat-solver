@@ -4,7 +4,7 @@ namespace SatSolverCore.Decision;
 /// Decision maker implementation that uses Variable State Independent Decaying
 /// Sum (VSIDS) heuristic.
 /// </summary>
-public class VSIDS : IDecisionMaker
+public class Vsids : IDecisionMaker
 {
     private readonly int _nVars;
     private readonly double[] _scores;
@@ -15,10 +15,10 @@ public class VSIDS : IDecisionMaker
     private const double RescaleFactor = 1e-100;
 
     /// <summary>
-    /// Initializes a new instance of VSIDS class.
+    /// Initializes a new instance of Vsids class.
     /// </summary>
     /// <param name="formula">The formula to base the heuristic on.</param>
-    public VSIDS(Formula formula)
+    public Vsids(Formula formula)
     {
         _nVars = formula.NumberOfVars;
         _scores = new double[_nVars + 1];
@@ -41,13 +41,10 @@ public class VSIDS : IDecisionMaker
 
         for (int i = 1; i <= _nVars; ++i)
         {
-            if (assignment.IsUnassigned(i))
+            if (assignment.IsUnassigned(i) && _scores[i] > max)
             {
-                if (_scores[i] > max)
-                {
-                    max = _scores[i];
-                    literal = i;
-                }
+                max = _scores[i];
+                literal = i;
             }
         }
 

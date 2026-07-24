@@ -22,7 +22,7 @@ public static class Solver
             return SolveResult.Unsatisfiable();
         }
 
-        VSIDS vsids = new(formula);
+        Vsids vsids = new(formula);
         SolverState state = new(formula, vsids);
 
         while (true)

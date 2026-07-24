@@ -139,21 +139,24 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
                 }
 
                 int qVar = Math.Abs(q);
+
+                if (!seenVariables.Add(qVar))
+                {
+                    continue;
+                }
+
                 int qLevel = _level[qVar];
 
-                if (seenVariables.Add(qVar))
+                if (qLevel == decisionLevel)
                 {
-                    if (qLevel == decisionLevel)
-                    {
-                        ++counter;
-                    }
-                    else if (qLevel > 0)
-                    {
-                        // Exclude variables from decision level 0.
-                        // If included the clauses are still valid, but unnecessarily long.
-                        learned.Add(q);
-                        backjumpLevel = Math.Max(backjumpLevel, qLevel);
-                    }
+                    ++counter;
+                }
+                else if (qLevel > 0)
+                {
+                    // Exclude variables from decision level 0.
+                    // If included the clauses are still valid, but unnecessarily long.
+                    learned.Add(q);
+                    backjumpLevel = Math.Max(backjumpLevel, qLevel);
                 }
             }
 

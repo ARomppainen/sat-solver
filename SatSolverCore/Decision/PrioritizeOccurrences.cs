@@ -9,7 +9,6 @@ public class PrioritizeOccurrences : IDecisionMaker
     private readonly int _nVars;
     private readonly int[] _sequence;
     private readonly int[] _scores;
-    private readonly int[] _literalIndexInSequence;
 
     /// <summary>
     /// Initializes a new instance of the PrioritizeOccurrences class.
@@ -20,7 +19,6 @@ public class PrioritizeOccurrences : IDecisionMaker
         _nVars = formula.NumberOfVars;
         _sequence = new int[_nVars];
         _scores = new int[_nVars + 1];
-        _literalIndexInSequence = new int[_nVars + 1];
 
         for (int i = 0; i < _nVars; ++i)
         {
@@ -36,11 +34,6 @@ public class PrioritizeOccurrences : IDecisionMaker
         }
 
         Array.Sort(_sequence, (a, b) => _scores[b] - _scores[a]);
-
-        for (int i = 0; i < _nVars; ++i)
-        {
-            _literalIndexInSequence[_sequence[i]] = i;
-        }
     }
 
     /// <inheritdoc />
