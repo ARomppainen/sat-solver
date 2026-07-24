@@ -57,7 +57,7 @@ public class SolverState
     /// <summary>
     /// Check for new unit clauses based on the last decided literal.
     /// </summary>
-    /// <returns>the conflict clause if propagation lead to a conflict; otherwise, null.</returns>
+    /// <returns>The conflict clause if propagation lead to a conflict; otherwise, null.</returns>
     public IClause? UnitPropagate()
     {
         while (_propagateQueue.Count > 0)
@@ -71,18 +71,19 @@ public class SolverState
 
             if (_assignment.IsAssigned(-literal))
             {
+                _propagateQueue.Clear();
                 return reason;
             }
+
+            _assignment.Add(literal, DecisionLevel, reason);
 
             IClause? conflict = _watched.TryFindUnitLiterals(-literal, _assignment, _propagateQueue);
 
             if (conflict != null)
             {
                 _propagateQueue.Clear();
-                return reason;
+                return conflict;
             }
-
-            _assignment.Add(literal, DecisionLevel, reason);
         }
 
         return null;
@@ -138,8 +139,8 @@ public class SolverState
     ///   1) the conflicting clause <br/>
     ///   2) the decision level to backjump into
     /// </returns>
-    public (List<int>, int) AnalyzeConflict()
+    public (List<int>, int) AnalyzeConflict(IClause conflict)
     {
-        return _assignment.GetConflictClause();
+        return _assignment.AnalyzeConflict(conflict, DecisionLevel);
     }
 }

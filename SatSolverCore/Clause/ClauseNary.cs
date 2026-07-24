@@ -7,7 +7,8 @@ namespace SatSolverCore.Clause;
 /// </summary>
 internal class ClauseNary : IClause
 {
-    private readonly List<int> _literals;
+    /// <inheritdoc />
+    public List<int> Literals { get; }
 
     /// <summary>
     /// Index to 1st watched literal
@@ -20,14 +21,14 @@ internal class ClauseNary : IClause
     private int _watched2;
 
     /// <inheritdoc />
-    public int Watched1 => _literals[_watched1];
+    public int Watched1 => Literals[_watched1];
 
     /// <inheritdoc />
-    public int Watched2 => _literals[_watched2];
+    public int Watched2 => Literals[_watched2];
 
     public ClauseNary(List<int> literals, IPartialAssignment assignment)
     {
-        _literals = literals;
+        Literals = literals;
         _watched1 = 0;
         _watched2 = 1;
 
@@ -49,7 +50,7 @@ internal class ClauseNary : IClause
     /// <inheritdoc />
     public FalsifyResult FalsifyFirst(IPartialAssignment assignment)
     {
-        int n = _literals.Count;
+        int n = Literals.Count;
 
         for (int i = 0; i < n; ++i)
         {
@@ -60,7 +61,7 @@ internal class ClauseNary : IClause
                 continue;
             }
 
-            if (!assignment.IsAssigned(-_literals[j]))
+            if (!assignment.IsAssigned(-Literals[j]))
             {
                 _watched1 = j;
                 return FalsifyResult.UpdateWatchlist(Watched1);
@@ -83,7 +84,7 @@ internal class ClauseNary : IClause
     /// <inheritdoc />
     public FalsifyResult FalsifySecond(IPartialAssignment assignment)
     {
-        int n = _literals.Count;
+        int n = Literals.Count;
 
         for (int i = 0; i < n; ++i)
         {
@@ -94,7 +95,7 @@ internal class ClauseNary : IClause
                 continue;
             }
 
-            if (!assignment.IsAssigned(-_literals[j]))
+            if (!assignment.IsAssigned(-Literals[j]))
             {
                 _watched2 = j;
                 return FalsifyResult.UpdateWatchlist(Watched2);
@@ -117,6 +118,6 @@ internal class ClauseNary : IClause
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[{string.Join(", ", _literals)}]";
+        return $"[{string.Join(", ", Literals)}]";
     }
 }

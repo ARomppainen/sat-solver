@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using SatSolverCore.Clause;
 
 namespace SatSolverCore;
@@ -88,6 +90,91 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
         List<int> clause = [.. decisions.Select(t => -t)];
 
         return (clause, level);
+    }
+
+    /// <summary>
+    /// Analyze the conflict to produce a new learned clause.
+    /// As part of the analysis, part of the decision trail is also undone.
+    /// </summary>
+    /// <remarks>
+    /// The learned clause is based on the first unique implication point (UIP) cut.
+    /// This method uses the algorithm described in the MiniSat paper,
+    /// see <see href="http://minisat.se/downloads/MiniSat.pdf"/> page 15, figure 10.
+    /// </remarks>
+    /// <param name="conflict">The conflict clause.</param>
+    /// <param name="decisionLevel">Current decision level.</param>
+    /// <returns>
+    /// a tuple where the elements are <br/>
+    ///   1) the learned clause <br/>
+    ///   2) the decision level to backjump into
+    /// </returns>
+    public (List<int>, int) AnalyzeConflict(IClause conflict, int decisionLevel)
+    {
+        // Note that the actual value at index 0 will be set at the end of the method.
+        List<int> learned = [0];
+
+        int backjumpLevel = 0;
+        int counter = 0;
+        int p = 0;
+        int pVar;
+        IClause? pReason = conflict;
+        HashSet<int> seenVariables = [];
+
+        // Traverse the decision trail in reverse using breadth-first search.
+        // Start with all the literals in the conflict clause.
+        // Uses the list of 'reason' clauses (there is no reason to maintain
+        // a separate implication graph).
+        do
+        {
+            Debug.Assert(pReason != null);
+
+            foreach (int q in pReason.Literals)
+            {
+                if (q == p)
+                {
+                    // Ignore the literal that was propagated by 'pReason'.
+                    // Note that during first iteration, p = 0
+                    // => all the literals in the conflict clause are checked
+                    continue;
+                }
+
+                int qVar = Math.Abs(q);
+                int qLevel = _level[qVar];
+
+                if (seenVariables.Add(qVar))
+                {
+                    if (qLevel == decisionLevel)
+                    {
+                        ++counter;
+                    }
+                    else if (qLevel > 0)
+                    {
+                        // Exclude variables from decision level 0.
+                        // If included the clauses are still valid, but unnecessarily long.
+                        learned.Add(q);
+                        backjumpLevel = Math.Max(backjumpLevel, qLevel);
+                    }
+                }
+            }
+
+            // Select the next literal from the trail that is in the list of seen variables.
+            do
+            {
+                p = _trail.Pop();
+                pVar = Math.Abs(p);
+                pReason = _reason[pVar];
+                _assignment.Remove(p);
+                _level[pVar] = 0;
+                _reason[pVar] = null;
+            } while (!seenVariables.Contains(pVar));
+
+            --counter;
+        } while (counter > 0);
+
+        // After the loop, p will be the first unique implication point.
+        learned[0] = -p;
+
+        return (learned, backjumpLevel);
     }
 
     /// <summary>

@@ -8,6 +8,9 @@ namespace SatSolverCore.Clause;
 internal class ClauseBinary(int literal1, int literal2) : IClause
 {
     /// <inheritdoc />
+    public List<int> Literals => [literal1, literal2];
+
+    /// <inheritdoc />
     public int Watched1 => literal1;
 
     /// <inheritdoc />

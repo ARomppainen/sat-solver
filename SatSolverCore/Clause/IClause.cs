@@ -12,6 +12,11 @@ namespace SatSolverCore.Clause;
 public interface IClause
 {
     /// <summary>
+    /// The list of literals in the clause.
+    /// </summary>
+    public List<int> Literals { get; }
+
+    /// <summary>
     /// 1st watched literal value (or zero if there is no watched literal)
     /// </summary>
     public int Watched1 { get; }

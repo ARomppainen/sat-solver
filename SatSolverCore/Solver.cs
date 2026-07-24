@@ -36,7 +36,7 @@ public static class Solver
                     return SolveResult.Unsatisfiable();
                 }
 
-                (List<int> clause, int level) = state.AnalyzeConflict();
+                (List<int> clause, int level) = state.AnalyzeConflict(conflict);
 
                 state.Backjump(level);
                 state.LearnClause(clause);

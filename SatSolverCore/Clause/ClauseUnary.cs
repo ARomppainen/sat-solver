@@ -7,6 +7,9 @@ namespace SatSolverCore.Clause;
 internal class ClauseUnary(int literal) : IClause
 {
     /// <inheritdoc />
+    public List<int> Literals => [literal];
+
+    /// <inheritdoc />
     public int Literal => literal;
 
     /// <inheritdoc />
