@@ -37,8 +37,8 @@ public static class Solver
 
                 (List<int> clause, int level) = state.AnalyzeConflict();
 
-                state.AddClause(clause);
                 state.Backjump(level);
+                state.AddClause(clause);
                 vsids.Update(clause);
             }
             else

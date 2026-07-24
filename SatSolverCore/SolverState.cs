@@ -123,7 +123,7 @@ public class SolverState
     /// <param name="literals">The list of literals in the clause.</param>
     public void AddClause(List<int> literals)
     {
-        IClause clause = ClauseFactory.Create(literals);
+        IClause clause = ClauseFactory.Create(literals, _assignment);
 
         if (clause is ClauseUnary unary)
         {

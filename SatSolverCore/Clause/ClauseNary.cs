@@ -1,22 +1,23 @@
+using System.Diagnostics;
+
 namespace SatSolverCore.Clause;
 
 /// <summary>
 /// Represents a clause with N literals.
 /// </summary>
-/// <param name="literals">list of literals</param>
-internal class ClauseNary(List<int> literals) : IClause
+internal class ClauseNary : IClause
 {
-    private readonly List<int> _literals = literals;
+    private readonly List<int> _literals;
 
     /// <summary>
     /// Index to 1st watched literal
     /// </summary>
-    private int _watched1 = 0;
+    private int _watched1;
 
     /// <summary>
     /// Index to 2nd watched literal
     /// </summary>
-    private int _watched2 = 1;
+    private int _watched2;
 
     /// <inheritdoc />
     public int Watched1 => _literals[_watched1];
@@ -24,20 +25,30 @@ internal class ClauseNary(List<int> literals) : IClause
     /// <inheritdoc />
     public int Watched2 => _literals[_watched2];
 
+    public ClauseNary(List<int> literals, IPartialAssignment assignment)
+    {
+        _literals = literals;
+        _watched1 = 0;
+        _watched2 = 1;
+
+        Debug.Assert(assignment.IsUnassigned(Watched1), $"Expected the first literal to be unassigned: {this}");
+
+        if (assignment.IsAssigned(-literals[1]))
+        {
+            for (int i = 2; i < literals.Count; ++i)
+            {
+                if (!assignment.IsAssigned(-literals[i]))
+                {
+                    _watched2 = i;
+                    break;
+                }
+            }
+        }
+    }
+
     /// <inheritdoc />
     public FalsifyResult FalsifyFirst(IPartialAssignment assignment)
     {
-        if (assignment.IsAssigned(-Watched2))
-        {
-            return FalsifyResult.Conflict();
-        }
-
-        if (assignment.IsAssigned(Watched2))
-        {
-            // clause already satisfied, no need to reassign watched literals
-            return FalsifyResult.NoChanges();
-        }
-
         int n = _literals.Count;
 
         for (int i = 0; i < n; ++i)
@@ -56,23 +67,22 @@ internal class ClauseNary(List<int> literals) : IClause
             }
         }
 
+        if (assignment.IsAssigned(Watched2))
+        {
+            return FalsifyResult.NoChanges();
+        }
+
+        if (assignment.IsAssigned(-Watched2))
+        {
+            return FalsifyResult.Conflict();
+        }
+
         return FalsifyResult.Propagate(Watched2);
     }
 
     /// <inheritdoc />
     public FalsifyResult FalsifySecond(IPartialAssignment assignment)
     {
-        if (assignment.IsAssigned(-Watched1))
-        {
-            return FalsifyResult.Conflict();
-        }
-
-        if (assignment.IsAssigned(Watched1))
-        {
-            // clause already satisfied, no need to reassign watched literals
-            return FalsifyResult.NoChanges();
-        }
-
         int n = _literals.Count;
 
         for (int i = 0; i < n; ++i)
@@ -89,6 +99,16 @@ internal class ClauseNary(List<int> literals) : IClause
                 _watched2 = j;
                 return FalsifyResult.UpdateWatchlist(Watched2);
             }
+        }
+
+        if (assignment.IsAssigned(Watched1))
+        {
+            return FalsifyResult.NoChanges();
+        }
+
+        if (assignment.IsAssigned(-Watched1))
+        {
+            return FalsifyResult.Conflict();
         }
 
         return FalsifyResult.Propagate(Watched1);
