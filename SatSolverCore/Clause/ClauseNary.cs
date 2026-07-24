@@ -50,6 +50,11 @@ internal class ClauseNary : IClause
     /// <inheritdoc />
     public FalsifyResult FalsifyFirst(IPartialAssignment assignment)
     {
+        if (assignment.IsAssigned(Watched2))
+        {
+            return FalsifyResult.NoChanges();
+        }
+
         int n = Literals.Count;
 
         for (int i = 0; i < n; ++i)
@@ -68,11 +73,6 @@ internal class ClauseNary : IClause
             }
         }
 
-        if (assignment.IsAssigned(Watched2))
-        {
-            return FalsifyResult.NoChanges();
-        }
-
         if (assignment.IsAssigned(-Watched2))
         {
             return FalsifyResult.Conflict();
@@ -84,6 +84,11 @@ internal class ClauseNary : IClause
     /// <inheritdoc />
     public FalsifyResult FalsifySecond(IPartialAssignment assignment)
     {
+        if (assignment.IsAssigned(Watched1))
+        {
+            return FalsifyResult.NoChanges();
+        }
+
         int n = Literals.Count;
 
         for (int i = 0; i < n; ++i)
@@ -100,11 +105,6 @@ internal class ClauseNary : IClause
                 _watched2 = j;
                 return FalsifyResult.UpdateWatchlist(Watched2);
             }
-        }
-
-        if (assignment.IsAssigned(Watched1))
-        {
-            return FalsifyResult.NoChanges();
         }
 
         if (assignment.IsAssigned(-Watched1))
