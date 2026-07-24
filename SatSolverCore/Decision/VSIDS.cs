@@ -8,7 +8,6 @@ public class VSIDS : IDecisionMaker
 {
     private readonly int _nVars;
     private readonly double[] _scores;
-    private readonly int[] _polarity;
     private int _decayCounter;
     private const int DecayThreshold = 100;
     private const double DecayFactor = 0.995;
@@ -23,7 +22,6 @@ public class VSIDS : IDecisionMaker
     {
         _nVars = formula.NumberOfVars;
         _scores = new double[_nVars + 1];
-        _polarity = new int[_nVars + 1];
         _decayCounter = 0;
 
         foreach (List<int> clause in formula.Clauses)
@@ -32,11 +30,6 @@ public class VSIDS : IDecisionMaker
             {
                 _scores[Math.Abs(literal)] += 1.0;
             }
-        }
-
-        for (int i = 1; i <= _nVars; ++i)
-        {
-            _polarity[i] = 1;
         }
     }
 
@@ -58,10 +51,7 @@ public class VSIDS : IDecisionMaker
             }
         }
 
-        int polarity = _polarity[literal];
-        _polarity[literal] *= -1;
-
-        return literal * polarity;
+        return literal;
     }
 
     /// <summary>
