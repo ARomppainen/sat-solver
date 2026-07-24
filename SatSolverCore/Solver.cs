@@ -1,3 +1,4 @@
+using SatSolverCore.Clause;
 using SatSolverCore.Decision;
 
 namespace SatSolverCore;
@@ -26,9 +27,9 @@ public static class Solver
 
         while (true)
         {
-            bool conflict = state.UnitPropagate();
+            IClause? conflict = state.UnitPropagate();
 
-            if (conflict)
+            if (conflict != null)
             {
                 if (state.DecisionLevel == 0)
                 {
@@ -38,7 +39,7 @@ public static class Solver
                 (List<int> clause, int level) = state.AnalyzeConflict();
 
                 state.Backjump(level);
-                state.AddClause(clause);
+                state.LearnClause(clause);
                 vsids.Update(clause);
             }
             else

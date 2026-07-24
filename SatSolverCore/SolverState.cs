@@ -10,8 +10,7 @@ public class SolverState
 {
     private readonly int _numberOfVars;
     private readonly PartialAssignment _assignment;
-    private readonly List<ClauseUnary> _unaryClauses;
-    private readonly Queue<(int, IClause)> _unitLiterals;
+    private readonly Queue<(int, IClause?)> _propagateQueue;
     private readonly WatchedLiterals _watched;
     private readonly IDecisionMaker _decisionMaker;
 
@@ -36,8 +35,7 @@ public class SolverState
     {
         _numberOfVars = formula.NumberOfVars;
         _assignment = new(formula.NumberOfVars);
-        _unaryClauses = [];
-        _unitLiterals = [];
+        _propagateQueue = [];
         _watched = new();
         _decisionMaker = decisionMaker;
 
@@ -53,49 +51,41 @@ public class SolverState
     {
         ++DecisionLevel;
         int literal = _decisionMaker.ChooseUnassignedLiteral(_assignment);
-        _assignment.AddDecision(literal, DecisionLevel);
+        _propagateQueue.Enqueue((literal, null));
     }
 
     /// <summary>
     /// Check for new unit clauses based on the last decided literal.
     /// </summary>
-    /// <returns>true if the last decision lead to a conflict; otherwise, false.</returns>
-    public bool UnitPropagate()
+    /// <returns>the conflict clause if propagation lead to a conflict; otherwise, null.</returns>
+    public IClause? UnitPropagate()
     {
-        _unitLiterals.Clear();
-
-        int lastDecision = _assignment.GetLastDecision();
-        if (lastDecision != 0)
+        while (_propagateQueue.Count > 0)
         {
-            if (!_watched.TryFindUnitLiterals(-lastDecision, _assignment, _unitLiterals))
-            {
-                return true;
-            }
-        }
-
-        if (DecisionLevel == 0)
-        {
-            _unaryClauses.ForEach(unary => _unitLiterals.Enqueue((unary.Literal, unary)));
-        }
-
-        while (_unitLiterals.Count > 0)
-        {
-            (int literal, IClause reason) = _unitLiterals.Dequeue();
+            (int literal, IClause? reason) = _propagateQueue.Dequeue();
 
             if (_assignment.IsAssigned(literal))
             {
                 continue;
             }
 
-            if (!_watched.TryFindUnitLiterals(-literal, _assignment, _unitLiterals))
+            if (_assignment.IsAssigned(-literal))
             {
-                return true;
+                return reason;
             }
 
-            _assignment.AddPropagated(literal, DecisionLevel, reason);
+            IClause? conflict = _watched.TryFindUnitLiterals(-literal, _assignment, _propagateQueue);
+
+            if (conflict != null)
+            {
+                _propagateQueue.Clear();
+                return reason;
+            }
+
+            _assignment.Add(literal, DecisionLevel, reason);
         }
 
-        return false;
+        return null;
     }
 
     /// <summary>
@@ -117,20 +107,26 @@ public class SolverState
         return _assignment.ToList();
     }
 
-    /// <summary>
-    /// Add new (possibly learned) clause.
-    /// </summary>
-    /// <param name="literals">The list of literals in the clause.</param>
-    public void AddClause(List<int> literals)
+    private void AddClause(List<int> literals)
     {
         IClause clause = ClauseFactory.Create(literals, _assignment);
-
-        if (clause is ClauseUnary unary)
-        {
-            _unaryClauses.Add(unary);
-        }
-
         _watched.Add(clause);
+
+        if (literals.Count == 1)
+        {
+            _propagateQueue.Enqueue((literals[0], clause));
+        }
+    }
+
+    /// <summary>
+    /// Add new learned clause.
+    /// </summary>
+    /// <param name="literals">The list of literals in the clause.</param>
+    public void LearnClause(List<int> literals)
+    {
+        IClause clause = ClauseFactory.Create(literals, _assignment);
+        _watched.Add(clause);
+        _propagateQueue.Enqueue((literals[0], clause));
     }
 
     /// <summary>

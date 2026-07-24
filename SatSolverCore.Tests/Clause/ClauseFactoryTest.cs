@@ -16,7 +16,7 @@ public class ClauseFactoryTest
         PartialAssignment assignment = new(5);
         for (int i = 0; i < decisions.Length; ++i)
         {
-            assignment.AddDecision(decisions[i], i + 1);
+            assignment.Add(decisions[i], i + 1, null);
         }
 
         IClause clause = ClauseFactory.Create([1, 2, 3, 4], assignment);

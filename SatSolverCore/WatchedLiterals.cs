@@ -54,24 +54,21 @@ public class WatchedLiterals
     /// <param name="literal">The literal that is set to false.</param>
     /// <param name="assignment">The current partial assignment.</param>
     /// <param name="unitLiterals">The queue of unit literals to append.</param>
-    /// <returns>true if a conflicting clause was not detected; otherwise, false.</returns>
-    public bool TryFindUnitLiterals(int literal, IPartialAssignment assignment, Queue<(int, IClause)> unitLiterals)
+    /// <returns>A conflicting clause is one was detected; otherwise, null.</returns>
+    public IClause? TryFindUnitLiterals(int literal, IPartialAssignment assignment, Queue<(int, IClause?)> unitLiterals)
     {
-        if (FindUnitLiterals(unitLiterals, literal, assignment, _watchlist1, FalsifyFirst))
+        IClause? conflict = FindUnitLiterals(unitLiterals, literal, assignment, _watchlist1, FalsifyFirst);
+
+        if (conflict != null)
         {
-            return false;
+            return conflict;
         }
 
-        if (FindUnitLiterals(unitLiterals, literal, assignment, _watchlist2, FalsifySecond))
-        {
-            return false;
-        }
-
-        return true;
+        return FindUnitLiterals(unitLiterals, literal, assignment, _watchlist2, FalsifySecond);
     }
 
-    private static bool FindUnitLiterals(
-        Queue<(int, IClause)> unitLiterals,
+    private static IClause? FindUnitLiterals(
+        Queue<(int, IClause?)> unitLiterals,
         int literal,
         IPartialAssignment assignment,
         Dictionary<int, LinkedList<IClause>> watchlist,
@@ -80,7 +77,7 @@ public class WatchedLiterals
     {
         if (!watchlist.TryGetValue(literal, out var list))
         {
-            return false;
+            return null;
         }
 
         LinkedListNode<IClause>? node = list.First;
@@ -93,7 +90,7 @@ public class WatchedLiterals
 
             if (result.IsConflict)
             {
-                return true;
+                return clause;
             }
 
             if (result.PropagatedLiteral != 0)
@@ -114,7 +111,7 @@ public class WatchedLiterals
             }
         }
 
-        return false;
+        return null;
     }
 
     private static FalsifyResult FalsifyFirst(IClause clause, IPartialAssignment assignment)

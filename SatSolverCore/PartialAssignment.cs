@@ -27,39 +27,17 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     }
 
     /// <summary>
-    /// Add new decided literal to the trail with given decision level.
+    /// Add new literal to the trail with given decision level.
     /// </summary>
     /// <param name="literal">literal value (a non-zero integer)</param>
     /// <param name="level">decision level (non-negative integer)</param>
-    public void AddDecision(int literal, int level)
-    {
-        _trail.Push(literal);
-        _level[Math.Abs(literal)] = level;
-        _reason[Math.Abs(literal)] = null;
-        _assignment.Add(literal);
-    }
-
-    /// <summary>
-    /// Add new propagated literal to the trail with given decision level.
-    /// </summary>
-    /// <param name="literal">literal value (a non-zero integer)</param>
-    /// <param name="level">decision level (non-negative integer)</param>
-    /// <param name="reason">the clause the was the reason for the propagated literal</param>
-    public void AddPropagated(int literal, int level, IClause reason)
+    /// <param name="reason">the reason for the literal (null for decisions)</param>
+    public void Add(int literal, int level, IClause? reason)
     {
         _trail.Push(literal);
         _level[Math.Abs(literal)] = level;
         _reason[Math.Abs(literal)] = reason;
         _assignment.Add(literal);
-    }
-
-    /// <summary>
-    /// Get the last decided literal.
-    /// </summary>
-    /// <returns>the last decided literal (or zero if there are not decisions)</returns>
-    public int GetLastDecision()
-    {
-        return _trail.Where(t => _reason[Math.Abs(t)] == null).FirstOrDefault(0);
     }
 
     /// <summary>
