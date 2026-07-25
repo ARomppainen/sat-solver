@@ -1,3 +1,5 @@
+using NSubstitute;
+
 using SatSolverCore.Clause;
 
 namespace SatSolverCore.Tests.Clause;
@@ -22,8 +24,8 @@ public class ClauseBinaryTest
     {
         ClauseBinary clause = new(1, 2);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(2, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(2).Returns(true);
 
         FalsifyResult result = clause.FalsifyFirst(assignment);
 
@@ -37,7 +39,7 @@ public class ClauseBinaryTest
     {
         ClauseBinary clause = new(1, 2);
 
-        PartialAssignment assignment = new(5);
+        var assignment = Substitute.For<IPartialAssignment>();
 
         FalsifyResult result = clause.FalsifyFirst(assignment);
 
@@ -51,9 +53,9 @@ public class ClauseBinaryTest
     {
         ClauseBinary clause = new(1, 2);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(-1, 1, null);
-        assignment.Add(-2, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(-1).Returns(true);
+        assignment.IsAssigned(-2).Returns(true);
 
         FalsifyResult result = clause.FalsifyFirst(assignment);
 
@@ -67,8 +69,8 @@ public class ClauseBinaryTest
     {
         ClauseBinary clause = new(1, 2);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(1, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(1).Returns(true);
 
         FalsifyResult result = clause.FalsifySecond(assignment);
 
@@ -82,8 +84,8 @@ public class ClauseBinaryTest
     {
         ClauseBinary clause = new(1, 2);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(-2, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(-2).Returns(true);
 
         FalsifyResult result = clause.FalsifySecond(assignment);
 
@@ -97,9 +99,9 @@ public class ClauseBinaryTest
     {
         ClauseBinary clause = new(1, 2);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(-1, 1, null);
-        assignment.Add(-2, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(-1).Returns(true);
+        assignment.IsAssigned(-2).Returns(true);
 
         FalsifyResult result = clause.FalsifySecond(assignment);
 

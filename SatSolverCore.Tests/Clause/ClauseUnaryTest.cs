@@ -1,3 +1,5 @@
+using NSubstitute;
+
 using SatSolverCore.Clause;
 
 namespace SatSolverCore.Tests.Clause;
@@ -20,7 +22,7 @@ public class ClaseuUnaryTest
     public void FalsifyFirst_ShouldReturnConflict()
     {
         ClauseUnary clause = new(3);
-        PartialAssignment assignment = new(5);
+        var assignment = Substitute.For<IPartialAssignment>();
 
         FalsifyResult result = clause.FalsifyFirst(assignment);
 
@@ -33,7 +35,7 @@ public class ClaseuUnaryTest
     public void FalsifySecond_ShouldThrow()
     {
         ClauseUnary clause = new(3);
-        PartialAssignment assignment = new(5);
+        var assignment = Substitute.For<IPartialAssignment>();
 
         Assert.Throws<NotSupportedException>(() => clause.FalsifySecond(assignment));
     }

@@ -1,3 +1,5 @@
+using NSubstitute;
+
 using SatSolverCore.Clause;
 
 namespace SatSolverCore.Tests.Clause;
@@ -23,8 +25,8 @@ public class ClauseNaryTest
     {
         ClauseNary clause = new([1, 2, 3, 4], 0, 1);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(2, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(2).Returns(true);
 
         FalsifyResult result = clause.FalsifyFirst(assignment);
 
@@ -38,10 +40,10 @@ public class ClauseNaryTest
     {
         ClauseNary clause = new([1, 2, 3, 4], 0, 1);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(-1, 1, null);
-        assignment.Add(-3, 1, null);
-        assignment.Add(-4, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(-1).Returns(true);
+        assignment.IsAssigned(-3).Returns(true);
+        assignment.IsAssigned(-4).Returns(true);
 
         FalsifyResult result = clause.FalsifyFirst(assignment);
 
@@ -55,11 +57,11 @@ public class ClauseNaryTest
     {
         ClauseNary clause = new([1, 2, 3, 4], 0, 1);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(-1, 1, null);
-        assignment.Add(-2, 1, null);
-        assignment.Add(-3, 1, null);
-        assignment.Add(-4, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(-1).Returns(true);
+        assignment.IsAssigned(-2).Returns(true);
+        assignment.IsAssigned(-3).Returns(true);
+        assignment.IsAssigned(-4).Returns(true);
 
         FalsifyResult result = clause.FalsifyFirst(assignment);
 
@@ -73,8 +75,8 @@ public class ClauseNaryTest
     {
         ClauseNary clause = new([1, 2, 3, 4], 0, 1);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(-1, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(-1).Returns(true);
 
         FalsifyResult result = clause.FalsifyFirst(assignment);
 
@@ -88,8 +90,8 @@ public class ClauseNaryTest
     {
         ClauseNary clause = new([1, 2, 3, 4], 0, 1);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(1, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(1).Returns(true);
 
         FalsifyResult result = clause.FalsifySecond(assignment);
 
@@ -103,10 +105,10 @@ public class ClauseNaryTest
     {
         ClauseNary clause = new([1, 2, 3, 4], 0, 1);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(-2, 1, null);
-        assignment.Add(-3, 1, null);
-        assignment.Add(-4, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(-2).Returns(true);
+        assignment.IsAssigned(-3).Returns(true);
+        assignment.IsAssigned(-4).Returns(true);
 
         FalsifyResult result = clause.FalsifySecond(assignment);
 
@@ -120,11 +122,11 @@ public class ClauseNaryTest
     {
         ClauseNary clause = new([1, 2, 3, 4], 0, 1);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(-1, 1, null);
-        assignment.Add(-2, 1, null);
-        assignment.Add(-3, 1, null);
-        assignment.Add(-4, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(-1).Returns(true);
+        assignment.IsAssigned(-2).Returns(true);
+        assignment.IsAssigned(-3).Returns(true);
+        assignment.IsAssigned(-4).Returns(true);
 
         FalsifyResult result = clause.FalsifySecond(assignment);
 
@@ -138,8 +140,8 @@ public class ClauseNaryTest
     {
         ClauseNary clause = new([1, 2, 3, 4], 0, 1);
 
-        PartialAssignment assignment = new(5);
-        assignment.Add(-2, 1, null);
+        var assignment = Substitute.For<IPartialAssignment>();
+        assignment.IsAssigned(-2).Returns(true);
 
         FalsifyResult result = clause.FalsifySecond(assignment);
 
