@@ -10,9 +10,9 @@ namespace SatSolverCore.Clause;
 ///   3) If NewWatchedLiteral != 0, then PropagatedLiteral = 0 <br/>
 /// </remarks>
 /// <param name="IsConflict">true if falsifying the literal would make the clause unsatisfied; otherwise false</param>
-/// <param name="PropagatedLiteral">literal that is ready to be propagated (if value is != 0)</param>
+/// <param name="UnitLiteral">unit literal that is ready to be propagated (if value is != 0)</param>
 /// <param name="NewWatchedLiteral">the watched literal has changed and need to be updated (if value is != 0)</param>
-public record struct FalsifyResult(bool IsConflict, int PropagatedLiteral, int NewWatchedLiteral)
+public record struct FalsifyResult(bool IsConflict, int UnitLiteral, int NewWatchedLiteral)
 {
 
     /// <summary>

@@ -5,7 +5,7 @@ namespace SatSolverCore.Clause;
 /// </summary>
 /// <param name="literal1">1st literal</param>
 /// <param name="literal2">2nd literal</param>
-internal class ClauseBinary(int literal1, int literal2) : IClause
+public class ClauseBinary(int literal1, int literal2) : IClause
 {
     /// <inheritdoc />
     public List<int> Literals => [literal1, literal2];
@@ -44,7 +44,7 @@ internal class ClauseBinary(int literal1, int literal2) : IClause
         if (assignment.IsAssigned(literal1))
         {
             // clause already satisfied
-            FalsifyResult.NoChanges();
+            return FalsifyResult.NoChanges();
         }
 
         return FalsifyResult.Propagate(literal1);

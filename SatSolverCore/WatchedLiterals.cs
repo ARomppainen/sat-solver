@@ -93,9 +93,9 @@ public class WatchedLiterals
                 return clause;
             }
 
-            if (result.PropagatedLiteral != 0)
+            if (result.UnitLiteral != 0)
             {
-                unitLiterals.Enqueue((result.PropagatedLiteral, clause));
+                unitLiterals.Enqueue((result.UnitLiteral, clause));
             }
 
             if (result.NewWatchedLiteral != 0)

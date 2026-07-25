@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace SatSolverCore.Clause;
 
 /// <summary>
@@ -18,7 +20,34 @@ public static class ClauseFactory
             0 => throw new ArgumentException("Empty clauses are not supported."),
             1 => new ClauseUnary(literals[0]),
             2 => new ClauseBinary(literals[0], literals[1]),
-            _ => new ClauseNary(literals, assignment)
+            _ => CreateNary(literals, assignment)
         };
+
+
+    }
+
+    private static ClauseNary CreateNary(List<int> literals, IPartialAssignment assignment)
+    {
+        int index1 = 0;
+        int index2 = 1;
+
+        Debug.Assert(
+            assignment.IsUnassigned(literals[0]),
+            $"Expected the first literal in a clause to be unassigned: [{string.Join(", ", literals)}]"
+        );
+
+        if (assignment.IsAssigned(-literals[1]))
+        {
+            for (int i = 2; i < literals.Count; ++i)
+            {
+                if (!assignment.IsAssigned(-literals[i]))
+                {
+                    index2 = i;
+                    break;
+                }
+            }
+        }
+
+        return new ClauseNary(literals, index1, index2);
     }
 }

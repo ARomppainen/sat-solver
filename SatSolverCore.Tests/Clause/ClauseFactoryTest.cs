@@ -11,7 +11,7 @@ public class ClauseFactoryTest
     [InlineData(2, -2, -3, -4)]
     [InlineData(2, 2)]
     [InlineData(3, -2, 3)]
-    public void WatchedLiteralAssignmentTest(int expected, params int[] decisions)
+    public void Create_ShouldAssignWatchedLiterals(int expected, params int[] decisions)
     {
         PartialAssignment assignment = new(5);
         for (int i = 0; i < decisions.Length; ++i)

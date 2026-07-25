@@ -4,7 +4,7 @@ namespace SatSolverCore.Clause;
 /// Represents a clause with one literal.
 /// </summary>
 /// <param name="literal">the literal value</param>
-internal class ClauseUnary(int literal) : IClause
+public class ClauseUnary(int literal) : IClause
 {
     /// <inheritdoc />
     public List<int> Literals => [literal];

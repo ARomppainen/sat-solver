@@ -5,46 +5,27 @@ namespace SatSolverCore.Clause;
 /// <summary>
 /// Represents a clause with N literals.
 /// </summary>
-internal class ClauseNary : IClause
+public class ClauseNary : IClause
 {
+    private int _watchIndex1;
+    private int _watchIndex2;
+
     /// <inheritdoc />
     public List<int> Literals { get; }
 
-    /// <summary>
-    /// Index to 1st watched literal
-    /// </summary>
-    private int _watched1;
-
-    /// <summary>
-    /// Index to 2nd watched literal
-    /// </summary>
-    private int _watched2;
+    /// <inheritdoc />
+    public int Watched1 => Literals[_watchIndex1];
 
     /// <inheritdoc />
-    public int Watched1 => Literals[_watched1];
+    public int Watched2 => Literals[_watchIndex2];
 
-    /// <inheritdoc />
-    public int Watched2 => Literals[_watched2];
-
-    public ClauseNary(List<int> literals, IPartialAssignment assignment)
+    public ClauseNary(List<int> literals, int watchIndex1, int watchIndex2)
     {
         Literals = literals;
-        _watched1 = 0;
-        _watched2 = 1;
+        _watchIndex1 = watchIndex1;
+        _watchIndex2 = watchIndex2;
 
-        Debug.Assert(assignment.IsUnassigned(Watched1), $"Expected the first literal to be unassigned: {this}");
-
-        if (assignment.IsAssigned(-literals[1]))
-        {
-            for (int i = 2; i < literals.Count; ++i)
-            {
-                if (!assignment.IsAssigned(-literals[i]))
-                {
-                    _watched2 = i;
-                    break;
-                }
-            }
-        }
+        Debug.Assert(watchIndex1 != watchIndex2);
     }
 
     /// <inheritdoc />
@@ -59,16 +40,16 @@ internal class ClauseNary : IClause
 
         for (int i = 0; i < n; ++i)
         {
-            int j = (i + _watched1) % n;
+            int j = (i + _watchIndex1) % n;
 
-            if (j == _watched1 || j == _watched2)
+            if (j == _watchIndex1 || j == _watchIndex2)
             {
                 continue;
             }
 
             if (!assignment.IsAssigned(-Literals[j]))
             {
-                _watched1 = j;
+                _watchIndex1 = j;
                 return FalsifyResult.UpdateWatchlist(Watched1);
             }
         }
@@ -93,16 +74,16 @@ internal class ClauseNary : IClause
 
         for (int i = 0; i < n; ++i)
         {
-            int j = (i + _watched2) % n;
+            int j = (i + _watchIndex2) % n;
 
-            if (j == _watched1 || j == _watched2)
+            if (j == _watchIndex1 || j == _watchIndex2)
             {
                 continue;
             }
 
             if (!assignment.IsAssigned(-Literals[j]))
             {
-                _watched2 = j;
+                _watchIndex2 = j;
                 return FalsifyResult.UpdateWatchlist(Watched2);
             }
         }
