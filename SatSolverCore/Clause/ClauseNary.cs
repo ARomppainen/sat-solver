@@ -19,7 +19,7 @@ public class ClauseNary : IClause
     /// <inheritdoc />
     public int Watched2 => Literals[_watchIndex2];
 
-    public ClauseNary(List<int> literals, int watchIndex1, int watchIndex2)
+    public ClauseNary(List<int> literals, int watchIndex1 = 0, int watchIndex2 = 1)
     {
         Literals = literals;
         _watchIndex1 = watchIndex1;

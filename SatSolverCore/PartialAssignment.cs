@@ -34,7 +34,7 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     /// <param name="literal">literal value (a non-zero integer)</param>
     /// <param name="level">decision level (non-negative integer)</param>
     /// <param name="reason">the reason for the literal (null for decisions)</param>
-    public void Add(int literal, int level, IClause? reason)
+    public void Add(int literal, int level, IClause? reason = null)
     {
         _trail.Push(literal);
         _level[Math.Abs(literal)] = level;
