@@ -36,7 +36,7 @@ public class SolverState
         _numberOfVars = formula.NumberOfVars;
         _assignment = new(formula.NumberOfVars);
         _propagateQueue = [];
-        _watched = new();
+        _watched = new(formula.NumberOfVars);
         _decisionMaker = decisionMaker;
 
         DecisionLevel = 0;

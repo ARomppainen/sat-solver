@@ -7,13 +7,23 @@ namespace SatSolverCore;
 /// </summary>
 public class WatchedLiterals
 {
-    private readonly Dictionary<int, LinkedList<IClause>> _watchlist1;
-    private readonly Dictionary<int, LinkedList<IClause>> _watchlist2;
+    private readonly int _nVar;
+    private readonly LinkedList<IClause>[] _watchlist1;
+    private readonly LinkedList<IClause>[] _watchlist2;
 
-    public WatchedLiterals()
+    public WatchedLiterals(int numberOfVars)
     {
-        _watchlist1 = [];
-        _watchlist2 = [];
+        _nVar = numberOfVars;
+
+        int n = 2 * numberOfVars + 1;
+        _watchlist1 = new LinkedList<IClause>[n];
+        _watchlist2 = new LinkedList<IClause>[n];
+
+        for (int i = 0; i < n; ++i)
+        {
+            _watchlist1[i] = new();
+            _watchlist2[i] = new();
+        }
     }
 
     /// <summary>
@@ -23,28 +33,12 @@ public class WatchedLiterals
     /// <param name="clause">The clause to be tracked.</param>
     public void Add(IClause clause)
     {
-        int w1 = clause.Watched1;
-        if (w1 != 0)
-        {
-            Add(w1, clause, _watchlist1);
+        _watchlist1[clause.Watched1 + _nVar].AddLast(clause);
 
-            int w2 = clause.Watched2;
-            if (w2 != 0)
-            {
-                Add(w2, clause, _watchlist2);
-            }
-        }
-    }
-
-    private static void Add(int literal, IClause clause, Dictionary<int, LinkedList<IClause>> watchlist)
-    {
-        if (watchlist.TryGetValue(literal, out var list))
+        int w2 = clause.Watched2;
+        if (w2 != 0)
         {
-            list.AddLast(new LinkedListNode<IClause>(clause));
-        }
-        else
-        {
-            watchlist.Add(literal, new LinkedList<IClause>([clause]));
+            _watchlist2[w2 + _nVar].AddLast(clause);
         }
     }
 
@@ -57,29 +51,26 @@ public class WatchedLiterals
     /// <returns>A conflicting clause is one was detected; otherwise, null.</returns>
     public IClause? TryFindUnitLiterals(int literal, IPartialAssignment assignment, Queue<(int, IClause?)> unitLiterals)
     {
-        IClause? conflict = FindUnitLiterals(unitLiterals, literal, assignment, _watchlist1, FalsifyFirst);
+        IClause? conflict = FindUnitLiterals(unitLiterals, literal, assignment, _watchlist1, FalsifyFirst, _nVar);
 
         if (conflict != null)
         {
             return conflict;
         }
 
-        return FindUnitLiterals(unitLiterals, literal, assignment, _watchlist2, FalsifySecond);
+        return FindUnitLiterals(unitLiterals, literal, assignment, _watchlist2, FalsifySecond, _nVar);
     }
 
     private static IClause? FindUnitLiterals(
         Queue<(int, IClause?)> unitLiterals,
         int literal,
         IPartialAssignment assignment,
-        Dictionary<int, LinkedList<IClause>> watchlist,
-        Func<IClause, IPartialAssignment, FalsifyResult> falsifyLiteral
+        LinkedList<IClause>[] watchlist,
+        Func<IClause, IPartialAssignment, FalsifyResult> falsifyLiteral,
+        int n
     )
     {
-        if (!watchlist.TryGetValue(literal, out var list))
-        {
-            return null;
-        }
-
+        LinkedList<IClause> list = watchlist[literal + n];
         LinkedListNode<IClause>? node = list.First;
 
         while (node != null)
@@ -100,7 +91,7 @@ public class WatchedLiterals
 
             if (result.NewWatchedLiteral != 0)
             {
-                Add(result.NewWatchedLiteral, clause, watchlist);
+                watchlist[result.NewWatchedLiteral + n].AddLast(clause);
                 var previous = node;
                 node = node.Next;
                 list.Remove(previous);

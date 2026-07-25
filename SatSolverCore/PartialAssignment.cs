@@ -6,10 +6,11 @@ namespace SatSolverCore;
 
 public class PartialAssignment(int numberOfVars) : IPartialAssignment
 {
+    private readonly int _nVar = numberOfVars;
     private readonly Stack<int> _trail = new(numberOfVars);
     private readonly int[] _level = new int[numberOfVars + 1];
     private readonly IClause?[] _reason = new IClause?[numberOfVars + 1];
-    private readonly HashSet<int> _assignment = new(numberOfVars);
+    private readonly bool[] _assignment = new bool[2 * numberOfVars + 1];
 
     /// <summary>
     /// Gets the number of assigned literals.
@@ -19,13 +20,13 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     /// <inheritdoc />
     public bool IsAssigned(int variable)
     {
-        return _assignment.Contains(variable);
+        return _assignment[variable + _nVar];
     }
 
     /// <inheritdoc />
     public bool IsUnassigned(int literal)
     {
-        return !_assignment.Contains(literal) && !_assignment.Contains(-literal);
+        return !_assignment[literal + _nVar] && !_assignment[_nVar - literal];
     }
 
     /// <summary>
@@ -39,7 +40,7 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
         _trail.Push(literal);
         _level[Math.Abs(literal)] = level;
         _reason[Math.Abs(literal)] = reason;
-        _assignment.Add(literal);
+        _assignment[literal + _nVar] = true;
     }
 
     /// <summary>
@@ -60,7 +61,7 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
             }
 
             _trail.Pop();
-            _assignment.Remove(lit);
+            _assignment[lit + _nVar] = false;
             _level[v] = 0;
             _reason[v] = null;
         }
@@ -92,7 +93,7 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
         int p = 0;
         int pVar;
         IClause? pReason = conflict;
-        HashSet<int> seenVariables = [];
+        bool[] seenVariables = new bool[_nVar + 1];
 
         // Traverse the decision trail in reverse using breadth-first search.
         // Start with all the literals in the conflict clause.
@@ -114,10 +115,11 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
 
                 int qVar = Math.Abs(q);
 
-                if (!seenVariables.Add(qVar))
+                if (seenVariables[qVar])
                 {
                     continue;
                 }
+                seenVariables[qVar] = true;
 
                 int qLevel = _level[qVar];
 
@@ -140,10 +142,10 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
                 p = _trail.Pop();
                 pVar = Math.Abs(p);
                 pReason = _reason[pVar];
-                _assignment.Remove(p);
+                _assignment[p + _nVar] = false;
                 _level[pVar] = 0;
                 _reason[pVar] = null;
-            } while (!seenVariables.Contains(pVar));
+            } while (!seenVariables[pVar]);
 
             --counter;
         } while (counter > 0);
