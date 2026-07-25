@@ -67,32 +67,6 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     }
 
     /// <summary>
-    /// Get a conflict clause that can be learned by the solver.
-    /// </summary>
-    /// <returns>
-    /// a tuple where the elements are <br/>
-    ///   1) the conflict clause <br/>
-    ///   2) the decision level to backjump into
-    /// </returns>
-    public (List<int>, int) GetConflictClause()
-    {
-        List<int> decisions = [.. _trail.Where(t => _reason[Math.Abs(t)] == null)];
-
-        // Backjump into the second highest decision level
-        int level = decisions.Count > 1 ? _level[Math.Abs(decisions[1])] : 0;
-
-        // Note that the literals in the clause are in reverse decision order.
-        // E.g., if the decisions are 4, -2 and 5, the clause will be [5, -2, 4].
-        // This ordering is currently important, because the clauses with three
-        // or more literals will always be assigned to "watch" the first two
-        // literals in the list. Since backjump will remove the literal "5" from
-        // the trail, the learned clause will become a unit literal.
-        List<int> clause = [.. decisions.Select(t => -t)];
-
-        return (clause, level);
-    }
-
-    /// <summary>
     /// Analyze the conflict to produce a new learned clause.
     /// As part of the analysis, part of the decision trail is also undone.
     /// </summary>
