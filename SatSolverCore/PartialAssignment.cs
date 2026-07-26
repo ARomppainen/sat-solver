@@ -4,13 +4,14 @@ using SatSolverCore.Clause;
 
 namespace SatSolverCore;
 
-public class PartialAssignment(int numberOfVars) : IPartialAssignment
+public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignment
 {
     private readonly int _nVar = numberOfVars;
     private readonly Stack<int> _trail = new(numberOfVars);
     private readonly int[] _level = new int[numberOfVars + 1];
     private readonly IClause?[] _reason = new IClause?[numberOfVars + 1];
     private readonly bool[] _assignment = new bool[2 * numberOfVars + 1];
+    private readonly IUndo _undo = undo;
 
     /// <summary>
     /// Gets the number of assigned literals.
@@ -60,10 +61,7 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
                 break;
             }
 
-            _trail.Pop();
-            _assignment[lit + _nVar] = false;
-            _level[v] = 0;
-            _reason[v] = null;
+            UndoOne();
         }
     }
 
@@ -139,12 +137,10 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
             // Select the next literal from the trail that is in the list of seen variables.
             do
             {
-                p = _trail.Pop();
+                p = _trail.Peek();
                 pVar = Math.Abs(p);
                 pReason = _reason[pVar];
-                _assignment[p + _nVar] = false;
-                _level[pVar] = 0;
-                _reason[pVar] = null;
+                UndoOne();
             } while (!seenVariables[pVar]);
 
             --counter;
@@ -169,5 +165,17 @@ public class PartialAssignment(int numberOfVars) : IPartialAssignment
     public override string ToString()
     {
         return $"[{string.Join(", ", _trail.Reverse())}]";
+    }
+
+    private void UndoOne()
+    {
+        int literal = _trail.Pop();
+        int variable = Math.Abs(literal);
+
+        _assignment[literal + _nVar] = false;
+        _level[variable] = 0;
+        _reason[variable] = null;
+
+        _undo.Undo(variable);
     }
 }

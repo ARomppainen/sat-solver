@@ -1,5 +1,4 @@
 using SatSolverCore.Clause;
-using SatSolverCore.Decision;
 
 namespace SatSolverCore;
 
@@ -22,8 +21,7 @@ public static class Solver
             return SolveResult.Unsatisfiable();
         }
 
-        Vsids vsids = new(formula);
-        SolverState state = new(formula, vsids);
+        SolverState state = new(formula);
 
         while (true)
         {
@@ -40,7 +38,6 @@ public static class Solver
 
                 state.Backjump(level);
                 state.LearnClause(clause);
-                vsids.Update(clause);
             }
             else
             {

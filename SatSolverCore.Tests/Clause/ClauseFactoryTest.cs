@@ -1,3 +1,5 @@
+using NSubstitute;
+
 using SatSolverCore.Clause;
 
 namespace SatSolverCore.Tests.Clause;
@@ -13,7 +15,7 @@ public class ClauseFactoryTest
     [InlineData(3, -2, 3)]
     public void Create_ShouldAssignWatchedLiterals(int expected, params int[] decisions)
     {
-        PartialAssignment assignment = new(5);
+        PartialAssignment assignment = new(5, Substitute.For<IUndo>());
         for (int i = 0; i < decisions.Length; ++i)
         {
             assignment.Add(decisions[i], i + 1, null);

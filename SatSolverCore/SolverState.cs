@@ -1,5 +1,4 @@
 using SatSolverCore.Clause;
-using SatSolverCore.Decision;
 
 namespace SatSolverCore;
 
@@ -9,10 +8,10 @@ namespace SatSolverCore;
 public class SolverState
 {
     private readonly int _numberOfVars;
+    private readonly Vsids _vsids;
     private readonly PartialAssignment _assignment;
     private readonly Queue<(int, IClause?)> _propagateQueue;
     private readonly WatchedLiterals _watched;
-    private readonly IDecisionMaker _decisionMaker;
 
     /// <summary>
     /// The current decision level (a non-negative integer).
@@ -30,14 +29,13 @@ public class SolverState
     /// propositional logic formula and given IDecisionMaker instance.
     /// </summary>
     /// <param name="formula">A propositional logic formula.</param>
-    /// <param name="decisionMaker">A decision maker instance.</param>
-    public SolverState(Formula formula, IDecisionMaker decisionMaker)
+    public SolverState(Formula formula)
     {
         _numberOfVars = formula.NumberOfVars;
-        _assignment = new(formula.NumberOfVars);
+        _vsids = new(formula);
+        _assignment = new(formula.NumberOfVars, _vsids);
         _propagateQueue = [];
         _watched = new(formula.NumberOfVars);
-        _decisionMaker = decisionMaker;
 
         DecisionLevel = 0;
 
@@ -50,7 +48,7 @@ public class SolverState
     public void MakeDecision()
     {
         ++DecisionLevel;
-        int literal = _decisionMaker.ChooseUnassignedLiteral(_assignment);
+        int literal = _vsids.Choose(_assignment);
         _propagateQueue.Enqueue((literal, null));
     }
 
@@ -128,6 +126,7 @@ public class SolverState
         IClause clause = ClauseFactory.Create(literals, _assignment);
         _watched.Add(clause);
         _propagateQueue.Enqueue((literals[0], clause));
+        _vsids.Update(literals);
     }
 
     /// <summary>

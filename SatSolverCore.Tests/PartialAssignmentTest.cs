@@ -1,3 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
+
+using NSubstitute;
+
 using SatSolverCore.Clause;
 
 namespace SatSolverCore.Tests;
@@ -7,7 +11,7 @@ public class PartialAssignmentTest
     [Fact]
     public void Count_ShouldReturnNumberOfElements()
     {
-        PartialAssignment assignment = new(2);
+        PartialAssignment assignment = new(2, Substitute.For<IUndo>());
         Assert.Equal(0, assignment.Count);
 
         assignment.Add(1, 1);
@@ -20,7 +24,7 @@ public class PartialAssignmentTest
     [Fact]
     public void Backjump_ShouldUndoPartOfTrail()
     {
-        PartialAssignment assignment = new(10);
+        PartialAssignment assignment = new(10, Substitute.For<IUndo>());
 
         assignment.Add(10, 0, new ClauseUnary(10));
         assignment.Add(1, 1);
@@ -42,9 +46,28 @@ public class PartialAssignmentTest
     }
 
     [Fact]
+    public void Backjump_ShouldCallUndo()
+    {
+        IUndo undo = Substitute.For<IUndo>();
+        PartialAssignment assignment = new(10, undo);
+
+        assignment.Add(10, 0, new ClauseUnary(10));
+        assignment.Add(1, 1);
+        assignment.Add(-2, 1, new ClauseBinary(-1, -2));
+        assignment.Add(3, 2);
+        assignment.Add(-4, 3);
+        assignment.Add(5, 3, new ClauseBinary(4, 5));
+
+        assignment.Backjump(2);
+
+        undo.Received().Undo(5);
+        undo.Received().Undo(4);
+    }
+
+    [Fact]
     public void IsAssigned_ShouldReturnCorrectValue()
     {
-        PartialAssignment assignment = new(4);
+        PartialAssignment assignment = new(4, Substitute.For<IUndo>());
         assignment.Add(2, 1);
         assignment.Add(-3, 2);
 
@@ -62,7 +85,7 @@ public class PartialAssignmentTest
     [Fact]
     public void IsUnassigned_ShouldReturnCorrectValue()
     {
-        PartialAssignment assignment = new(4);
+        PartialAssignment assignment = new(4, Substitute.For<IUndo>());
         assignment.Add(2, 1);
         assignment.Add(-3, 2);
 
@@ -80,7 +103,7 @@ public class PartialAssignmentTest
     [Fact]
     public void AnalyzeConflict_ShouldReturnLearnedClause()
     {
-        PartialAssignment assignment = new(12);
+        PartialAssignment assignment = new(12, Substitute.For<IUndo>());
 
         assignment.Add(1, 1);
         assignment.Add(-2, 1, new ClauseBinary(-1, -2));
@@ -105,7 +128,7 @@ public class PartialAssignmentTest
     [Fact]
     public void ToList_ShouldReturnOrderedList()
     {
-        PartialAssignment assignment = new(5);
+        PartialAssignment assignment = new(5, Substitute.For<IUndo>());
 
         assignment.Add(3, 1);
         assignment.Add(-1, 2);
@@ -119,7 +142,7 @@ public class PartialAssignmentTest
     [Fact]
     public void ToString_ShouldReturnStringRepresentation()
     {
-        PartialAssignment assignment = new(5);
+        PartialAssignment assignment = new(5, Substitute.For<IUndo>());
 
         assignment.Add(3, 1);
         assignment.Add(-1, 2);

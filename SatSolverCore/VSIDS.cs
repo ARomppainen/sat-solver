@@ -1,13 +1,14 @@
-namespace SatSolverCore.Decision;
+namespace SatSolverCore;
 
 /// <summary>
-/// Decision maker implementation that uses Variable State Independent Decaying
-/// Sum (VSIDS) heuristic.
+/// An implementation of Variable State Independent Decaying Sum (VSIDS)
+/// heuristic for making decisions.
 /// </summary>
-public class Vsids : IDecisionMaker
+public class Vsids : IUndo
 {
     private readonly int _nVars;
     private readonly double[] _scores;
+    private readonly MaxHeap _vars;
     private int _decayCounter;
     private const int DecayThreshold = 100;
     private const double DecayFactor = 0.995;
@@ -22,6 +23,7 @@ public class Vsids : IDecisionMaker
     {
         _nVars = formula.NumberOfVars;
         _scores = new double[_nVars + 1];
+        _vars = MaxHeap.Create(_nVars, (a, b) => _scores[a] < _scores[b] ? -1 : 1);
         _decayCounter = 0;
 
         foreach (List<int> clause in formula.Clauses)
@@ -33,22 +35,26 @@ public class Vsids : IDecisionMaker
         }
     }
 
-    /// <inheritdoc />
-    public int ChooseUnassignedLiteral(IPartialAssignment assignment)
+    /// <summary>
+    /// Choose the next unassigned literal to be added to the current partial
+    /// truth assignment.
+    /// </summary>
+    /// <param name="assignment">The current partial truth assignment.</param>
+    /// <returns>The literal value to be assigned.</returns>
+    public int Choose(IPartialAssignment assignment)
     {
-        double max = -1;
-        int literal = 0;
-
-        for (int i = 1; i <= _nVars; ++i)
+        int value;
+        do
         {
-            if (assignment.IsUnassigned(i) && _scores[i] > max)
-            {
-                max = _scores[i];
-                literal = i;
-            }
-        }
+            value = _vars.Pop();
+        } while (!assignment.IsUnassigned(value));
+        return value;
+    }
 
-        return literal;
+    /// <inheritdoc />
+    public void Undo(int variable)
+    {
+        _vars.Push(variable);
     }
 
     /// <summary>
@@ -79,6 +85,16 @@ public class Vsids : IDecisionMaker
             for (int i = 1; i <= _nVars; ++i)
             {
                 _scores[i] *= RescaleFactor;
+            }
+        }
+
+        foreach (int literal in learnedClause)
+        {
+            int v = Math.Abs(literal);
+
+            if (!_vars.Push(v))
+            {
+                _vars.UpHeap(v);
             }
         }
     }
