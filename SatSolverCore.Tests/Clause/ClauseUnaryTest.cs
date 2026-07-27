@@ -43,7 +43,7 @@ public class ClaseuUnaryTest
     [Fact]
     public void ToString_ShouldReturnStringRepresentation()
     {
-        Assert.Equal("[1, -2]", new ClauseBinary(1, -2).ToString());
-        Assert.Equal("[-2, 1]", new ClauseBinary(-2, 1).ToString());
+        Assert.Equal("[1]", new ClauseUnary(1).ToString());
+        Assert.Equal("[-2]", new ClauseUnary(-2).ToString());
     }
 }
