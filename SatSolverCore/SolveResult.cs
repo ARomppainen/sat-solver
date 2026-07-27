@@ -6,18 +6,15 @@ namespace SatSolverCore;
 public class SolveResult
 {
     /// <summary>
-    /// true if the formula was satisfiable; otherwise, false.
-    /// </summary>
-    public bool IsSatisfiable { get; }
-
-    /// <summary>
     /// The satisfying assignment if the formula was satisfiable.
     /// </summary>
     public List<int> Assignment { get; }
 
-    private SolveResult(bool type, List<int> assignment)
+    public ResultType Type { get; }
+
+    private SolveResult(ResultType type, List<int> assignment)
     {
-        IsSatisfiable = type;
+        Type = type;
         Assignment = assignment;
     }
 
@@ -28,7 +25,7 @@ public class SolveResult
     /// <returns>SolveResult instance</returns>
     public static SolveResult Satisfiable(List<int> assignment)
     {
-        return new SolveResult(true, assignment);
+        return new SolveResult(ResultType.SATISFIABLE, assignment);
     }
 
     /// <summary>
@@ -37,6 +34,18 @@ public class SolveResult
     /// <returns>SolveResult instance</returns>
     public static SolveResult Unsatisfiable()
     {
-        return new SolveResult(false, []);
+        return new SolveResult(ResultType.UNSATISFIABLE, []);
+    }
+
+    public static SolveResult Unknown()
+    {
+        return new SolveResult(ResultType.UNKNOWN, []);
+    }
+
+    public enum ResultType
+    {
+        SATISFIABLE,
+        UNSATISFIABLE,
+        UNKNOWN
     }
 }

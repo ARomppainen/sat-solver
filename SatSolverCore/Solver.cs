@@ -12,8 +12,9 @@ public static class Solver
     /// logic formula using conflict-driven clause learning (CDCL) algorithm.
     /// </summary>
     /// <param name="formula">The propositional logic formula to be solved.</param>
+    /// <param name="timeout">An amount of time after which the execution of the solver is aborted (optional).</param>
     /// <returns>'satisfiable' result with a truth assignment or 'unsatisfiable' result</returns>
-    public static SolveResult Solve(Formula formula)
+    public static SolveResult Solve(Formula formula, TimeSpan? timeout = null)
     {
         if (formula.Clauses.Any(clause => clause.Count == 0))
         {
@@ -22,6 +23,8 @@ public static class Solver
         }
 
         SolverState state = new(formula);
+        DateTime start = DateTime.UtcNow;
+        DateTime end = timeout.HasValue ? start + timeout.Value : start.AddYears(1);
 
         while (true)
         {
@@ -47,6 +50,11 @@ public static class Solver
                 }
 
                 state.MakeDecision();
+            }
+
+            if (DateTime.UtcNow > end)
+            {
+                return SolveResult.Unknown();
             }
         }
     }

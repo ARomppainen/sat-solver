@@ -8,7 +8,7 @@ public class SolverTest
     {
         var result = Solver.Solve(formula);
 
-        Assert.True(result.IsSatisfiable);
+        Assert.Equal(SolveResult.ResultType.SATISFIABLE, result.Type);
         Assert.Equal(formula.NumberOfVars, result.Assignment.Count);
     }
 
@@ -18,6 +18,6 @@ public class SolverTest
     {
         var result = Solver.Solve(formula);
 
-        Assert.False(result.IsSatisfiable);
+        Assert.Equal(SolveResult.ResultType.UNSATISFIABLE, result.Type);
     }
 }
