@@ -59,14 +59,24 @@ rootCommand.SetAction(async (parseResult) =>
         switch (result.Type)
         {
             case SolveResult.ResultType.SATISFIABLE:
-                if (result.Assignment.Count > 0)
+                Console.Write("s SATISFIABLE");
+                if (result.Assignment.Count == 0)
                 {
-                    Console.WriteLine($"v {string.Join(' ', result.Assignment)} 0");
+                    Console.WriteLine("\nv 0");
+                    break;
                 }
-                else
+                int i = 0;
+                int n = result.Assignment.Count;
+                while (i < n)
                 {
-                    Console.WriteLine("v 0");
+                    Console.Write("\nv ");
+                    for (int j = 0; j < 20 && i < n; ++i, ++j)
+                    {
+                        Console.Write(result.Assignment[i]);
+                        Console.Write(' ');
+                    }
                 }
+                Console.WriteLine("0");
                 break;
             case SolveResult.ResultType.UNSATISFIABLE: Console.WriteLine("s UNSATISFIABLE"); break;
             case SolveResult.ResultType.UNKNOWN: Console.WriteLine("s UNKNOWN"); break;
