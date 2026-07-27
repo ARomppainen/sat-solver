@@ -54,7 +54,7 @@ rootCommand.SetAction(async (parseResult) =>
             }
         }
 
-        SolveResult result = Solver.Solve(formula, timeout);
+        SolveResult result = new Solver(formula).Solve(timeout);
 
         switch (result.Type)
         {

@@ -6,7 +6,7 @@ public class SolverTest
     [DimacsFileData("testdata/kissat/sat")]
     public void TestSolverKissatSat(Formula formula)
     {
-        var result = Solver.Solve(formula);
+        SolveResult result = new Solver(formula).Solve();
 
         Assert.Equal(SolveResult.ResultType.SATISFIABLE, result.Type);
         Assert.Equal(formula.NumberOfVars, result.Assignment.Count);
@@ -16,7 +16,7 @@ public class SolverTest
     [DimacsFileData("testdata/kissat/unsat")]
     public void TestSolverKissatUnsat(Formula formula)
     {
-        var result = Solver.Solve(formula);
+        SolveResult result = new Solver(formula).Solve();
 
         Assert.Equal(SolveResult.ResultType.UNSATISFIABLE, result.Type);
     }

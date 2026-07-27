@@ -49,7 +49,7 @@ public class WatchedLiterals
     /// <param name="assignment">The current partial assignment.</param>
     /// <param name="unitLiterals">The queue of unit literals to append.</param>
     /// <returns>A conflicting clause is one was detected; otherwise, null.</returns>
-    public IClause? TryFindUnitLiterals(int literal, IPartialAssignment assignment, Queue<(int, IClause?)> unitLiterals)
+    public IClause? FindUnitLiterals(int literal, IPartialAssignment assignment, Queue<(int, IClause?)> unitLiterals)
     {
         IClause? conflict = FindUnitLiterals(unitLiterals, literal, assignment, _watchlist1, FalsifyFirst, _nVar);
 
