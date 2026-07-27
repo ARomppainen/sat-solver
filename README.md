@@ -9,6 +9,7 @@ Aineopintojen harjoitustyö: Algoritmit ja tekoäly, 2026 (heinä-elokuu).
 
 - [Project specification](./doc/project_specification.md)
 - [User guide](./doc//user_guide.md)
+- [Implementation document](./doc/implementation_document.md)
 - [Weekly report 1](./doc/weekly_report_1.md)
 - [Weekly report 2](./doc/weekly_report_2.md)
 - [Weekly report 3](./doc/weekly_report_3.md)
