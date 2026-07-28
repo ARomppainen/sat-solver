@@ -1,7 +1,7 @@
 c copyright: www.mathinenglish.com
-c https://www.mathinenglish.com/puzzleview.php?id=261&pstid=607
-c 9 by 9 Sudoku, Very Challenging puzzle 1
-p cnf 729 3266
+c https://www.mathinenglish.com/puzzleview.php?id=262&pstid=607
+c 9 by 9 Sudoku, Very Challenging puzzle 3
+p cnf 729 3264
 1 2 3 4 5 6 7 8 9 0
 -1 -2 0
 -1 -3 0
@@ -3242,29 +3242,27 @@ p cnf 729 3266
 495 504 513 576 585 594 657 666 675 0
 522 531 540 603 612 621 684 693 702 0
 549 558 567 630 639 648 711 720 729 0
-17 0
-38 0
-52 0
-75 0
-118 0
-130 0
-166 0
-192 0
-250 0
-302 0
-314 0
-380 0
-405 0
-411 0
-417 0
-512 0
-533 0
-554 0
-565 0
-592 0
+76 0
+99 0
+101 0
+191 0
+246 0
+274 0
+297 0
+331 0
+343 0
+384 0
+391 0
+416 0
+446 0
+466 0
+480 0
+525 0
+542 0
+576 0
+591 0
 602 0
-659 0
-667 0
+613 0
+673 0
 681 0
-698 0
-724 0
+703 0

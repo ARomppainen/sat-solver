@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.Diagnostics;
+using System.Globalization;
 
 using SatSolverCore;
 using SatSolverCore.Perf;
@@ -50,6 +51,7 @@ rootCommand.SetAction(async (parseResult) =>
     Console.WriteLine($"Iterations: {iterations}");
     Console.WriteLine($"Timeout: {timeout}");
 
+    TimeSpan timeoutSeconds = new(0, 0, timeout);
     List<FormulaResult> results = [];
 
     for (int i = 0; i < formulas.Count; ++i)
@@ -61,24 +63,29 @@ rootCommand.SetAction(async (parseResult) =>
 
         for (int iter = 1; iter <= iterations; ++iter)
         {
-            Solver solver = new(formula);
             Stopwatch stopwatch = Stopwatch.StartNew();
-            SolveResult solveResult = solver.Solve();
+            SolveResult solveResult = new Solver(formula).Solve(timeoutSeconds);
             stopwatch.Stop();
-            samples.Add(new(iter, stopwatch.ElapsedTicks, stopwatch.ElapsedMilliseconds, solveResult.Type == SolveResult.ResultType.UNKNOWN));
+            samples.Add(new(iter, stopwatch.ElapsedMilliseconds, solveResult.Type == SolveResult.ResultType.UNKNOWN));
+
+            if (solveResult.Type == SolveResult.ResultType.UNKNOWN)
+            {
+                // End sampling of formula if solver timed out
+                break;
+            }
         }
 
         results.Add(new(formula.Name, formula.NumberOfVars, formula.Clauses.Count, samples));
     }
 
-    Console.WriteLine("Name;NumberOfVars;NumberOfClauses;AvgTicks;AvgMilliseconds;Timeouts");
+    Console.WriteLine("Name;NumberOfVars;NumberOfClauses;AvgMilliseconds;Timeouts");
     foreach (FormulaResult result in results)
     {
         string name = result.Name.Split(Path.DirectorySeparatorChar)[^1];
-        double avgTicks = result.Samples.Average(row => row.Ticks);
         double avgMilliseconds = result.Samples.Average(row => row.Milliseconds);
+        string avgMillisecondsStr = avgMilliseconds.ToString(CultureInfo.InvariantCulture); // Force decimal point instead of comma
         int timeouts = result.Samples.Count(row => row.IsUnknown);
-        Console.WriteLine($"{name};{result.NumberOfVars};{result.NumberOfClauses};{avgTicks};{avgMilliseconds};{timeouts}");
+        Console.WriteLine($"{name};{result.NumberOfVars};{result.NumberOfClauses};{avgMillisecondsStr};{timeouts}");
     }
 
     return 0;
