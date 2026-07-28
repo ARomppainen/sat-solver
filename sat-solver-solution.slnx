@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="SatSolverCli/SatSolverCli.csproj" />
+  <Project Path="SatSolverCore.Perf/SatSolverCore.Perf.csproj" />
   <Project Path="SatSolverCore.Tests/SatSolverCore.Tests.csproj" />
   <Project Path="SatSolverCore/SatSolverCore.csproj" />
 </Solution>
