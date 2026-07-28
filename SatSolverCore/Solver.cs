@@ -8,7 +8,11 @@ namespace SatSolverCore;
 public class Solver
 {
     private readonly int _numberOfVars;
-    private readonly Vsids _vsids;
+#if NAIVE_VSIDS
+    private readonly VsidsOld _decisionMaker;
+#else
+    private readonly Vsids _decisionMaker;
+#endif
     private readonly PartialAssignment _assignment;
     private readonly Queue<(int, IClause?)> _propagateQueue;
     private readonly WatchedLiterals _watched;
@@ -23,8 +27,8 @@ public class Solver
     public Solver(Formula formula)
     {
         _numberOfVars = formula.NumberOfVars;
-        _vsids = new(formula);
-        _assignment = new(formula.NumberOfVars, _vsids);
+        _decisionMaker = new(formula);
+        _assignment = new(formula.NumberOfVars, _decisionMaker);
         _propagateQueue = [];
         _watched = new(formula.NumberOfVars);
         _containsEmptyClause = false;
@@ -62,7 +66,11 @@ public class Solver
                     return SolveResult.Unsatisfiable();
                 }
 
+#if SIMPLE_CLAUSE_LEARNING
+                (List<int> clause, int level) = _assignment.AnalyzeConflictSimple();
+#else
                 (List<int> clause, int level) = _assignment.AnalyzeConflict(conflict, _decisionLevel);
+#endif
 
                 _assignment.Backjump(level);
                 _decisionLevel = level;
@@ -91,7 +99,7 @@ public class Solver
     private void Decide()
     {
         _decisionLevel++;
-        int literal = _vsids.Choose(_assignment);
+        int literal = _decisionMaker.Choose(_assignment);
         _propagateQueue.Enqueue((literal, null));
     }
 
@@ -152,6 +160,6 @@ public class Solver
         IClause clause = ClauseFactory.Create(literals, _assignment);
         _watched.Add(clause);
         _propagateQueue.Enqueue((literals[0], clause));
-        _vsids.Update(literals);
+        _decisionMaker.Update(literals);
     }
 }
