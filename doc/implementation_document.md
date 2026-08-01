@@ -6,6 +6,7 @@ The solution is split into multiple .NET projects
 
 - `SatSolverCli`: A command line application for running the solver
 - `SatSolverCore`: A library project that contains the main algorithm, supporting data structures and file parsing utilities
+- `SatSolverCore.Perf`: A performance analysis and reporting tool for the solver.
 - `SatSolverCore.Test`: Unit and integration tests for the core library
 
 ## Class descriptions
