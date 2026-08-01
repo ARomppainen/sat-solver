@@ -67,6 +67,38 @@ public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignmen
 
     /// <summary>
     /// Analyze the conflict to produce a new learned clause.
+    /// </summary>
+    /// <remarks>
+    /// This is the "Simple Clause Learning" algorithm described in <see
+    /// href="https://algolabra-hy.github.io/topics-en#simple-clause-learning">the
+    /// course material</see>. The learned clause contains the negations of all
+    /// decided literals.
+    /// </remarks>
+    /// <returns>
+    /// a tuple where the elements are <br/>
+    ///   1) the learned clause <br/>
+    ///   2) the decision level to backjump into
+    /// </returns>
+    public (List<int>, int) AnalyzeConflictSimple()
+    {
+        List<int> decisions = [.. _trail.Where(l => _reason[Math.Abs(l)] == null)];
+
+        // Backjump into the second highest decision level
+        int level = decisions.Count > 1 ? _level[Math.Abs(decisions[1])] : 0;
+
+        // Note that the literals in the clause are in reverse decision order.
+        // E.g., if the decisions are 4, -2 and 5, the clause will be [5, -2, 4].
+        // This ordering is currently important, because the clauses with three
+        // or more literals will always be assigned to "watch" the first two
+        // literals in the list. Since backjump will remove the literal "5" from
+        // the trail, the learned clause will become a unit literal.
+        List<int> clause = [.. decisions.Select(l => -l)];
+
+        return (clause, level);
+    }
+
+    /// <summary>
+    /// Analyze the conflict to produce a new learned clause.
     /// As part of the analysis, part of the decision trail is also undone.
     /// </summary>
     /// <remarks>
