@@ -13,6 +13,7 @@ Aineopintojen harjoitustyö: Algoritmit ja tekoäly, 2026 (heinä-elokuu).
 - [Weekly report 1](./doc/weekly_report_1.md)
 - [Weekly report 2](./doc/weekly_report_2.md)
 - [Weekly report 3](./doc/weekly_report_3.md)
+- [Weekly report 4](./doc/weekly_report_4.md)
 
 
 ## Development guide
