@@ -24,6 +24,20 @@ The release build is an optimized version, that does not include debugging symbo
 
 After compilation, the executable file is found in `src\SatSolver.Cli\bin\Release\net10.0` folder.
 
+The solution supports the following symbols for conditional compilation:
+
+- `USE_MAX_HEAP`: Use max heap data structure with VSIDS heuristic, this usually means improved performance.
+- `USE_SIMPLE_CLAUSE_LEARNING`: Use simpler clause learning algorithm, this usually means reduced performance.
+
+
+You can define the symbols during build command
+
+```cmd
+dotnet build --property:DefineConstants="USE_MAX_HEAP"
+dotnet build --property:DefineConstants=\"USE_MAX_HEAP;USE_SIMPLE_CLAUSE_LEARNING\"
+```
+
+
 ## Running the application
 
 SatSolverCli is a command line application for [SAT solving](https://en.wikipedia.org/wiki/SAT_solver).

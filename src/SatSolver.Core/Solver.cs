@@ -62,7 +62,7 @@ public class Solver
                     return SolveResult.Unsatisfiable();
                 }
 
-#if SIMPLE_CLAUSE_LEARNING
+#if USE_SIMPLE_CLAUSE_LEARNING
                 (List<int> clause, int level) = _assignment.AnalyzeConflictSimple();
 #else
                 (List<int> clause, int level) = _assignment.AnalyzeConflict(conflict, _decisionLevel);
