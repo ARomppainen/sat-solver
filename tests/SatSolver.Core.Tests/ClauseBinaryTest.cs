@@ -1,6 +1,8 @@
 using NSubstitute;
 
-namespace SatSolver.Core.Tests;
+using SatSolver.Core;
+
+namespace SatSolverCore.Tests;
 
 public class ClauseBinaryTest
 {

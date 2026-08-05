@@ -5,11 +5,11 @@ using SatSolver.Shared;
 using Xunit.Sdk;
 
 [assembly: RegisterXunitSerializer(
-    typeof(SatSolver.Core.Tests.FormulaSerializer),
+    typeof(SatSolverCore.Tests.FormulaSerializer),
     typeof(Formula)
 )]
 
-namespace SatSolver.Core.Tests;
+namespace SatSolverCore.Tests;
 
 public class FormulaSerializer : IXunitSerializer
 {
