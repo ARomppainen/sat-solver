@@ -6,8 +6,9 @@ The solution is split into multiple .NET projects
 
 - `SatSolver.Cli`: A command line application for running the solver.
 - `SatSolver.Core`: A library project that contains the main algorithm.
-- `SatSolver.Core.Test`: Unit and integration tests for the core library.
+- `SatSolver.Core.Tests`: Unit and integration tests for the core library.
 - `SatSolver.Dimacs`: A library project for DIMACS file parsing utilities.
+- `SatSolver.Dimacs.Tests`: Unit tests for DIMACS parser.
 - `SatSolver.Perf`: A performance analysis and reporting tool for the solver.
 - `SatSolver.Shared`: A library project for shared data structures and extension methods.
 
