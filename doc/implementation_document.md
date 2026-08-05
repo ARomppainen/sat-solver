@@ -4,10 +4,12 @@
 
 The solution is split into multiple .NET projects
 
-- `SatSolverCli`: A command line application for running the solver
-- `SatSolverCore`: A library project that contains the main algorithm, supporting data structures and file parsing utilities
-- `SatSolverCore.Perf`: A performance analysis and reporting tool for the solver.
-- `SatSolverCore.Test`: Unit and integration tests for the core library
+- `SatSolver.Cli`: A command line application for running the solver.
+- `SatSolver.Core`: A library project that contains the main algorithm.
+- `SatSolver.Core.Test`: Unit and integration tests for the core library.
+- `SatSolver.Dimacs`: A library project for DIMACS file parsing utilities.
+- `SatSolver.Perf`: A performance analysis and reporting tool for the solver.
+- `SatSolver.Shared`: A library project for shared data structures and extension methods.
 
 ## Class descriptions
 

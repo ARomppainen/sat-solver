@@ -12,7 +12,7 @@ Compile a debug version of the solution:
 dotnet build
 ```
 
-After compilation, the executable file is found in `SatSolverCli\bin\Debug\net10.0` folder.
+After compilation, the executable file is found in `src\SatSolver.Cli\bin\Debug\net10.0` folder.
 
 Compile a release version of the solution:
 
@@ -22,7 +22,7 @@ dotnet build -c Release
 
 The release build is an optimized version, that does not include debugging symbols or debug assertions.
 
-After compilation, the executable file is found in `SatSolverCli\bin\Release\net10.0` folder.
+After compilation, the executable file is found in `src\SatSolver.Cli\bin\Release\net10.0` folder.
 
 ## Running the application
 
@@ -46,27 +46,27 @@ The CLI application works with [DIMACS formatted](#program-input) files. The [te
 
 By running the compiled executable directly
 ```sh
-SatSolverCli.exe --file path\to\dimacs\file
+SatSolver.Cli.exe --file path\to\dimacs\file
 ```
 
 The `--timeout` option aborts the execution after given number of seconds 
 ```sh
-SatSolverCli.exe --file path\to\dimacs\file --timeout 10
+SatSolver.Cli.exe --file path\to\dimacs\file --timeout 10
 ```
 
 Alternatively, `dotnet run` command can be used. This also builds the project.
 ```
-dotnet run --project SatSolverCli -- --file path\to\dimacs\file
+dotnet run --project src\SatSolver.Cli -- --file path\to\dimacs\file
 ```
 
 The `-c` option can be set to use release version
 ```
-dotnet run --project SatSolverCli -c Release -- --file path\to\dimacs\file
+dotnet run --project src\SatSolver.Cli -c Release -- --file path\to\dimacs\file
 ```
 
 The `--no-build` option skips the build step
 ```
-dotnet run --no-build --project SatSolverCli -c Release -- --file path\to\dimacs\file
+dotnet run --no-build --project src\SatSolver.Cli -c Release -- --file path\to\dimacs\file
 ```
 
 ## Program input

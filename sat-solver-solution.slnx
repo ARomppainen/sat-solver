@@ -1,6 +1,8 @@
 <Solution>
-  <Project Path="SatSolverCli/SatSolverCli.csproj" />
-  <Project Path="SatSolverCore.Perf/SatSolverCore.Perf.csproj" />
-  <Project Path="SatSolverCore.Tests/SatSolverCore.Tests.csproj" />
-  <Project Path="SatSolverCore/SatSolverCore.csproj" />
+  <Project Path="src/SatSolver.Cli/SatSolver.Cli.csproj" />
+  <Project Path="src/SatSolver.Core/SatSolver.Core.csproj" />
+  <Project Path="src/SatSolver.Dimacs/SatSolver.Dimacs.csproj" />
+  <Project Path="src/SatSolver.Perf/SatSolver.Perf.csproj" />
+  <Project Path="src/SatSolver.Shared/SatSolver.Shared.csproj" />
+  <Project Path="tests/SatSolver.Core.Tests/SatSolver.Core.Tests.csproj" />
 </Solution>

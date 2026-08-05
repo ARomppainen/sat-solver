@@ -31,13 +31,13 @@ The CLI application uses [DIMACS](https://acl2.org/doc/?topic=SATLINK____DIMACS)
 Linux
 
 ```sh
-dotnet run --project SatSolverCli -- --file SatSolverCore.Tests/testdata/kissat/sat/and1.cnf
+dotnet run --project src/SatSolver.Cli -- --file tests/SatSolver.Core.Tests/testdata/kissat/sat/and1.cnf
 ```
 
 Windows
 
 ```cmd
-dotnet run --project SatSolverCli -- --file SatSolverCore.Tests\testdata\kissat\sat\and1.cnf
+dotnet run --project src\SatSolver.Cli -- --file tests\SatSolver.Core.Tests\testdata\kissat\sat\and1.cnf
 ```
 
 ### Code style
