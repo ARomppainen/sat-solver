@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 using SatSolver.Shared;
 
 namespace SatSolver.Dimacs;
@@ -41,7 +39,8 @@ public static class DimacsParser
 
         List<List<int>> clauses = new(numberOfClauses);
 
-        for (int i = 0; i < numberOfClauses; ++i)
+        int i = 0;
+        while (i < numberOfClauses)
         {
             if (!lines.MoveNext())
             {
@@ -55,6 +54,7 @@ public static class DimacsParser
 
             var literals = ParseLiterals(lines.Current, numberOfVars);
             clauses.Add(literals);
+            ++i;
         }
 
         return new Formula(name, numberOfVars, clauses);
@@ -69,9 +69,10 @@ public static class DimacsParser
     {
         var parts = line.Split(" ");
 
-        Debug.Assert(parts.Length == 4);
-        Debug.Assert("p" == parts[0]);
-        Debug.Assert("cnf" == parts[1]);
+        if (parts.Length != 4 || parts[0] != "p" || parts[1] != "cnf")
+        {
+            throw new DimacsParseException($"Invalid problem line: {line}");
+        }
 
         if (!int.TryParse(parts[2], out int numberOfVars))
         {

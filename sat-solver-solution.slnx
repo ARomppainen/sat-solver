@@ -5,4 +5,5 @@
   <Project Path="src/SatSolver.Perf/SatSolver.Perf.csproj" />
   <Project Path="src/SatSolver.Shared/SatSolver.Shared.csproj" />
   <Project Path="tests/SatSolver.Core.Tests/SatSolver.Core.Tests.csproj" />
+  <Project Path="tests/SatSolver.Dimacs.Tests/SatSolver.Dimacs.Tests.csproj" />
 </Solution>
