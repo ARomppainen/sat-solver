@@ -8,11 +8,7 @@ namespace SatSolver.Core;
 public class Solver
 {
     private readonly int _numberOfVars;
-#if VSIDS_SIMPLE
-    private readonly VsidsSimple _decisionMaker;
-#else
-    private readonly Vsids _decisionMaker;
-#endif
+    private readonly VsidsHeuristic _decisionMaker;
     private readonly PartialAssignment _assignment;
     private readonly Queue<(int, IClause?)> _propagateQueue;
     private readonly WatchedLiterals _watched;

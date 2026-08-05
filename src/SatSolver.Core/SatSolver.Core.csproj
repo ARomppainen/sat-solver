@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <DefineConstants>USE_MAX_HEAP</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

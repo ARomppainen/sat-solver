@@ -6,15 +6,13 @@ namespace SatSolver.Core;
 /// An implementation of Variable State Independent Decaying Sum (VSIDS)
 /// heuristic for making decisions.
 /// </summary>
-/// <remarks>
-/// This version does not use <see cref="MaxHeap"/>. Instead, it performs a
-/// linear search through all variables to determine the next unassigned
-/// literal.
-/// </remarks>
-public class VsidsSimple : IUndo
+public class VsidsHeuristic : IUndo
 {
     private readonly int _nVars;
     private readonly double[] _scores;
+#if USE_MAX_HEAP
+    private readonly MaxHeap _vars;
+#endif
     private int _decayCounter;
     private const int DecayThreshold = 100;
     private const double DecayFactor = 0.995;
@@ -22,14 +20,18 @@ public class VsidsSimple : IUndo
     private const double RescaleFactor = 1e-100;
 
     /// <summary>
-    /// Initializes a new instance of VsidsSimple class.
+    /// Initializes a new instance of Vsids class.
     /// </summary>
     /// <param name="formula">The formula to base the heuristic on.</param>
-    public VsidsSimple(Formula formula)
+    public VsidsHeuristic(Formula formula)
     {
         _nVars = formula.NumberOfVars;
         _scores = new double[_nVars + 1];
         _decayCounter = 0;
+
+#if USE_MAX_HEAP
+        _vars = MaxHeap.Create(_nVars, (a, b) => _scores[a] < _scores[b] ? -1 : 1);
+#endif
 
         foreach (List<int> clause in formula.Clauses)
         {
@@ -48,6 +50,14 @@ public class VsidsSimple : IUndo
     /// <returns>The literal value to be assigned.</returns>
     public int Choose(IPartialAssignment assignment)
     {
+#if USE_MAX_HEAP
+        int value;
+        do
+        {
+            value = _vars.Pop();
+        } while (!assignment.IsUnassigned(value));
+        return value;
+#else
         double max = -1;
         int literal = 0;
 
@@ -61,6 +71,15 @@ public class VsidsSimple : IUndo
         }
 
         return literal;
+#endif
+    }
+
+    /// <inheritdoc />
+    public void Undo(int variable)
+    {
+#if USE_MAX_HEAP
+        _vars.Push(variable);
+#endif
     }
 
     /// <summary>
@@ -93,11 +112,17 @@ public class VsidsSimple : IUndo
                 _scores[i] *= RescaleFactor;
             }
         }
-    }
 
-    /// <inheritdoc />
-    public void Undo(int variable)
-    {
-        // Do nothing
+#if USE_MAX_HEAP
+        foreach (int literal in learnedClause)
+        {
+            int v = Math.Abs(literal);
+
+            if (!_vars.Push(v))
+            {
+                _vars.UpHeap(v);
+            }
+        }
+#endif
     }
 }
