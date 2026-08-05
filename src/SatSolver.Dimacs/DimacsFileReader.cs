@@ -2,7 +2,7 @@ using SatSolver.Shared;
 
 namespace SatSolver.Dimacs;
 
-public class DimacsFileReader
+public static class DimacsFileReader
 {
     public static List<Formula> ReadFormulas(string filePath)
     {

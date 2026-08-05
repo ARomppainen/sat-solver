@@ -9,7 +9,7 @@ using SatSolver.Shared;
 
 namespace SatSolver.Perf;
 
-public class Program
+static class Program
 {
     static int Main(string[] args)
     {

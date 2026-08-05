@@ -7,7 +7,7 @@ using SatSolver.Shared;
 
 namespace SatSolver.Cli;
 
-public class Program
+static class Program
 {
     static int Main(string[] args)
     {
