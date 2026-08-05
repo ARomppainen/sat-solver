@@ -1,7 +1,6 @@
-using SatSolver.Core;
 using SatSolver.Shared;
 
-namespace SatSolverCore.Tests;
+namespace SatSolver.Core.Tests;
 
 public class SolverTest
 {

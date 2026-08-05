@@ -1,7 +1,6 @@
-using SatSolver.Dimacs;
 using SatSolver.Shared;
 
-namespace SatSolverDimacs.Tests;
+namespace SatSolver.Dimacs.Tests;
 
 public class DimacsParserTest
 {

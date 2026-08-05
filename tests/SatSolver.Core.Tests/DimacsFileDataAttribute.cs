@@ -6,7 +6,7 @@ using Xunit.v3;
 using SatSolver.Dimacs;
 using SatSolver.Shared;
 
-namespace SatSolverCore.Tests;
+namespace SatSolver.Core.Tests;
 
 public class DimacsFileDataAttribute(string filePath) : DataAttribute
 {
