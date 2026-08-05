@@ -73,6 +73,18 @@ public class DimacsParserTest
         Assert.Throws<DimacsParseException>(() => DimacsParser.Parse("test", input));
     }
 
+    [Fact]
+    public void Parse_ShouldThrow_WhenValueLineIsMissing()
+    {
+        List<string> input = [
+            "p cnf 2 3",
+            "1 0",
+            "2 0",
+        ];
+
+        Assert.Throws<DimacsParseException>(() => DimacsParser.Parse("test", input));
+    }
+
     [Theory]
     [InlineData("foo 0")]
     [InlineData("4 0")]
