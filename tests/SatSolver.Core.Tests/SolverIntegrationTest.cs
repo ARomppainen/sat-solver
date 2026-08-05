@@ -2,7 +2,8 @@ using SatSolver.Shared;
 
 namespace SatSolver.Core.Tests;
 
-public class SolverTest
+[Trait("Category", "Integration")]
+public class SolverIntegrationTest
 {
     [Theory]
     [DimacsFileData("testdata/kissat/sat")]

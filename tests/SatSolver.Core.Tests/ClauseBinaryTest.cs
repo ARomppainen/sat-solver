@@ -2,6 +2,7 @@ using NSubstitute;
 
 namespace SatSolver.Core.Tests;
 
+[Trait("Category", "Unit")]
 public class ClauseBinaryTest
 {
     [Fact]

@@ -2,6 +2,7 @@ using SatSolver.Shared;
 
 namespace SatSolver.Dimacs.Tests;
 
+[Trait("Category", "Unit")]
 public class DimacsParserTest
 {
     [Fact]
