@@ -56,7 +56,7 @@ Options:
   --version                Show version information
 ```
 
-The CLI application works with [DIMACS formatted](#program-input) files. The [testdata](../SatSolverCore.Tests/testdata/) directory contains multiple files you can use. The `--file` option is mandatory for actually running the solver. Here are some examples of how to run the CLI application in Windows environment.
+The CLI application works with [DIMACS formatted](#program-input) files. The [testdata](../tests/SatSolver.Core.Tests/testdata/) directory contains multiple files you can use. The `--file` option is mandatory for actually running the solver. Here are some examples of how to run the CLI application in Windows environment.
 
 By running the compiled executable directly
 ```sh

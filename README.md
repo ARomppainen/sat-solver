@@ -24,7 +24,7 @@ The project uses [.NET 10.0](https://dotnet.microsoft.com/en-us/download/dotnet/
 
 ### The CLI application
 
-The CLI application uses [DIMACS](https://acl2.org/doc/?topic=SATLINK____DIMACS) formatted files as input. Take a look at the [testdata](./SatSolverCore.Tests/testdata/) folder for examples.
+The CLI application uses [DIMACS](https://acl2.org/doc/?topic=SATLINK____DIMACS) formatted files as input. Take a look at the [testdata](./tests/SatSolver.Core.Tests/testdata/) folder for examples.
 
 #### Running the solver
 
