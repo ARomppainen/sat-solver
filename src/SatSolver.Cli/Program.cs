@@ -5,90 +5,108 @@ using SatSolver.Core;
 using SatSolver.Dimacs;
 using SatSolver.Shared;
 
-Option<FileInfo> fileOption = new("--file", "-f")
-{
-    Description = "The path to a DIMACS file to be used as input."
-};
+namespace SatSolver.Cli;
 
-Option<int> timeoutOption = new("--timeout", "-t")
+public class Program
 {
-    Description = "Abort the execution after given number of seconds."
-};
-
-RootCommand rootCommand = new("SAT-Solver CLI");
-rootCommand.Options.Add(fileOption);
-rootCommand.Options.Add(timeoutOption);
-
-rootCommand.SetAction(async (parseResult) =>
-{
-    if (parseResult.Errors.Count > 0)
+    static int Main(string[] args)
     {
-        foreach (ParseError parseError in parseResult.Errors)
+        Option<FileInfo> fileOption = new("--file", "-f")
         {
-            await Console.Error.WriteLineAsync(parseError.Message);
-        }
-        return 1;
+            Description = "The path to a DIMACS file to be used as input."
+        };
+
+        Option<int> timeoutOption = new("--timeout", "-t")
+        {
+            Description = "Abort the execution after given number of seconds."
+        };
+
+        RootCommand rootCommand = new("SAT-Solver CLI");
+        rootCommand.Options.Add(fileOption);
+        rootCommand.Options.Add(timeoutOption);
+
+        rootCommand.SetAction(parseResult => Action(parseResult, rootCommand, fileOption, timeoutOption));
+
+        return rootCommand.Parse(args).Invoke();
     }
 
-    if (parseResult.GetValue(fileOption) is FileInfo parsedFile)
+    private static int Action(ParseResult parseResult, RootCommand rootCommand, Option<FileInfo> fileOption, Option<int> timeoutOption)
     {
+        if (parseResult.Errors.Count > 0)
+        {
+            foreach (ParseError parseError in parseResult.Errors)
+            {
+                Console.Error.WriteLine(parseError.Message);
+            }
+            return 1;
+        }
+
+        FileInfo? parsedFile = parseResult.GetValue(fileOption);
+
+        if (parsedFile == null)
+        {
+            rootCommand.Parse("--help").Invoke();
+            return 0;
+        }
+
         if (!parsedFile.Exists)
         {
-            await Console.Error.WriteLineAsync($"File does not exist: {parsedFile.FullName}");
+            Console.Error.WriteLine($"File does not exist: {parsedFile.FullName}");
+            return 1;
+        }
+
+        int timeoutSeconds = parseResult.GetValue(timeoutOption);
+
+        if (timeoutSeconds < 0)
+        {
+            Console.Error.WriteLine($"Invalid argument for timeout: {timeoutSeconds}");
             return 1;
         }
 
         using StreamReader reader = parsedFile.OpenText();
 
         Formula formula = DimacsParser.Parse(parsedFile.FullName, reader.Lines());
-        TimeSpan? timeout = null;
-
-        if (parseResult.GetValue(timeoutOption) is int timeoutSeconds)
-        {
-            if (timeoutSeconds > 0)
-            {
-                timeout = new TimeSpan(0, 0, timeoutSeconds);
-            }
-            else if (timeoutSeconds < 0)
-            {
-                await Console.Error.WriteLineAsync($"Invalid argument for timeout: {timeoutSeconds}");
-                return 1;
-            }
-        }
-
+        TimeSpan? timeout = timeoutSeconds > 0 ? new TimeSpan(0, 0, timeoutSeconds) : null;
         SolveResult result = new Solver(formula).Solve(timeout);
 
-        switch (result.Type)
-        {
-            case SolveResult.ResultType.SATISFIABLE:
-                Console.Write("s SATISFIABLE");
-                if (result.Assignment.Count == 0)
-                {
-                    Console.WriteLine("\nv 0");
-                    break;
-                }
-                int i = 0;
-                int n = result.Assignment.Count;
-                while (i < n)
-                {
-                    Console.Write("\nv ");
-                    for (int j = 0; j < 20 && i < n; ++i, ++j)
-                    {
-                        Console.Write(result.Assignment[i]);
-                        Console.Write(' ');
-                    }
-                }
-                Console.WriteLine("0");
-                break;
-            case SolveResult.ResultType.UNSATISFIABLE: Console.WriteLine("s UNSATISFIABLE"); break;
-            case SolveResult.ResultType.UNKNOWN: Console.WriteLine("s UNKNOWN"); break;
-        }
+        PrintResult(result);
 
         return 0;
     }
 
-    rootCommand.Parse("--help").Invoke();
-    return 0;
-});
+    private static void PrintResult(SolveResult result)
+    {
+        if (result.Type == SolveResult.ResultType.UNSATISFIABLE)
+        {
+            Console.WriteLine("s UNSATISFIABLE");
+            return;
+        }
 
-return await rootCommand.Parse(args).InvokeAsync();
+        if (result.Type == SolveResult.ResultType.UNKNOWN)
+        {
+            Console.WriteLine("s UNKNOWN");
+            return;
+        }
+
+        Console.Write("s SATISFIABLE");
+
+        if (result.Assignment.Count == 0)
+        {
+            Console.WriteLine("\nv 0");
+            return;
+        }
+
+        int i = 0;
+        int n = result.Assignment.Count;
+        while (i < n)
+        {
+            Console.Write("\nv ");
+            for (int j = 0; j < 20 && i < n; ++i, ++j)
+            {
+                Console.Write(result.Assignment[i]);
+                Console.Write(' ');
+            }
+        }
+        Console.WriteLine("0");
+    }
+}
