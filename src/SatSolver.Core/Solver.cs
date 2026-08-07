@@ -23,10 +23,12 @@ public class Solver
     /// propositional logic formula.
     /// </summary>
     /// <param name="formula">A propositional logic formula.</param>
-    public Solver(Formula formula)
+    /// <param name="decayThreshold">The frequency of how often the heuristic scores are adjusted.</param>
+    /// <param name="decayFactor">The factor used for adjusting the heuristic scores.</param>
+    public Solver(Formula formula, double decayFactor = 0.95, int decayThreshold = 100)
     {
         _numberOfVars = formula.NumberOfVars;
-        _decisionMaker = new(formula);
+        _decisionMaker = new(formula, decayThreshold, decayFactor);
         _assignment = new(formula.NumberOfVars, _decisionMaker);
         _propagateQueue = [];
         _watched = new(formula.NumberOfVars);

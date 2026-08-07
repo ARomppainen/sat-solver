@@ -14,8 +14,8 @@ public class VsidsHeuristic : IUndo
     private readonly MaxHeap _vars;
 #endif
     private int _decayCounter;
-    private const int DecayThreshold = 100;
-    private const double DecayFactor = 0.995;
+    private readonly int _decayThreshold = 100;
+    private readonly double _decayFactor = 0.995;
     private const double RescaleThreshold = 1e+100;
     private const double RescaleFactor = 1e-100;
 
@@ -23,11 +23,15 @@ public class VsidsHeuristic : IUndo
     /// Initializes a new instance of Vsids class.
     /// </summary>
     /// <param name="formula">The formula to base the heuristic on.</param>
-    public VsidsHeuristic(Formula formula)
+    /// <param name="decayThreshold">The frequency of how often the scores are adjusted.</param>
+    /// <param name="decayFactor">The factor used for adjusting the scores.</param>
+    public VsidsHeuristic(Formula formula, int decayThreshold, double decayFactor)
     {
         _nVars = formula.NumberOfVars;
         _scores = new double[_nVars + 1];
         _decayCounter = 0;
+        _decayThreshold = decayThreshold;
+        _decayFactor = decayFactor;
 
 #if USE_MAX_HEAP
         _vars = MaxHeap.Create(_nVars, (a, b) => _scores[a] < _scores[b] ? -1 : 1);
@@ -95,13 +99,13 @@ public class VsidsHeuristic : IUndo
 
         _decayCounter++;
 
-        if (_decayCounter >= DecayThreshold)
+        if (_decayCounter >= _decayThreshold)
         {
             _decayCounter = 0;
 
             for (int i = 1; i <= _nVars; ++i)
             {
-                _scores[i] *= DecayFactor;
+                _scores[i] *= _decayFactor;
             }
         }
 
