@@ -12,10 +12,13 @@ public class SolveResult
 
     public ResultType Type { get; }
 
-    private SolveResult(ResultType type, List<int> assignment)
+    public SolverStatistics Statistics { get; }
+
+    private SolveResult(ResultType type, List<int> assignment, SolverStatistics statistics)
     {
         Type = type;
         Assignment = assignment;
+        Statistics = statistics;
     }
 
     /// <summary>
@@ -23,23 +26,23 @@ public class SolveResult
     /// </summary>
     /// <param name="assignment">the satisfying assignment</param>
     /// <returns>SolveResult instance</returns>
-    public static SolveResult Satisfiable(List<int> assignment)
+    public static SolveResult Satisfiable(List<int> assignment, SolverStatistics statistics)
     {
-        return new SolveResult(ResultType.SATISFIABLE, assignment);
+        return new SolveResult(ResultType.SATISFIABLE, assignment, statistics);
     }
 
     /// <summary>
     /// Create unsatisfiable result instance.
     /// </summary>
     /// <returns>SolveResult instance</returns>
-    public static SolveResult Unsatisfiable()
+    public static SolveResult Unsatisfiable(SolverStatistics statistics)
     {
-        return new SolveResult(ResultType.UNSATISFIABLE, []);
+        return new SolveResult(ResultType.UNSATISFIABLE, [], statistics);
     }
 
-    public static SolveResult Unknown()
+    public static SolveResult Unknown(SolverStatistics statistics)
     {
-        return new SolveResult(ResultType.UNKNOWN, []);
+        return new SolveResult(ResultType.UNKNOWN, [], statistics);
     }
 
     public enum ResultType

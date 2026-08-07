@@ -21,16 +21,29 @@ static class Program
             Description = "Abort the execution after given number of seconds."
         };
 
+        Option<bool> verboseOption = new("--verbose", "-v")
+        {
+            Description = "Print additional details about solver execution."
+        };
+
         RootCommand rootCommand = new("SAT-Solver CLI");
         rootCommand.Options.Add(fileOption);
         rootCommand.Options.Add(timeoutOption);
+        rootCommand.Options.Add(verboseOption);
 
-        rootCommand.SetAction(parseResult => Action(parseResult, rootCommand, fileOption, timeoutOption));
+        rootCommand.SetAction(parseResult => Action(
+            parseResult, rootCommand, fileOption, timeoutOption, verboseOption));
 
         return rootCommand.Parse(args).Invoke();
     }
 
-    private static int Action(ParseResult parseResult, RootCommand rootCommand, Option<FileInfo> fileOption, Option<int> timeoutOption)
+    private static int Action(
+        ParseResult parseResult,
+        RootCommand rootCommand,
+        Option<FileInfo> fileOption,
+        Option<int> timeoutOption,
+        Option<bool> verboseOption
+    )
     {
         if (parseResult.Errors.Count > 0)
         {
@@ -63,6 +76,8 @@ static class Program
             return 1;
         }
 
+        bool verbose = parseResult.GetValue(verboseOption);
+
         using StreamReader reader = parsedFile.OpenText();
 
         Formula formula = DimacsParser.Parse(parsedFile.FullName, reader.Lines());
@@ -70,6 +85,11 @@ static class Program
         SolveResult result = new Solver(formula).Solve(timeout);
 
         PrintResult(result);
+
+        if (verbose)
+        {
+            PrintStatistics(result.Statistics);
+        }
 
         return 0;
     }
@@ -108,5 +128,16 @@ static class Program
             }
         }
         Console.WriteLine("0");
+    }
+
+    private static void PrintStatistics(SolverStatistics stats)
+    {
+        Console.WriteLine("c");
+        Console.WriteLine("c Statistics");
+        Console.WriteLine("c");
+        Console.WriteLine("{0, -15}{1, 15}", "c conflicts:", stats.Conflicts);
+        Console.WriteLine("{0, -15}{1, 15}", "c decisions:", stats.Decisions);
+        Console.WriteLine("{0, -15}{1, 15}", "c propagations:", stats.Propagations);
+        Console.WriteLine("{0, -15}{1, 15}{2, 8}", "c process time:", (stats.Milliseconds / 1000.0).ToString("F02"), "seconds");
     }
 }

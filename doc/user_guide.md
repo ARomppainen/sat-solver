@@ -47,11 +47,12 @@ Description:
   SAT-Solver CLI
 
 Usage:
-  SatSolverCli [options]
+  SatSolver.Cli [options]
 
 Options:
   -f, --file <file>        The path to a DIMACS file to be used as input.
   -t, --timeout <timeout>  Abort the execution after given number of seconds.
+  -v, --verbose            Print additional details about solver execution.
   -?, -h, --help           Show help and usage information
   --version                Show version information
 ```
@@ -148,4 +149,29 @@ If the solver execution was aborted due to timeout, the program will output
 
 ```
 s UNKNOWN
+```
+
+The output may contain any number of comment lines starting with `c`. For example, by enabling the `--verbose` option:
+
+```
+SatSolver.Cli.exe --file src\SatSolver.Perf\suite\sat\factor4.cnf --verbose
+s SATISFIABLE
+v 1 -2 -3 -4 5 -6 -7 -8 9 -10 -11 -12 13 14 -15 -16 -17 18 -19 -20
+v -21 -22 -23 -24 -25 -26 -27 -28 -29 -30 -31 -32 33 -34 -35 -36 -37 -38 -39 -40
+v -41 -42 -43 -44 -45 -46 -47 -48 -49 -50 -51 -52 -53 -54 -55 -56 -57 58 -59 60
+v -61 -62 -63 -64 -65 -66 -67 -68 -69 -70 -71 -72 -73 -74 -75 -76 -77 -78 -79 -80
+v -81 -82 -83 -84 -85 -86 -87 -88 -89 -90 -91 -92 -93 -94 95 -96 97 -98 -99 -100
+v -101 -102 -103 -104 -105 -106 -107 -108 -109 -110 -111 -112 -113 -114 -115 -116 -117 -118 -119 -120
+v -121 -122 -123 -124 -125 -126 -127 -128 -129 130 131 -132 -133 -134 135 -136 -137 -138 -139 -140
+v -141 -142 -143 -144 -145 -146 -147 -148 -149 -150 -151 -152 -153 154 -155 156 -157 158 -159 -160
+v -161 -162 -163 -164 -165 -166 -167 -168 -169 -170 -171 -172 -173 174 -175 -176 -177 -178 -179 -180
+v -181 -182 -183 -184 -185 186 -187 188 -189 -190 -191 -192 -193 -194 -195 -196 -197 -198 -199 -200
+v -201 -202 -203 -204 0
+c
+c Statistics
+c
+c conflicts:                43
+c decisions:                52
+c propagations:           3960
+c process time:           0,01 seconds
 ```

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using SatSolver.Shared;
 
 namespace SatSolver.Core;
@@ -12,6 +14,7 @@ public class Solver
     private readonly PartialAssignment _assignment;
     private readonly Queue<(int, IClause?)> _propagateQueue;
     private readonly WatchedLiterals _watched;
+    private readonly SolverStatistics _stats;
     private bool _containsEmptyClause;
     private int _decisionLevel;
 
@@ -27,6 +30,7 @@ public class Solver
         _assignment = new(formula.NumberOfVars, _decisionMaker);
         _propagateQueue = [];
         _watched = new(formula.NumberOfVars);
+        _stats = new();
         _containsEmptyClause = false;
         _decisionLevel = 0;
 
@@ -45,11 +49,11 @@ public class Solver
         if (_containsEmptyClause)
         {
             // Formula with an empty clause is unsatisfiable
-            return SolveResult.Unsatisfiable();
+            return SolveResult.Unsatisfiable(_stats);
         }
 
-        DateTime start = DateTime.UtcNow;
-        DateTime end = timeout.HasValue ? start + timeout.Value : start.AddYears(1);
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        long end = (long)(timeout ?? new TimeSpan(1, 0, 0, 0, 0)).TotalMilliseconds;
 
         while (true)
         {
@@ -59,7 +63,9 @@ public class Solver
             {
                 if (_decisionLevel == 0)
                 {
-                    return SolveResult.Unsatisfiable();
+                    stopwatch.Stop();
+                    _stats.Milliseconds = stopwatch.ElapsedMilliseconds;
+                    return SolveResult.Unsatisfiable(_stats);
                 }
 
 #if USE_SIMPLE_CLAUSE_LEARNING
@@ -76,15 +82,19 @@ public class Solver
             {
                 if (_assignment.Count == _numberOfVars)
                 {
-                    return SolveResult.Satisfiable(_assignment.ToList());
+                    stopwatch.Stop();
+                    _stats.Milliseconds = stopwatch.ElapsedMilliseconds;
+                    return SolveResult.Satisfiable(_assignment.ToList(), _stats);
                 }
 
                 Decide();
             }
 
-            if (DateTime.UtcNow > end)
+            if (stopwatch.ElapsedMilliseconds >= end)
             {
-                return SolveResult.Unknown();
+                stopwatch.Stop();
+                _stats.Milliseconds = stopwatch.ElapsedMilliseconds;
+                return SolveResult.Unknown(_stats);
             }
         }
     }
@@ -94,6 +104,7 @@ public class Solver
     /// </summary>
     private void Decide()
     {
+        _stats.Decisions++;
         _decisionLevel++;
         int literal = _decisionMaker.Choose(_assignment);
         _propagateQueue.Enqueue((literal, null));
@@ -120,12 +131,14 @@ public class Solver
                 return reason;
             }
 
+            _stats.Propagations++;
             _assignment.Add(literal, _decisionLevel, reason);
 
             IClause? conflict = _watched.FindUnitLiterals(-literal, _assignment, _propagateQueue);
 
             if (conflict != null)
             {
+                _stats.Conflicts++;
                 _propagateQueue.Clear();
                 return conflict;
             }
