@@ -159,13 +159,9 @@ public class Solver
         {
             _propagateQueue.Enqueue((literals[0], literals));
         }
-        else if (literals.Count == 2)
-        {
-            _watched.AddBinary(literals);
-        }
         else
         {
-            _watched.Add(new(literals));
+            _watched.Add(literals);
         }
     }
 
@@ -173,14 +169,6 @@ public class Solver
     {
         _decisionMaker.Update(literals);
         _propagateQueue.Enqueue((literals[0], literals));
-
-        if (literals.Count == 2)
-        {
-            _watched.AddBinary(literals);
-        }
-        else if (literals.Count > 2)
-        {
-            _watched.Add(new(literals));
-        }
+        _watched.Add(literals);
     }
 }

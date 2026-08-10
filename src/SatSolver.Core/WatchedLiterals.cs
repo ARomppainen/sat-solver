@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace SatSolver.Core;
 
 /// <summary>
@@ -9,8 +7,7 @@ public class WatchedLiterals
 {
     private readonly int _nVar;
     private readonly LinkedList<int>[] _binaryWatchlist;
-    private readonly LinkedList<Clause>[] _watchlist1;
-    private readonly LinkedList<Clause>[] _watchlist2;
+    private readonly LinkedList<Clause>[] _watchlist;
 
     public WatchedLiterals(int numberOfVars)
     {
@@ -18,14 +15,12 @@ public class WatchedLiterals
 
         int n = 2 * numberOfVars + 1;
         _binaryWatchlist = new LinkedList<int>[n];
-        _watchlist1 = new LinkedList<Clause>[n];
-        _watchlist2 = new LinkedList<Clause>[n];
+        _watchlist = new LinkedList<Clause>[n];
 
         for (int i = 0; i < n; ++i)
         {
             _binaryWatchlist[i] = new();
-            _watchlist1[i] = new();
-            _watchlist2[i] = new();
+            _watchlist[i] = new();
         }
     }
 
@@ -33,19 +28,21 @@ public class WatchedLiterals
     /// Add new clause to be tracked. This can be an initial clause found in the
     /// formula or a learned clause.
     /// </summary>
-    /// <param name="clause">The clause to be tracked.</param>
-    public void Add(Clause clause)
+    /// <param name="literals">The clause to be tracked.</param>
+    public void Add(List<int> literals)
     {
-        _watchlist1[clause.Watched1 + _nVar].AddLast(clause);
-        _watchlist2[clause.Watched2 + _nVar].AddLast(clause);
-    }
+        if (literals.Count == 2)
+        {
+            _binaryWatchlist[literals[0] + _nVar].AddLast(literals[1]);
+            _binaryWatchlist[literals[1] + _nVar].AddLast(literals[0]);
+        }
+        else if (literals.Count > 2)
+        {
+            Clause clause = new(literals);
 
-    public void AddBinary(List<int> literals)
-    {
-        Debug.Assert(literals.Count == 2);
-
-        _binaryWatchlist[literals[0] + _nVar].AddLast(literals[1]);
-        _binaryWatchlist[literals[1] + _nVar].AddLast(literals[0]);
+            _watchlist[literals[0] + _nVar].AddLast(clause);
+            _watchlist[literals[1] + _nVar].AddLast(clause);
+        }
     }
 
     /// <summary>
@@ -64,14 +61,7 @@ public class WatchedLiterals
             return conflict;
         }
 
-        conflict = FindUnitLiterals(unitLiterals, literal, assignment, _watchlist1, FalsifyFirst, _nVar);
-
-        if (conflict != null)
-        {
-            return conflict;
-        }
-
-        return FindUnitLiterals(unitLiterals, literal, assignment, _watchlist2, FalsifySecond, _nVar);
+        return FindUnitLiterals(unitLiterals, literal, assignment);
     }
 
     private List<int>? FindUnitLiteralsBinary(
@@ -101,23 +91,20 @@ public class WatchedLiterals
         return null;
     }
 
-    private static List<int>? FindUnitLiterals(
+    private List<int>? FindUnitLiterals(
         Queue<(int, List<int>?)> unitLiterals,
         int literal,
-        IPartialAssignment assignment,
-        LinkedList<Clause>[] watchlist,
-        Func<Clause, IPartialAssignment, FalsifyResult> falsifyLiteral,
-        int n
+        IPartialAssignment assignment
     )
     {
-        LinkedList<Clause> list = watchlist[literal + n];
+        LinkedList<Clause> list = _watchlist[literal + _nVar];
         LinkedListNode<Clause>? node = list.First;
 
         while (node != null)
         {
             var clause = node.ValueRef;
 
-            var result = falsifyLiteral(clause, assignment);
+            var result = clause.Falsify(literal, assignment);
 
             if (result.IsConflict)
             {
@@ -131,7 +118,7 @@ public class WatchedLiterals
 
             if (result.NewWatchedLiteral != 0)
             {
-                watchlist[result.NewWatchedLiteral + n].AddLast(clause);
+                _watchlist[result.NewWatchedLiteral + _nVar].AddLast(clause);
                 var previous = node;
                 node = node.Next;
                 list.Remove(previous);
@@ -143,15 +130,5 @@ public class WatchedLiterals
         }
 
         return null;
-    }
-
-    private static FalsifyResult FalsifyFirst(Clause clause, IPartialAssignment assignment)
-    {
-        return clause.FalsifyFirst(assignment);
-    }
-
-    private static FalsifyResult FalsifySecond(Clause clause, IPartialAssignment assignment)
-    {
-        return clause.FalsifySecond(assignment);
     }
 }
