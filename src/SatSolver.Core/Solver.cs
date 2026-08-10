@@ -169,6 +169,10 @@ public class Solver
     {
         _decisionMaker.Update(literals);
         _propagateQueue.Enqueue((literals[0], literals));
-        _watched.Add(literals);
+
+        if (literals.Count >= 2)
+        {
+            _watched.Add(literals);
+        }
     }
 }

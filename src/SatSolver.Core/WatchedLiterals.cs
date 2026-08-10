@@ -6,20 +6,17 @@ namespace SatSolver.Core;
 public class WatchedLiterals
 {
     private readonly int _nVar;
-    private readonly LinkedList<int>[] _binaryWatchlist;
-    private readonly LinkedList<Clause>[] _watchlist;
+    private readonly LinkedList<List<int>>[] _watchlist;
 
     public WatchedLiterals(int numberOfVars)
     {
         _nVar = numberOfVars;
 
         int n = 2 * numberOfVars + 1;
-        _binaryWatchlist = new LinkedList<int>[n];
-        _watchlist = new LinkedList<Clause>[n];
+        _watchlist = new LinkedList<List<int>>[n];
 
         for (int i = 0; i < n; ++i)
         {
-            _binaryWatchlist[i] = new();
             _watchlist[i] = new();
         }
     }
@@ -31,18 +28,8 @@ public class WatchedLiterals
     /// <param name="literals">The clause to be tracked.</param>
     public void Add(List<int> literals)
     {
-        if (literals.Count == 2)
-        {
-            _binaryWatchlist[literals[0] + _nVar].AddLast(literals[1]);
-            _binaryWatchlist[literals[1] + _nVar].AddLast(literals[0]);
-        }
-        else if (literals.Count > 2)
-        {
-            Clause clause = new(literals);
-
-            _watchlist[literals[0] + _nVar].AddLast(clause);
-            _watchlist[literals[1] + _nVar].AddLast(clause);
-        }
+        _watchlist[literals[0] + _nVar].AddLast(literals);
+        _watchlist[literals[1] + _nVar].AddLast(literals);
     }
 
     /// <summary>
@@ -54,81 +41,61 @@ public class WatchedLiterals
     /// <returns>A conflicting clause is one was detected; otherwise, null.</returns>
     public List<int>? FindUnitLiterals(int literal, IPartialAssignment assignment, Queue<(int, List<int>?)> unitLiterals)
     {
-        List<int>? conflict = FindUnitLiteralsBinary(unitLiterals, literal, assignment);
-
-        if (conflict != null)
-        {
-            return conflict;
-        }
-
-        return FindUnitLiterals(unitLiterals, literal, assignment);
-    }
-
-    private List<int>? FindUnitLiteralsBinary(
-        Queue<(int, List<int>?)> unitLiterals,
-        int literal,
-        IPartialAssignment assignment
-    )
-    {
-        LinkedListNode<int>? node = _binaryWatchlist[literal + _nVar].First;
+        LinkedList<List<int>> list = _watchlist[literal + _nVar];
+        LinkedListNode<List<int>>? node = list.First;
 
         while (node != null)
         {
-            int other = node.Value;
-            node = node.Next;
+            List<int> clause = node.ValueRef;
 
-            if (assignment.IsAssigned(-other))
+            if (clause[0] == literal)
             {
-                return [literal, other];
+                clause[0] = clause[1];
+                clause[1] = literal;
             }
 
-            if (!assignment.IsAssigned(other))
+            if (assignment.IsAssigned(clause[0]))
             {
-                unitLiterals.Enqueue((other, [literal, other]));
-            }
-        }
-
-        return null;
-    }
-
-    private List<int>? FindUnitLiterals(
-        Queue<(int, List<int>?)> unitLiterals,
-        int literal,
-        IPartialAssignment assignment
-    )
-    {
-        LinkedList<Clause> list = _watchlist[literal + _nVar];
-        LinkedListNode<Clause>? node = list.First;
-
-        while (node != null)
-        {
-            var clause = node.ValueRef;
-
-            var result = clause.Falsify(literal, assignment);
-
-            if (result.IsConflict)
-            {
-                return clause.Literals;
+                node = node.Next;
+                continue;
             }
 
-            if (result.UnitLiteral != 0)
+            if (FindNewWatchedLiteral(literal, assignment, clause))
             {
-                unitLiterals.Enqueue((result.UnitLiteral, clause.Literals));
-            }
-
-            if (result.NewWatchedLiteral != 0)
-            {
-                _watchlist[result.NewWatchedLiteral + _nVar].AddLast(clause);
+                _watchlist[clause[1] + _nVar].AddLast(clause);
                 var previous = node;
                 node = node.Next;
                 list.Remove(previous);
+                continue;
             }
             else
             {
                 node = node.Next;
             }
+
+            if (assignment.IsAssigned(-clause[0]))
+            {
+                return clause;
+            }
+
+            unitLiterals.Enqueue((clause[0], clause));
         }
 
         return null;
+    }
+
+    private static bool FindNewWatchedLiteral(int literal, IPartialAssignment assignment, List<int> clause)
+    {
+        for (int index = 2; index < clause.Count; ++index)
+        {
+            if (!assignment.IsAssigned(-clause[index]))
+            {
+                clause[1] = clause[index];
+                clause[index] = literal;
+                return true;
+            }
+        }
+
+        return false;
     }
 }
