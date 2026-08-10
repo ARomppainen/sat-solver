@@ -154,17 +154,19 @@ public class Solver
         if (literals.Count == 0)
         {
             _containsEmptyClause = true;
-            return;
         }
-
-        if (literals.Count == 1)
+        else if (literals.Count == 1)
         {
             _propagateQueue.Enqueue((literals[0], literals));
-            return;
         }
-
-        IClause clause = ClauseFactory.Create(literals, _assignment);
-        _watched.Add(clause);
+        else if (literals.Count == 2)
+        {
+            _watched.AddBinary(literals);
+        }
+        else
+        {
+            _watched.Add(new(literals));
+        }
     }
 
     private void LearnClause(List<int> literals)
@@ -172,10 +174,13 @@ public class Solver
         _decisionMaker.Update(literals);
         _propagateQueue.Enqueue((literals[0], literals));
 
-        if (literals.Count >= 2)
+        if (literals.Count == 2)
         {
-            IClause clause = ClauseFactory.Create(literals, _assignment);
-            _watched.Add(clause);
+            _watched.AddBinary(literals);
+        }
+        else if (literals.Count > 2)
+        {
+            _watched.Add(new(literals));
         }
     }
 }

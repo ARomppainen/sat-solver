@@ -3,23 +3,29 @@ using System.Diagnostics;
 namespace SatSolver.Core;
 
 /// <summary>
-/// Represents a clause with N literals.
+/// Represents a clause with N literals (N > 2).
 /// </summary>
-public class ClauseNary : IClause
+public class Clause
 {
     private int _watchIndex1;
     private int _watchIndex2;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// The list of literals in the clause.
+    /// </summary>
     public List<int> Literals { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// 1st watched literal value
+    /// </summary>
     public int Watched1 => Literals[_watchIndex1];
 
-    /// <inheritdoc />
+    /// <summary>
+    /// 2nd watched literal value
+    /// </summary>
     public int Watched2 => Literals[_watchIndex2];
 
-    public ClauseNary(List<int> literals, int watchIndex1 = 0, int watchIndex2 = 1)
+    public Clause(List<int> literals, int watchIndex1 = 0, int watchIndex2 = 1)
     {
         Literals = literals;
         _watchIndex1 = watchIndex1;
@@ -28,7 +34,11 @@ public class ClauseNary : IClause
         Debug.Assert(watchIndex1 != watchIndex2);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Falsify the first watched literal
+    /// </summary>
+    /// <param name="assignment">current truth assignment</param>
+    /// <returns><see cref="FalsifyResult"/> instance</returns>
     public FalsifyResult FalsifyFirst(IPartialAssignment assignment)
     {
         if (assignment.IsAssigned(Watched2))
@@ -62,7 +72,11 @@ public class ClauseNary : IClause
         return FalsifyResult.Propagate(Watched2);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Falsify the second watched literal
+    /// </summary>
+    /// <param name="assignment">current truth assignment</param>
+    /// <returns><see cref="FalsifyResult"/> instance</returns>
     public FalsifyResult FalsifySecond(IPartialAssignment assignment)
     {
         if (assignment.IsAssigned(Watched1))
