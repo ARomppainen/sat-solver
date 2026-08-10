@@ -12,7 +12,7 @@ public class Solver
     private readonly int _numberOfVars;
     private readonly VsidsHeuristic _decisionMaker;
     private readonly PartialAssignment _assignment;
-    private readonly Queue<(int, IClause?)> _propagateQueue;
+    private readonly Queue<(int, List<int>?)> _propagateQueue;
     private readonly WatchedLiterals _watched;
     private readonly SolverStatistics _stats;
     private bool _containsEmptyClause;
@@ -59,7 +59,7 @@ public class Solver
 
         while (true)
         {
-            IClause? conflict = Propagate();
+            List<int>? conflict = Propagate();
 
             if (conflict != null)
             {
@@ -116,11 +116,11 @@ public class Solver
     /// Check for new unit clauses.
     /// </summary>
     /// <returns>The conflict clause if propagation lead to a conflict; otherwise, null.</returns>
-    private IClause? Propagate()
+    private List<int>? Propagate()
     {
         while (_propagateQueue.Count > 0)
         {
-            (int literal, IClause? reason) = _propagateQueue.Dequeue();
+            (int literal, List<int>? reason) = _propagateQueue.Dequeue();
 
             if (_assignment.IsAssigned(literal))
             {
@@ -136,7 +136,7 @@ public class Solver
             _stats.Propagations++;
             _assignment.Add(literal, _decisionLevel, reason);
 
-            IClause? conflict = _watched.FindUnitLiterals(-literal, _assignment, _propagateQueue);
+            List<int>? conflict = _watched.FindUnitLiterals(-literal, _assignment, _propagateQueue);
 
             if (conflict != null)
             {
@@ -157,20 +157,25 @@ public class Solver
             return;
         }
 
-        IClause clause = ClauseFactory.Create(literals, _assignment);
-        _watched.Add(clause);
-
         if (literals.Count == 1)
         {
-            _propagateQueue.Enqueue((literals[0], clause));
+            _propagateQueue.Enqueue((literals[0], literals));
+            return;
         }
+
+        IClause clause = ClauseFactory.Create(literals, _assignment);
+        _watched.Add(clause);
     }
 
     private void LearnClause(List<int> literals)
     {
-        IClause clause = ClauseFactory.Create(literals, _assignment);
-        _watched.Add(clause);
-        _propagateQueue.Enqueue((literals[0], clause));
         _decisionMaker.Update(literals);
+        _propagateQueue.Enqueue((literals[0], literals));
+
+        if (literals.Count >= 2)
+        {
+            IClause clause = ClauseFactory.Create(literals, _assignment);
+            _watched.Add(clause);
+        }
     }
 }

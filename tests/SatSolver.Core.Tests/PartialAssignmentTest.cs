@@ -23,12 +23,12 @@ public class PartialAssignmentTest
     {
         PartialAssignment assignment = new(10, Substitute.For<IUndo>());
 
-        assignment.Add(10, 0, new ClauseUnary(10));
+        assignment.Add(10, 0, [10]);
         assignment.Add(1, 1);
-        assignment.Add(-2, 1, new ClauseBinary(-1, -2));
+        assignment.Add(-2, 1, [-1, -2]);
         assignment.Add(3, 2);
         assignment.Add(-4, 3);
-        assignment.Add(5, 3, new ClauseBinary(4, 5));
+        assignment.Add(5, 3, [4, 5]);
 
         Assert.Equal(6, assignment.Count);
 
@@ -48,12 +48,12 @@ public class PartialAssignmentTest
         IUndo undo = Substitute.For<IUndo>();
         PartialAssignment assignment = new(10, undo);
 
-        assignment.Add(10, 0, new ClauseUnary(10));
+        assignment.Add(10, 0, [10]);
         assignment.Add(1, 1);
-        assignment.Add(-2, 1, new ClauseBinary(-1, -2));
+        assignment.Add(-2, 1, [-1, -2]);
         assignment.Add(3, 2);
         assignment.Add(-4, 3);
-        assignment.Add(5, 3, new ClauseBinary(4, 5));
+        assignment.Add(5, 3, [4, 5]);
 
         assignment.Backjump(2);
 
@@ -103,19 +103,19 @@ public class PartialAssignmentTest
         PartialAssignment assignment = new(12, Substitute.For<IUndo>());
 
         assignment.Add(1, 1);
-        assignment.Add(-2, 1, new ClauseBinary(-1, -2));
-        assignment.Add(3, 1, new ClauseBinary(-1, 3));
-        assignment.Add(-4, 1, new ClauseBinary(-3, -4));
-        assignment.Add(5, 1, new ClauseNary([2, 4, 5]));
+        assignment.Add(-2, 1, [-1, -2]);
+        assignment.Add(3, 1, [-1, 3]);
+        assignment.Add(-4, 1, [-3, -4]);
+        assignment.Add(5, 1, [2, 4, 5]);
         assignment.Add(-6, 2);
-        assignment.Add(-7, 2, new ClauseNary([-5, 6, -7]));
-        assignment.Add(8, 2, new ClauseNary([2, 7, 8]));
-        assignment.Add(-9, 2, new ClauseBinary(-8, -9));
-        assignment.Add(10, 2, new ClauseBinary(-8, 10));
-        assignment.Add(11, 2, new ClauseNary([9, -10, 11]));
-        assignment.Add(-12, 2, new ClauseBinary(-10, -12));
+        assignment.Add(-7, 2, [-5, 6, -7]);
+        assignment.Add(8, 2, [2, 7, 8]);
+        assignment.Add(-9, 2, [-8, -9]);
+        assignment.Add(10, 2, [-8, 10]);
+        assignment.Add(11, 2, [9, -10, 11]);
+        assignment.Add(-12, 2, [-10, -12]);
 
-        (List<int> clause, int level) = assignment.AnalyzeConflict(new ClauseBinary(-11, 12), 2);
+        (List<int> clause, int level) = assignment.AnalyzeConflict([-11, 12], 2);
 
         Assert.Single(clause);
         Assert.Equal(-8, clause[0]);

@@ -32,12 +32,7 @@ public class WatchedLiterals
     public void Add(IClause clause)
     {
         _watchlist1[clause.Watched1 + _nVar].AddLast(clause);
-
-        int w2 = clause.Watched2;
-        if (w2 != 0)
-        {
-            _watchlist2[w2 + _nVar].AddLast(clause);
-        }
+        _watchlist2[clause.Watched2 + _nVar].AddLast(clause);
     }
 
     /// <summary>
@@ -47,9 +42,9 @@ public class WatchedLiterals
     /// <param name="assignment">The current partial assignment.</param>
     /// <param name="unitLiterals">The queue of unit literals to append.</param>
     /// <returns>A conflicting clause is one was detected; otherwise, null.</returns>
-    public IClause? FindUnitLiterals(int literal, IPartialAssignment assignment, Queue<(int, IClause?)> unitLiterals)
+    public List<int>? FindUnitLiterals(int literal, IPartialAssignment assignment, Queue<(int, List<int>?)> unitLiterals)
     {
-        IClause? conflict = FindUnitLiterals(unitLiterals, literal, assignment, _watchlist1, FalsifyFirst, _nVar);
+        List<int>? conflict = FindUnitLiterals(unitLiterals, literal, assignment, _watchlist1, FalsifyFirst, _nVar);
 
         if (conflict != null)
         {
@@ -59,8 +54,8 @@ public class WatchedLiterals
         return FindUnitLiterals(unitLiterals, literal, assignment, _watchlist2, FalsifySecond, _nVar);
     }
 
-    private static IClause? FindUnitLiterals(
-        Queue<(int, IClause?)> unitLiterals,
+    private static List<int>? FindUnitLiterals(
+        Queue<(int, List<int>?)> unitLiterals,
         int literal,
         IPartialAssignment assignment,
         LinkedList<IClause>[] watchlist,
@@ -79,12 +74,12 @@ public class WatchedLiterals
 
             if (result.IsConflict)
             {
-                return clause;
+                return clause.Literals;
             }
 
             if (result.UnitLiteral != 0)
             {
-                unitLiterals.Enqueue((result.UnitLiteral, clause));
+                unitLiterals.Enqueue((result.UnitLiteral, clause.Literals));
             }
 
             if (result.NewWatchedLiteral != 0)

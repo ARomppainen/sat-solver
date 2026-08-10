@@ -7,7 +7,7 @@ public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignmen
     private readonly int _nVar = numberOfVars;
     private readonly Stack<int> _trail = new(numberOfVars);
     private readonly int[] _level = new int[numberOfVars + 1];
-    private readonly IClause?[] _reason = new IClause?[numberOfVars + 1];
+    private readonly List<int>?[] _reason = new List<int>?[numberOfVars + 1];
     private readonly bool[] _assignment = new bool[2 * numberOfVars + 1];
     private readonly IUndo _undo = undo;
 
@@ -34,7 +34,7 @@ public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignmen
     /// <param name="literal">literal value (a non-zero integer)</param>
     /// <param name="level">decision level (non-negative integer)</param>
     /// <param name="reason">the reason for the literal (null for decisions)</param>
-    public void Add(int literal, int level, IClause? reason = null)
+    public void Add(int literal, int level, List<int>? reason = null)
     {
         _trail.Push(literal);
         _level[Math.Abs(literal)] = level;
@@ -111,7 +111,7 @@ public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignmen
     ///   1) the learned clause <br/>
     ///   2) the decision level to backjump into
     /// </returns>
-    public (List<int>, int) AnalyzeConflict(IClause conflict, int decisionLevel)
+    public (List<int>, int) AnalyzeConflict(List<int> conflict, int decisionLevel)
     {
         // Note that the actual value at index 0 will be set at the end of the method.
         List<int> learned = [0];
@@ -120,7 +120,7 @@ public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignmen
         int counter = 0;
         int p = 0;
         int pVar;
-        IClause? pReason = conflict;
+        List<int>? pReason = conflict;
         bool[] seenVariables = new bool[_nVar + 1];
 
         // Traverse the decision trail in reverse using breadth-first search.
@@ -131,7 +131,7 @@ public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignmen
         {
             Debug.Assert(pReason != null);
 
-            foreach (int q in pReason.Literals)
+            foreach (int q in pReason)
             {
                 if (q == p)
                 {
