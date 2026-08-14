@@ -109,4 +109,13 @@ public class MaxHeapTest
         Assert.Equal(1, heap.Pop());
         Assert.Equal(2, heap.Pop());
     }
+
+    [Fact]
+    public void Push_ShouldReturnFalse_WhenHeapAlreadyContainsValue()
+    {
+        MaxHeap heap = MaxHeap.Empty(5);
+
+        Assert.True(heap.Push(3));
+        Assert.False(heap.Push(3));
+    }
 }
