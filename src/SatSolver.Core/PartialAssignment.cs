@@ -85,7 +85,7 @@ public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignmen
         int level = decisions.Count > 1 ? _level[Math.Abs(decisions[1])] : 0;
 
         // Note that the literals in the clause are in reverse decision order.
-        // E.g., if the decisions are 4, -2 and 5, the clause will be [5, -2, 4].
+        // E.g., if the decisions are 4, -2 and 5, the clause will be [-5, 2, -4].
         // This ordering is currently important, because the clauses with three
         // or more literals will always be assigned to "watch" the first two
         // literals in the list. Since backjump will remove the literal "5" from

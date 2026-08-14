@@ -20,7 +20,7 @@ public class VsidsHeuristic : IUndo
     private const double RescaleFactor = 1e-100;
 
     /// <summary>
-    /// Initializes a new instance of Vsids class.
+    /// Initializes a new instance of VsidsHeuristic class.
     /// </summary>
     /// <param name="formula">The formula to base the heuristic on.</param>
     /// <param name="decayThreshold">The frequency of how often the scores are adjusted.</param>

@@ -3,6 +3,10 @@ namespace SatSolver.Core;
 /// <summary>
 /// Data structure that orchestrates the two-watched-literal scheme.
 /// </summary>
+/// <remarks>
+/// The watched literals are always the first two elements in the list literals,
+/// i.e. clause[0] and clause[1].
+/// </remarks>
 public class WatchedLiterals
 {
     private readonly int _nVar;

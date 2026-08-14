@@ -45,7 +45,7 @@ public class Solver
     /// using conflict-driven clause learning (CDCL) algorithm.
     /// </summary>
     /// <param name="timeout">An amount of time after which the execution of the solver is aborted (optional).</param>
-    /// <returns>'satisfiable' result with a truth assignment or 'unsatisfiable' result</returns>
+    /// <returns>'satisfiable' result with a truth assignment or 'unsatisfiable' / 'unknown' result</returns>
     public SolveResult Solve(TimeSpan? timeout = null)
     {
         long end = (long)(timeout ?? new TimeSpan(1, 0, 0, 0, 0)).TotalMilliseconds;
