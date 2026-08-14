@@ -14,8 +14,8 @@ public class VsidsHeuristic : IUndo
     private readonly MaxHeap _vars;
 #endif
     private int _decayCounter;
-    private readonly int _decayThreshold = 100;
-    private readonly double _decayFactor = 0.995;
+    private readonly int _decayThreshold;
+    private readonly double _decayFactor;
     private const double RescaleThreshold = 1e+100;
     private const double RescaleFactor = 1e-100;
 
