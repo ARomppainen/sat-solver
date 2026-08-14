@@ -63,24 +63,14 @@ static class Program
         Console.WriteLine($"Iterations: {iterations}");
         Console.WriteLine($"Timeout: {timeout}");
 
-        // List<int> thresholds = [1, 2, 4, 8, 16, 32, 64, 128];
-        List<int> thresholds = [16];
-        // List<double> factors = [0.80, 0.85, 0.90, 0.95];
-        List<double> factors = [0.86, 0.87, 0.88, 0.89, 0.90, 0.91, 0.92, 0.93, 0.94];
 
-        foreach (int threshold in thresholds)
-        {
-            foreach (double factor in factors)
-            {
-                List<FormulaResult> results = RunAnalysis(formulas, iterations, new(0, 0, timeout), threshold, factor);
-                PrintResults(results, threshold, factor);
-            }
-        }
+        List<FormulaResult> results = RunAnalysis(formulas, iterations, new(0, 0, timeout));
+        PrintResults(results);
 
         return 0;
     }
 
-    private static List<FormulaResult> RunAnalysis(List<Formula> formulas, int iterations, TimeSpan timeout, int decayThreshold, double decayFactor)
+    private static List<FormulaResult> RunAnalysis(List<Formula> formulas, int iterations, TimeSpan timeout)
     {
         List<FormulaResult> results = [];
 
@@ -88,13 +78,13 @@ static class Program
         {
             Formula formula = formulas[i];
 
-            // Console.WriteLine($"({i + 1} / {formulas.Count}) Sampling {formula.Name}");
+            Console.WriteLine($"({i + 1} / {formulas.Count}) Sampling {formula.Name}");
             List<Sample> samples = [];
 
             for (int iter = 1; iter <= iterations; ++iter)
             {
                 Stopwatch stopwatch = Stopwatch.StartNew();
-                SolveResult solveResult = new Solver(formula, decayFactor, decayThreshold).Solve(timeout);
+                SolveResult solveResult = new Solver(formula).Solve(timeout);
                 stopwatch.Stop();
                 samples.Add(new(iter, stopwatch.ElapsedMilliseconds, solveResult.Type == SolveResultType.UNKNOWN));
 
@@ -111,22 +101,17 @@ static class Program
         return results;
     }
 
-    private static void PrintResults(List<FormulaResult> results, int decayThreshold, double decayFactor)
+    private static void PrintResults(List<FormulaResult> results)
     {
-        double totalAvgMilliseconds = 0;
-
-        // Console.WriteLine("Name;NumberOfVars;NumberOfClauses;AvgMilliseconds;Timeout");
+        Console.WriteLine("Name;NumberOfVars;NumberOfClauses;AvgMilliseconds;Timeout");
 
         foreach (FormulaResult result in results)
         {
-            // string name = result.Name.Split(Path.DirectorySeparatorChar)[^1];
+            string name = result.Name.Split(Path.DirectorySeparatorChar)[^1];
             double avgMilliseconds = result.Samples.Average(row => row.Milliseconds);
-            totalAvgMilliseconds += avgMilliseconds;
-            // string avgMillisecondsStr = avgMilliseconds.ToString(CultureInfo.InvariantCulture); // Use decimal point
-            // string timeoutStr = result.Samples.Any(row => row.IsUnknown) ? "TRUE" : "FALSE";
-            // Console.WriteLine($"{name};{result.NumberOfVars};{result.NumberOfClauses};{avgMillisecondsStr};{timeoutStr}");
+            string avgMillisecondsStr = avgMilliseconds.ToString(CultureInfo.InvariantCulture); // Use decimal point
+            string timeoutStr = result.Samples.Any(row => row.IsUnknown) ? "TRUE" : "FALSE";
+            Console.WriteLine($"{name};{result.NumberOfVars};{result.NumberOfClauses};{avgMillisecondsStr};{timeoutStr}");
         }
-
-        Console.WriteLine("{0,5}{1,5}{2,20}", decayThreshold, decayFactor, totalAvgMilliseconds.ToString("F03"));
     }
 }
