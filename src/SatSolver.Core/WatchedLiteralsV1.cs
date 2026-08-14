@@ -7,12 +7,12 @@ namespace SatSolver.Core;
 /// The watched literals are always the first two elements in the list literals,
 /// i.e. clause[0] and clause[1].
 /// </remarks>
-public class WatchedLiterals
+public class WatchedLiteralsV1
 {
     private readonly int _nVar;
     private readonly LinkedList<List<int>>[] _watchlist;
 
-    public WatchedLiterals(int numberOfVars)
+    public WatchedLiteralsV1(int numberOfVars)
     {
         _nVar = numberOfVars;
 
@@ -64,7 +64,7 @@ public class WatchedLiterals
                 continue;
             }
 
-            if (FindNewWatchedLiteral(literal, assignment, clause))
+            if (WatchedLiteralsUtil.FindNewWatchedLiteral(literal, assignment, clause))
             {
                 _watchlist[clause[1] + _nVar].AddLast(clause);
                 var previous = node;
@@ -86,20 +86,5 @@ public class WatchedLiterals
         }
 
         return null;
-    }
-
-    private static bool FindNewWatchedLiteral(int literal, IPartialAssignment assignment, List<int> clause)
-    {
-        for (int index = 2; index < clause.Count; ++index)
-        {
-            if (!assignment.IsAssigned(-clause[index]))
-            {
-                clause[1] = clause[index];
-                clause[index] = literal;
-                return true;
-            }
-        }
-
-        return false;
     }
 }

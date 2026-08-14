@@ -13,7 +13,11 @@ public class Solver
     private readonly VsidsHeuristic _decisionMaker;
     private readonly PartialAssignment _assignment;
     private readonly Queue<(int, List<int>?)> _propagateQueue;
-    private readonly WatchedLiterals _watched;
+#if USE_WATCHED_LITERALS_V2
+    private readonly WatchedLiteralsV2 _watched;
+#else
+    private readonly WatchedLiteralsV1 _watched;
+#endif
     private readonly SolverStatistics _stats;
     private bool _containsEmptyClause;
     private int _decisionLevel;
