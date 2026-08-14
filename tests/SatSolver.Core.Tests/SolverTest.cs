@@ -19,6 +19,6 @@ public class SolverTest
 
         SolveResult result = new Solver(formula).Solve(new(0, 0, 0));
 
-        Assert.Equal(SolveResult.ResultType.UNKNOWN, result.Type);
+        Assert.Equal(SolveResultType.UNKNOWN, result.Type);
     }
 }

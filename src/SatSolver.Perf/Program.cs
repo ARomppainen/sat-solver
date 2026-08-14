@@ -96,9 +96,9 @@ static class Program
                 Stopwatch stopwatch = Stopwatch.StartNew();
                 SolveResult solveResult = new Solver(formula, decayFactor, decayThreshold).Solve(timeout);
                 stopwatch.Stop();
-                samples.Add(new(iter, stopwatch.ElapsedMilliseconds, solveResult.Type == SolveResult.ResultType.UNKNOWN));
+                samples.Add(new(iter, stopwatch.ElapsedMilliseconds, solveResult.Type == SolveResultType.UNKNOWN));
 
-                if (solveResult.Type == SolveResult.ResultType.UNKNOWN)
+                if (solveResult.Type == SolveResultType.UNKNOWN)
                 {
                     // End sampling if solver timed out
                     break;

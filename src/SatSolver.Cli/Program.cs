@@ -96,13 +96,13 @@ static class Program
 
     private static void PrintResult(SolveResult result)
     {
-        if (result.Type == SolveResult.ResultType.UNSATISFIABLE)
+        if (result.Type == SolveResultType.UNSATISFIABLE)
         {
             Console.WriteLine("s UNSATISFIABLE");
             return;
         }
 
-        if (result.Type == SolveResult.ResultType.UNKNOWN)
+        if (result.Type == SolveResultType.UNKNOWN)
         {
             Console.WriteLine("s UNKNOWN");
             return;

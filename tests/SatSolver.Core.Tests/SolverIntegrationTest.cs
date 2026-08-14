@@ -11,7 +11,7 @@ public class SolverIntegrationTest
     {
         SolveResult result = new Solver(formula).Solve();
 
-        Assert.Equal(SolveResult.ResultType.SATISFIABLE, result.Type);
+        Assert.Equal(SolveResultType.SATISFIABLE, result.Type);
         Assert.Equal(formula.NumberOfVars, result.Assignment.Count);
     }
 
@@ -21,6 +21,6 @@ public class SolverIntegrationTest
     {
         SolveResult result = new Solver(formula).Solve();
 
-        Assert.Equal(SolveResult.ResultType.UNSATISFIABLE, result.Type);
+        Assert.Equal(SolveResultType.UNSATISFIABLE, result.Type);
     }
 }

@@ -48,14 +48,23 @@ public class Solver
     /// <returns>'satisfiable' result with a truth assignment or 'unsatisfiable' result</returns>
     public SolveResult Solve(TimeSpan? timeout = null)
     {
+        long end = (long)(timeout ?? new TimeSpan(1, 0, 0, 0, 0)).TotalMilliseconds;
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        SolveResultType resultType = Solve(stopwatch, end);
+        stopwatch.Stop();
+        _stats.Milliseconds = stopwatch.ElapsedMilliseconds;
+        List<int> assignment = resultType == SolveResultType.SATISFIABLE ? _assignment.ToList() : [];
+        return new SolveResult(resultType, assignment, _stats);
+    }
+
+
+    private SolveResultType Solve(Stopwatch stopwatch, long timeout)
+    {
         if (_containsEmptyClause)
         {
             // Formula with an empty clause is unsatisfiable
-            return SolveResult.Unsatisfiable(_stats);
+            return SolveResultType.UNSATISFIABLE;
         }
-
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        long end = (long)(timeout ?? new TimeSpan(1, 0, 0, 0, 0)).TotalMilliseconds;
 
         while (true)
         {
@@ -65,9 +74,7 @@ public class Solver
             {
                 if (_decisionLevel == 0)
                 {
-                    stopwatch.Stop();
-                    _stats.Milliseconds = stopwatch.ElapsedMilliseconds;
-                    return SolveResult.Unsatisfiable(_stats);
+                    return SolveResultType.UNSATISFIABLE;
                 }
 
 #if USE_SIMPLE_CLAUSE_LEARNING
@@ -84,19 +91,15 @@ public class Solver
             {
                 if (_assignment.Count == _numberOfVars)
                 {
-                    stopwatch.Stop();
-                    _stats.Milliseconds = stopwatch.ElapsedMilliseconds;
-                    return SolveResult.Satisfiable(_assignment.ToList(), _stats);
+                    return SolveResultType.SATISFIABLE;
                 }
 
                 Decide();
             }
 
-            if (stopwatch.ElapsedMilliseconds >= end)
+            if (stopwatch.ElapsedMilliseconds >= timeout)
             {
-                stopwatch.Stop();
-                _stats.Milliseconds = stopwatch.ElapsedMilliseconds;
-                return SolveResult.Unknown(_stats);
+                return SolveResultType.UNKNOWN;
             }
         }
     }
