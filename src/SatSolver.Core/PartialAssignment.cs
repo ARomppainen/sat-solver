@@ -191,12 +191,6 @@ public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignmen
         return [.. _trail.OrderBy(Math.Abs)];
     }
 
-    /// <inheritdoc />
-    public override string ToString()
-    {
-        return $"[{string.Join(", ", _trail.Reverse())}]";
-    }
-
     private void UndoOne()
     {
         int literal = _trail.Pop();

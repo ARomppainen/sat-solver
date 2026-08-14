@@ -135,18 +135,4 @@ public class PartialAssignmentTest
 
         Assert.Equivalent(new List<int>([-1, 2, 3, -4, 5]), assignment.ToList());
     }
-
-    [Fact]
-    public void ToString_ShouldReturnStringRepresentation()
-    {
-        PartialAssignment assignment = new(5, Substitute.For<IUndo>());
-
-        assignment.Add(3, 1);
-        assignment.Add(-1, 2);
-        assignment.Add(2, 3);
-        assignment.Add(-4, 4);
-        assignment.Add(5, 5);
-
-        Assert.Equal("[3, -1, 2, -4, 5]", assignment.ToString());
-    }
 }
