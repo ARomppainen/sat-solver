@@ -152,30 +152,30 @@ public class Solver
         return null;
     }
 
-    private void AddClause(List<int> literals)
+    private void AddClause(List<int> clause)
     {
-        if (literals.Count == 0)
+        if (clause.Count == 0)
         {
             _containsEmptyClause = true;
         }
-        else if (literals.Count == 1)
+        else if (clause.Count == 1)
         {
-            _propagateQueue.Enqueue((literals[0], literals));
+            _propagateQueue.Enqueue((clause[0], clause));
         }
         else
         {
-            _watched.Add(literals);
+            _watched.Add(clause);
         }
     }
 
-    private void LearnClause(List<int> literals)
+    private void LearnClause(List<int> clause)
     {
-        _decisionMaker.Update(literals);
-        _propagateQueue.Enqueue((literals[0], literals));
+        _decisionMaker.Update(clause);
+        _propagateQueue.Enqueue((clause[0], clause));
 
-        if (literals.Count >= 2)
+        if (clause.Count >= 2)
         {
-            _watched.Add(literals);
+            _watched.Add(clause);
         }
     }
 }

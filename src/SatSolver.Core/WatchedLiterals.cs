@@ -25,11 +25,11 @@ public class WatchedLiterals
     /// Add new clause to be tracked. This can be an initial clause found in the
     /// formula or a learned clause.
     /// </summary>
-    /// <param name="literals">The clause to be tracked.</param>
-    public void Add(List<int> literals)
+    /// <param name="clause">The clause to be tracked.</param>
+    public void Add(List<int> clause)
     {
-        _watchlist[literals[0] + _nVar].AddLast(literals);
-        _watchlist[literals[1] + _nVar].AddLast(literals);
+        _watchlist[clause[0] + _nVar].AddLast(clause);
+        _watchlist[clause[1] + _nVar].AddLast(clause);
     }
 
     /// <summary>

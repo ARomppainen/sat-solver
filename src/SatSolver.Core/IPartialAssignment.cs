@@ -14,17 +14,17 @@ namespace SatSolver.Core;
 public interface IPartialAssignment
 {
     /// <summary>
-    /// Check if the variable is part of the current truth assignment.
-    /// </summary>
-    /// <param name="variable">variable value (a non-zero integer)</param>
-    /// <returns>true if the variable is assigned; otherwise, false</returns>
-    public bool IsAssigned(int variable);
-
-    /// <summary>
-    /// Check if the literal is unassigned (i.e. the variable or its negation is
-    /// not part of the current truth assignment).
+    /// Check if the literal is part of the current truth assignment.
     /// </summary>
     /// <param name="literal">literal value (a non-zero integer)</param>
+    /// <returns>true if the literal is assigned; otherwise, false</returns>
+    public bool IsAssigned(int literal);
+
+    /// <summary>
+    /// Check if the variable is unassigned (i.e. neither the positive or the
+    /// negated literal are part of the current truth assignment).
+    /// </summary>
+    /// <param name="variable">literal value (a non-zero integer)</param>
     /// <returns>true if the literal is unassigned; otherwise, false</returns>
-    public bool IsUnassigned(int literal);
+    public bool IsUnassigned(int variable);
 }
