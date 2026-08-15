@@ -82,6 +82,9 @@ static class Program
 
         Formula formula = DimacsParser.Parse(parsedFile.FullName, reader.Lines());
         TimeSpan? timeout = timeoutSeconds > 0 ? new TimeSpan(0, 0, timeoutSeconds) : null;
+
+        PrintConditionalCompilationSymbols();
+        Console.WriteLine("c Solving...");
         SolveResult result = new Solver(formula).Solve(timeout);
 
         PrintResult(result);
@@ -139,5 +142,20 @@ static class Program
         Console.WriteLine("{0, -15}{1, 15}", "c decisions:", stats.Decisions);
         Console.WriteLine("{0, -15}{1, 15}", "c propagations:", stats.Propagations);
         Console.WriteLine("{0, -15}{1, 15}{2, 8}", "c process time:", (stats.Milliseconds / 1000.0).ToString("F02"), "seconds");
+    }
+
+    private static void PrintConditionalCompilationSymbols()
+    {
+#if USE_SIMPLE_CLAUSE_LEARNING
+        Console.WriteLine("c USE_SIMPLE_CLAUSE_LEARNING");
+#endif
+
+#if USE_MAX_HEAP
+        Console.WriteLine("c USE_MAX_HEAP");
+#endif
+
+#if USE_WATCHED_LITERALS_V2
+        Console.WriteLine("c USE_WATCHED_LITERALS_V2");
+#endif
     }
 }
