@@ -1,10 +1,10 @@
 using System.Reflection;
 
-using Xunit.Sdk;
-using Xunit.v3;
-
 using SatSolver.Dimacs;
 using SatSolver.Shared;
+
+using Xunit.Sdk;
+using Xunit.v3;
 
 namespace SatSolver.Core.Tests;
 
