@@ -51,8 +51,9 @@ public class WatchedLiteralsV2
     {
         List<List<int>> watched = _watchlist[literal + _nVar];
 
-        int i, j;
-        for (i = 0, j = 0; i < watched.Count;)
+        int i = 0;
+        int j = 0;
+        while (i < watched.Count)
         {
             List<int> clause = watched[i++];
 
