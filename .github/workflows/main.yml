@@ -27,5 +27,11 @@ jobs:
         run: |
           dotnet dotnet-sonarscanner begin /o:"aromppainen" /k:"ARomppainen_sat-solver" /d:sonar.token="$SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
           dotnet build --no-incremental
-          dotnet dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
+          dotnet dotnet-coverage collect "tests/SatSolver.Dimacs.Tests/bin/Debug/net10.0/SatSolver.Dimacs.Tests" -f xml -o "coverage1.xml"
+          dotnet dotnet-coverage collect "tests/SatSolver.Core.Tests/bin/Debug/net10.0/SatSolver.Core.Tests" -f xml -o "coverage2.xml"
+          dotnet build --property:DefineConstants="USE_MAX_HEAP" --no-incremental
+          dotnet dotnet-coverage collect "tests/SatSolver.Core.Tests/bin/Debug/net10.0/SatSolver.Core.Tests" -f xml -o "coverage3.xml"
+          dotnet build --property:DefineConstants="USE_WATCHED_LITERALS_V2" --no-incremental
+          dotnet dotnet-coverage collect "tests/SatSolver.Core.Tests/bin/Debug/net10.0/SatSolver.Core.Tests" -f xml -o "coverage4.xml"
+          dotnet dotnet-coverage merge coverage*.xml -o "coverage.xml" -f "xml"
           dotnet dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"
