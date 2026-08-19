@@ -33,10 +33,6 @@ public class VsidsHeuristic : IUndo
         _decayThreshold = decayThreshold;
         _decayFactor = decayFactor;
 
-#if USE_MAX_HEAP
-        _vars = MaxHeap.Create(_nVars, (a, b) => _scores[a] < _scores[b] ? -1 : 1);
-#endif
-
         foreach (List<int> clause in formula.Clauses)
         {
             foreach (int literal in clause)
@@ -44,6 +40,10 @@ public class VsidsHeuristic : IUndo
                 _scores[Math.Abs(literal)] += 1.0;
             }
         }
+
+#if USE_MAX_HEAP
+        _vars = MaxHeap.Create(_nVars, (a, b) => _scores[a] < _scores[b] ? -1 : _scores[a] > _scores[b] ? 1 : b - a);
+#endif
     }
 
     /// <summary>
@@ -94,7 +94,16 @@ public class VsidsHeuristic : IUndo
     {
         foreach (int literal in learnedClause)
         {
+#if USE_MAX_HEAP
+            int var = Math.Abs(literal);
+            _scores[var] += 1.0;
+            if (!_vars.Push(var))
+            {
+                _vars.UpHeap(var);
+            }
+#else
             _scores[Math.Abs(literal)] += 1.0;
+#endif
         }
 
         _decayCounter++;
@@ -116,17 +125,5 @@ public class VsidsHeuristic : IUndo
                 _scores[i] *= RescaleFactor;
             }
         }
-
-#if USE_MAX_HEAP
-        foreach (int literal in learnedClause)
-        {
-            int v = Math.Abs(literal);
-
-            if (!_vars.Push(v))
-            {
-                _vars.UpHeap(v);
-            }
-        }
-#endif
     }
 }
