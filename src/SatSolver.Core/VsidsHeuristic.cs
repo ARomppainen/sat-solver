@@ -16,8 +16,6 @@ public class VsidsHeuristic : IUndo
     private int _decayCounter;
     private readonly int _decayThreshold;
     private readonly double _decayFactor;
-    private const double RescaleThreshold = 1e+100;
-    private const double RescaleFactor = 1e-100;
 
     /// <summary>
     /// Initializes a new instance of VsidsHeuristic class.
@@ -115,14 +113,6 @@ public class VsidsHeuristic : IUndo
             for (int i = 1; i <= _nVars; ++i)
             {
                 _scores[i] *= _decayFactor;
-            }
-        }
-
-        if (learnedClause.Any(l => _scores[Math.Abs(l)] > RescaleThreshold))
-        {
-            for (int i = 1; i <= _nVars; ++i)
-            {
-                _scores[i] *= RescaleFactor;
             }
         }
     }
