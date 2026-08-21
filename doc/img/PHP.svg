@@ -58,27 +58,6 @@
 <path transform="matrix(1,0,0,-1,0,612)" d="M50.4 81.6H734.4V558H50.4Z" clip-rule="evenodd"/>
 </clipPath>
 <clipPath id="clip_20">
-<path transform="matrix(1,0,0,-1,0,612)" d="M50.4 81.6H734.4V558H50.4Z" clip-rule="evenodd"/>
-</clipPath>
-<clipPath id="clip_21">
-<path transform="matrix(1,0,0,-1,0,612)" d="M50.4 81.6H734.4V558H50.4Z" clip-rule="evenodd"/>
-</clipPath>
-<clipPath id="clip_22">
-<path transform="matrix(1,0,0,-1,0,612)" d="M50.4 81.6H734.4V558H50.4Z" clip-rule="evenodd"/>
-</clipPath>
-<clipPath id="clip_23">
-<path transform="matrix(1,0,0,-1,0,612)" d="M50.4 81.6H734.4V558H50.4Z" clip-rule="evenodd"/>
-</clipPath>
-<clipPath id="clip_24">
-<path transform="matrix(1,0,0,-1,0,612)" d="M50.4 81.6H734.4V558H50.4Z" clip-rule="evenodd"/>
-</clipPath>
-<clipPath id="clip_25">
-<path transform="matrix(1,0,0,-1,0,612)" d="M50.4 81.6H734.4V558H50.4Z" clip-rule="evenodd"/>
-</clipPath>
-<clipPath id="clip_26">
-<path transform="matrix(1,0,0,-1,0,612)" d="M50.4 81.6H734.4V558H50.4Z" clip-rule="evenodd"/>
-</clipPath>
-<clipPath id="clip_27">
 <path transform="matrix(1,0,0,-1,0,612)" d="M50.4 77.04H736.80007V558H50.4Z" clip-rule="evenodd"/>
 </clipPath>
 </defs>
@@ -89,91 +68,70 @@
 <g clip-path="url(#clip_2)">
 <path transform="matrix(1,0,0,-1,0,612)" d="M50.4 81.534H734.43008V558.004H50.4Z" fill="#ffffff" fill-rule="evenodd"/>
 </g>
-<path transform="matrix(1,0,0,-1,0,612)" stroke-width=".6225" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#d9d9d9" d="M155.58 517.09V109.65M217.83 517.09V109.65M280.08 517.09V109.65M342.33 517.09V109.65M404.58 517.09V109.65M466.83 517.09V109.65M529.08 517.09V109.65M591.33 517.09V109.65M653.58 517.09V109.65M715.84 517.09V109.65"/>
-<path transform="matrix(1,0,0,-1,0,612)" d="M95.419 509.3H93.319V500.83H95.419ZM123.21 451.13H93.319V442.56H123.21ZM553.18 392.86H93.319V384.4H553.18ZM715.83 334.7H93.319V326.13H715.83ZM715.87 276.53H93.319V267.96H715.87ZM715.83 218.26H93.319V209.8H715.83ZM715.87 160.1H93.319V151.53H715.87Z" fill="#70ad47"/>
-<path transform="matrix(1,0,0,-1,0,612)" d="M93.626 384.4H93.319V375.83H93.626ZM124.5 326.13H93.319V317.67H124.5ZM97.61 267.96H93.319V259.4H97.61ZM96.714 209.8H93.319V201.23H96.714ZM460.45 151.53H93.319V143.07H460.45Z" fill="#ed7d31"/>
-<path transform="matrix(1,0,0,-1,0,612)" d="M93.527 375.83H93.319V367.27H93.527ZM115.14 317.67H93.319V309.1H115.14ZM96.515 259.4H93.319V250.93H96.515ZM95.917 201.23H93.319V192.67H95.917ZM340.63 143.07H93.319V134.5H340.63Z" fill="#a5a5a5"/>
-<path transform="matrix(1,0,0,-1,0,612)" d="M94.921 483.7H93.319V475.23H94.921ZM112.85 425.53H93.319V416.97H112.85ZM439.04 367.27H93.319V358.8H439.04ZM715.83 309.1H93.319V300.53H715.83ZM715.87 250.93H93.319V242.37H715.87ZM715.83 192.67H93.319V184.2H715.83ZM715.83 134.5H93.319V125.94H715.83Z" fill="#ffc000"/>
-<path transform="matrix(1,0,0,-1,0,612)" d="M97.013 475.23H93.319V466.67H97.013ZM266.13 416.97H93.319V408.4H266.13ZM715.83 358.8H93.319V350.23H715.83ZM715.83 300.53H93.319V292.07H715.83ZM715.83 242.37H93.319V233.8H715.83ZM715.87 184.2H93.319V175.64H715.87ZM715.87 125.94H93.319V117.37H715.87Z" fill="#5b9bd5"/>
+<path transform="matrix(1,0,0,-1,0,612)" stroke-width=".6225" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#d9d9d9" d="M197.11 517.09V109.65M300.79 517.09V109.65M404.58 517.09V109.65M508.36 517.09V109.65M612.04 517.09V109.65M715.84 517.09V109.65"/>
+<path transform="matrix(1,0,0,-1,0,612)" d="M95.32 503.52H93.319V488.58H95.32ZM116.53 401.63H93.319V386.69H116.53ZM275.2 299.74H93.319V284.8H275.2ZM715.83 197.95H93.319V183.01H715.83Z" fill="#70ad47"/>
+<path transform="matrix(1,0,0,-1,0,612)" d="M95.618 488.58H93.319V473.64H95.618ZM119.12 386.69H93.319V371.75H119.12ZM284.56 284.8H93.319V269.96H284.56ZM715.86 183.01H93.319V168.07H715.86Z" fill="#ed7d31"/>
+<path transform="matrix(1,0,0,-1,0,612)" d="M94.921 473.64H93.319V458.7H94.921ZM109.46 371.75H93.319V356.81H109.46ZM205.98 269.96H93.319V255.02H205.98ZM641.73 168.07H93.319V153.13H641.73Z" fill="#a5a5a5"/>
+<path transform="matrix(1,0,0,-1,0,612)" d="M94.722 458.7H93.319V443.76H94.722ZM107.97 356.81H93.319V341.87H107.97ZM202.39 255.02H93.319V240.08H202.39ZM626.19 153.13H93.319V138.19H626.19Z" fill="#ffc000"/>
+<path transform="matrix(1,0,0,-1,0,612)" d="M94.822 443.76H93.319V428.82H94.822ZM164.04 341.87H93.319V326.93H164.04ZM715.83 240.08H93.319V225.14H715.83ZM715.83 138.19H93.319V123.25H715.83Z" fill="#5b9bd5"/>
 <path transform="matrix(1,0,0,-1,0,612)" stroke-width=".6225" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#d9d9d9" d="M93.319 517.09V109.65"/>
 <g clip-path="url(#clip_3)">
 <text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="91.44">0</tspan></text>
 </g>
 <g clip-path="url(#clip_4)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="148.03 151.79805 155.5661 159.33415">2000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="189.53 193.32199 197.11399 200.90598">5000</tspan></text>
 </g>
 <g clip-path="url(#clip_5)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="210.29 214.08199 217.87398 221.66597">4000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="291.41 295.202 298.994 302.78599 306.57798">10000</tspan></text>
 </g>
 <g clip-path="url(#clip_6)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="272.54 276.332 280.124 283.916">6000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="395.18 398.94804 402.71607 406.4841 410.25215">15000</tspan></text>
 </g>
 <g clip-path="url(#clip_7)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="334.8 338.59199 342.38398 346.17597">8000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="498.94 502.732 506.524 510.31599 514.108">20000</tspan></text>
 </g>
 <g clip-path="url(#clip_8)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="395.18 398.94804 402.71607 406.4841 410.25215">10000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="602.71 606.502 610.294 614.086 617.878">25000</tspan></text>
 </g>
 <g clip-path="url(#clip_9)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="457.44 461.232 465.024 468.81599 472.60798">12000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="706.49 710.25808 714.0261 717.7942 721.56228">30000</tspan></text>
 </g>
 <g clip-path="url(#clip_10)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="519.7 523.492 527.284 531.076 534.868">14000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.488" font-family="Calibri"><tspan y="-464.04" x="55.8 59.68627 63.662405 67.548679 71.34509 75.14151 77.02849 80.21089 84.09716">php09.cnf</tspan></text>
 </g>
 <g clip-path="url(#clip_11)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="581.95 585.742 589.534 593.326 597.118">16000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.488" font-family="Calibri"><tspan y="-362.16" x="55.8 59.68627 63.662405 67.548679 71.34509 75.14151 77.02849 80.21089 84.09716">php10.cnf</tspan></text>
 </g>
 <g clip-path="url(#clip_12)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="644.23 647.99807 651.7661 655.5342 659.30227">18000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.488" font-family="Calibri"><tspan y="-260.28" x="55.8 59.68627 63.662405 67.548679 71.34509 75.14151 77.02849 80.21089 84.09716">php11.cnf</tspan></text>
 </g>
 <g clip-path="url(#clip_13)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-524.69" x="706.49 710.25808 714.0261 717.7942 721.56228">20000</tspan></text>
+<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.488" font-family="Calibri"><tspan y="-158.4" x="55.8 59.68627 63.662405 67.548679 71.34509 75.14151 77.02849 80.21089 84.09716">php12.cnf</tspan></text>
 </g>
 <g clip-path="url(#clip_14)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-485.86" x="55.8 59.688745 63.667058 67.5558 71.34005 75.1243 77.02762 80.214748 84.10349">php09.cnf</tspan></text>
-</g>
-<g clip-path="url(#clip_15)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.488" font-family="Calibri"><tspan y="-427.66" x="55.8 59.68627 63.662405 67.548679 71.34509 75.14151 77.02849 80.21089 84.09716">php10.cnf</tspan></text>
-</g>
-<g clip-path="url(#clip_16)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-369.43" x="55.8 59.688745 63.667058 67.5558 71.34005 75.1243 77.02762 80.214748 84.10349">php11.cnf</tspan></text>
-</g>
-<g clip-path="url(#clip_17)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-311.21" x="55.8 59.688745 63.667058 67.5558 71.34005 75.1243 77.02762 80.214748 84.10349">php12.cnf</tspan></text>
-</g>
-<g clip-path="url(#clip_18)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.488" font-family="Calibri"><tspan y="-253.01" x="55.8 59.68627 63.662405 67.548679 71.34509 75.14151 77.02849 80.21089 84.09716">php13.cnf</tspan></text>
-</g>
-<g clip-path="url(#clip_19)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-194.78" x="55.8 59.688745 63.667058 67.5558 71.34005 75.1243 77.02762 80.214748 84.10349">php14.cnf</tspan></text>
-</g>
-<g clip-path="url(#clip_20)">
-<text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-136.56" x="55.8 59.688745 63.667058 67.5558 71.34005 75.1243 77.02762 80.214748 84.10349">php15.cnf</tspan></text>
-</g>
-<g clip-path="url(#clip_21)">
 <text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="11.64" font-family="Calibri"><tspan y="-540.7" x="331.01 336.98133 339.6585 345.04786 350.80967 356.94395 363.05494 369.11936 375.25364 377.96574 383.72755 386.32328 392.39936 396.4617 399.1389 405.24989 410.1154 412.79258 418.90357 421.58076 427.31929 429.9965 433.47685 438.7614 444.63963 450.3083">Pigeonhole principle (SAT)</tspan></text>
 </g>
 <path transform="matrix(1,0,0,-1,0,612)" d="M309.8 91.466H313.9029V95.569H309.8Z" fill="#70ad47" fill-rule="evenodd"/>
-<g clip-path="url(#clip_22)">
+<g clip-path="url(#clip_15)">
 <text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-91.32" x="315.7 319.0812 322.86546 325.4704 327.13487 330.9191 333.8002">Series1</tspan></text>
 </g>
 <path transform="matrix(1,0,0,-1,0,612)" d="M344.92 91.466H349.02293V95.569H344.92Z" fill="#ed7d31" fill-rule="evenodd"/>
-<g clip-path="url(#clip_23)">
+<g clip-path="url(#clip_16)">
 <text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-91.32" x="350.81 354.1912 357.97544 360.58039 362.2747 366.05894 368.97737">Series2</tspan></text>
 </g>
 <path transform="matrix(1,0,0,-1,0,612)" d="M380.04 91.466H384.1429V95.569H380.04Z" fill="#a5a5a5" fill-rule="evenodd"/>
-<g clip-path="url(#clip_24)">
+<g clip-path="url(#clip_17)">
 <text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-91.32" x="385.94 389.3212 393.10545 395.7104 397.37486 401.1591 404.0402">Series3</tspan></text>
 </g>
 <path transform="matrix(1,0,0,-1,0,612)" d="M415.16 91.466H419.2629V95.569H415.16Z" fill="#ffc000" fill-rule="evenodd"/>
-<g clip-path="url(#clip_25)">
+<g clip-path="url(#clip_18)">
 <text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-91.32" x="421.06 424.4412 428.22544 430.83039 432.5247 436.30894 439.22737">Series4</tspan></text>
 </g>
 <path transform="matrix(1,0,0,-1,0,612)" d="M450.28 91.466H454.3829V95.569H450.28Z" fill="#5b9bd5" fill-rule="evenodd"/>
-<g clip-path="url(#clip_26)">
+<g clip-path="url(#clip_19)">
 <text fill="#595959" xml:space="preserve" transform="matrix(1 0 -0 1 0 612)" font-size="7.464" font-family="Calibri"><tspan y="-91.32" x="456.19 459.5712 463.33305 465.938 467.60246 471.3643 474.2454">Series5</tspan></text>
 </g>
-<g clip-path="url(#clip_27)">
+<g clip-path="url(#clip_20)">
 <path transform="matrix(1,0,0,-1,0,612)" stroke-width=".6225" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#d9d9d9" d="M50.4 81.534H734.43008V558.004H50.4Z"/>
 </g>
 </g>
