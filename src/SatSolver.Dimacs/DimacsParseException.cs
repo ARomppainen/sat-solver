@@ -1,7 +1,7 @@
 namespace SatSolver.Dimacs;
 
 /// <summary>
-/// Represents error that occur during parsing of DIMACS formatted input.
+/// Represents an error that occurs during parsing of DIMACS formatted input.
 /// </summary>
 public class DimacsParseException : Exception
 {

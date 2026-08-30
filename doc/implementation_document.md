@@ -23,7 +23,7 @@ The following classes are directly related to the [CDCL](https://en.wikipedia.or
 - `WatchedLiteralsV1` / `WatchedLiteralsV2`: The class responsible for efficient unit propagation through two-watched-literals scheme. `WatchedLiteralsV2` is a more performant implementation. For each clause of arity N, where N > 1, two literals are marked as *watched*. The following observations are important:
   - If the watched literals are non-false, the clause is not a unit clause.
   - When one of the watched literals becomes false, we try to find another non-false literal to replace the old one. If we cannot and if the other watched literal is unassigned, the clause is a unit clause.
-  - When backjumping, it is not necesssary to update the watched literals.
+  - When backjumping, it is not necessary to update the watched literals.
 
 Supporting classes
 
@@ -49,12 +49,12 @@ Reducing the number of learned clauses is necessary for the efficiency of the tw
 
 There are many heuristics other than VSIDS making decisions. For example, Learning Rate Based (LRB) and Conflict History Based (CHB) heuristics can outperform VSIDS in some cases. Some solvers also utilize randomness to make decisions (e.g. every 100th decision is made randomly). Furthermore, my implementation does not consider polarity at all when making decisions (value *true* is always assigned to the chosen variable).
 
-I initially considered implementing parallel processing to my solver, but I never proceeded with my initial plan. Some state-of-the-art solvers utilize parallelization but many do not. One of the technical challenges is finding a way to efficiently share the learned clauses between processes or threads (sychronization overhead). Another challenge is splitting the search space efficiently (all paths in the search space are not equally deep).
+I initially considered implementing parallel processing to my solver, but I never proceeded with my initial plan. Some state-of-the-art solvers utilize parallelization but many do not. One of the technical challenges is finding a way to efficiently share the learned clauses between processes or threads (synchronization overhead). Another challenge is splitting the search space efficiently (all paths in the search space are not equally deep).
 
 
 ## Use of large language models
 
-I used GitHub Copilot Student to help me use .NET related tooling (e.g. `dotnet-trace` and `PerfView`) which I had not used previously. Copilot was also helpful for describing the different DIMACS formulas kissat used (though I am still a bit uncertain about some of them). I also tried to use Copilot for debugging (e.g. during [week 3](weekly_report_3.md)), but I did not find it helpful for that purpose. This version of Copilot uses [automatically selected models](https://docs.github.com/en/copilot/reference/ai-models/supported-models#supported-ai-models-per-copilot-plan).
+I used GitHub Copilot Student to help me use .NET related tooling (e.g. `dotnet-trace` and `PerfView`) which I had not used previously. Copilot was also helpful for describing the different DIMACS formulas kissat used (though I am still a bit uncertain about some of them). I also tried to use Copilot for debugging (e.g. during [week 3](weekly_report_3.md)), but I did not find it helpful for that purpose. Lastly, I used Copilot for proofreading the documentation and source code comments. This version of Copilot uses [automatically selected models](https://docs.github.com/en/copilot/reference/ai-models/supported-models#supported-ai-models-per-copilot-plan).
 
 Google search AI overview was somewhat helpful (and hard to avoid...) for simple explanations of SAT related topics. I believe that it uses Gemini 3. The binary heap usage was inspired by one of the AI overview results (although, I do recall reading about it through other sources as well).
 

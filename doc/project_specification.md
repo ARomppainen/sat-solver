@@ -9,7 +9,7 @@ In this project, I will explore the Boolean satisfiability problem (SAT).
 
 The core of the project is to implement a SAT solver using DPLL algorithm with unit propagation and [simple clause learning](https://algolabra-hy.github.io/topics-en#simple-clause-learning). This could be also considered a Conflict Driven Clause Learning (CDCL) algorithm.
 
-The program will read a propositional formula in conjunctive normal form and returns either a truth assignment that satisfies the formula ('sat') or informs the caller if no such assigment exists ('unsat').
+The program will read a propositional formula in conjunctive normal form and returns either a truth assignment that satisfies the formula ('sat') or informs the caller if no such assignment exists ('unsat').
 
 I will also try out various optimization techniques. These will include
 
@@ -89,8 +89,3 @@ Junttila, T. (2020). CS-E3220: Propositional Satisfiability and SAT Solvers. Ret
 I am proficient in Python, Java, C# and JavaScript/TypeScript. If needed, I can also review projects written in C, C++, Rust or even Haskell.
 
 Feel free to leave peer reviews in Finnish or English.
-
-
-## Changelog
-
-- 2026-06-11: Initial version

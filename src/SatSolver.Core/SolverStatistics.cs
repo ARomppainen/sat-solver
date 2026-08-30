@@ -1,7 +1,7 @@
 namespace SatSolver.Core;
 
 /// <summary>
-/// Captured statistics of <see cref="Solver" execution./>
+/// Captured statistics of <see cref="Solver" /> execution.
 /// </summary>
 public class SolverStatistics
 {

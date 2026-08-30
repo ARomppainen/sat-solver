@@ -10,7 +10,7 @@ To benchmark the solver, I created a test suite with six different categories of
 
 * *Sudoku*
 
-    These puzzles come from [Math in English](https://www.mathinenglish.com) website. The first 10 puzzles from the "9 by 9 Very Hard" collection were chosen. The puzzles were converted to DIMACS format using [sudoku-encode.py](https://users.aalto.fi/~tjunttil/2020-DP-AUT/notes-sat/solving.html) script. THe conversion to the script input format was done manually.
+    These puzzles come from [Math in English](https://www.mathinenglish.com) website. The first 10 puzzles from the "9 by 9 Very Hard" collection were chosen. The puzzles were converted to DIMACS format using [sudoku-encode.py](https://users.aalto.fi/~tjunttil/2020-DP-AUT/notes-sat/solving.html) script. The conversion to the script input format was done manually.
 
 * *Ordering principle, Parity principle, Pigeonhole principle, Tseitin formulas*
 
@@ -24,7 +24,7 @@ The data was collected using the `SatSolver.Perf` CLI tool, which outputs the re
 The analysis was run five times with different conditional compilation options.
 
 - `Baseline`
-  - This version does not use any additional complication options.
+  - This version does not use any additional compilation options.
   - It uses clause learning algorithm based on first unique implication point cut.
   - It uses linear scanning over all variables to determine the decided variable with VSIDS heuristic.
 
@@ -64,7 +64,7 @@ Here is a description of the options that were used:
 
 The program was able to solve satisfiable factoring problems with over 4000 variables and over 17000 clauses. The `factor5.cnf` formula was not solved by any version within 30 seconds (6436 variables and 25534 clauses).
 
-The program performed surprisingly well in the "Ordering principe" category. The program was able to solve the `op80.cnf` formula, which contains over six thousand variables and nearly half a million clauses, in roughly twenty seconds. The `op90.cnf` formula was too difficult for the program.
+The program performed surprisingly well in the "Ordering principle" category. The program was able to solve the `op80.cnf` formula, which contains over six thousand variables and nearly half a million clauses, in roughly twenty seconds. The `op90.cnf` formula was too difficult for the program.
 
 The "Tseitin" category results are interesting. The program is able to solve the `tseitin23.cnf` formula easily in roughly two seconds. However, the next formula in the category `tseitin24.cnf`, which contains only two more variables and eight more clauses than the previous, was too difficult for the solver.
 

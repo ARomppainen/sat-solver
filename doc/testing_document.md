@@ -32,7 +32,7 @@ Here's a non-comprehensive list of descriptions of the different categories of f
 | `full2.cnf`, `full3.cnf`, ...       | 'full' boolean constraints, corresponding to full-adder or complete combinational circuits   |
 | `ite0.cnf`, `ite1.cnf`, ...         | if-then-else constraints                                                                     |
 | `miter1.cnf`                        | A miter circuit, which are used to encode equivalence checking between two circuits          |
-| `ph1.cnf`, `pn2.cnf`, ...           | Pigeonhole-principle formulas                                                                |
+| `ph1.cnf`, `ph2.cnf`, ...           | Pigeonhole-principle formulas                                                                |
 | `prime4.cnf`, `prime9.cnf`, ...     | Primality checks for integers                                                                |
 | `sqrt2809.cnf`, `sqrt3481.cnf`, ... | Square root relations                                                                        |
 | `true.cnf`                          | A trivial formula which is satisfiable                                                       |
@@ -53,11 +53,11 @@ The following classes and methods are unit tested:
 
 `PartialAssignment` class:
 
-- The `Count` property returns a correct when literals are added to the decision trail
+- The `Count` property returns a correct value when literals are added to the decision trail
 - The `Count` property returns a correct value after backjumping
 - `Backjump` method call calls `Undo` method of the assigned `IUndo` object with correct arguments
 - `IsAssigned` method returns a correct value based on the given literal parameter
-- `IsUnassigned` method returns a correct value based in the given variable parameter
+- `IsUnassigned` method returns a correct value based on the given variable parameter
 - `AnalyzeConflict` method returns the correct learned clause and decision level (one simple test scenario)
 - `ToList` method call returns a sorted list
 

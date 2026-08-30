@@ -45,7 +45,7 @@ public class Solver
 
     /// <summary>
     /// The main entry point for interacting with the SAT solver. Tries to find
-    /// a satistying truth assignment for a given propositional logic formula
+    /// a satisfying truth assignment for a given propositional logic formula
     /// using conflict-driven clause learning (CDCL) algorithm.
     /// </summary>
     /// <param name="timeout">An amount of time after which the execution of the solver is aborted (optional).</param>
