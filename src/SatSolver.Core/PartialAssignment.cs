@@ -16,13 +16,11 @@ public class PartialAssignment(int numberOfVars, IUndo undo) : IPartialAssignmen
     /// </summary>
     public int Count => _trail.Count;
 
-    /// <inheritdoc />
     public bool IsAssigned(int literal)
     {
         return _assignment[literal + _nVar];
     }
 
-    /// <inheritdoc />
     public bool IsUnassigned(int variable)
     {
         return !_assignment[variable + _nVar] && !_assignment[_nVar - variable];

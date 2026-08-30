@@ -2,15 +2,15 @@
 
 ## The test suite
 
-To benchmark the solver, I created a test suite with six different categories of SAT problems. In each category other than "Sudoku", the problems are numbered in the order of increasing difficulty. The chosen categories are
+To benchmark the solver, I created a test suite with six different categories of SAT problems. In each category other than "Sudoku", the problems are numbered in increasing order of difficulty. The chosen categories are
 
-* *Factorization*
+* *Factoring*
 
-    These formulas are generated using the [online tool](https://homes.luddy.indiana.edu/sabry/cnf.html) by Paul Purdom and Amr Sabry. All of the problems use N-bit adder and carry-save multiplier. The numbers to be factored are the squares of prime numbers 997, 9973, 99991, 999983 and 9999991 (the squares of largest prime less than $10^n$, $n ∈ \{3, 4, 5, 6, 7\}$), hence the problems are satisfiable.
+    These formulas are generated using the [online tool](https://homes.luddy.indiana.edu/sabry/cnf.html) by Paul Purdom and Amr Sabry. All of the problems use an n-bit adder and carry-save multiplier. The numbers to be factored are the squares of the prime numbers 997, 9973, 99991, 999983 and 9999991 (the squares of the largest primes less than $10^n$, $n ∈ \{3, 4, 5, 6, 7\}$), hence the problems are satisfiable.
 
 * *Sudoku*
 
-    These puzzles come from [Math in English](https://www.mathinenglish.com) website. The first 10 puzzles from the "9 by 9 Very Hard" collection were chosen. The puzzles were converted to DIMACS format using [sudoku-encode.py](https://users.aalto.fi/~tjunttil/2020-DP-AUT/notes-sat/solving.html) script. The conversion to the script input format was done manually.
+    These puzzles come from the [Math in English](https://www.mathinenglish.com) website. The first 10 puzzles from the "9 by 9 Very Hard" collection were chosen. The puzzles were converted to DIMACS format using the [sudoku-encode.py](https://users.aalto.fi/~tjunttil/2020-DP-AUT/notes-sat/solving.html) script. The conversion to the script input format was done manually.
 
 * *Ordering principle, Parity principle, Pigeonhole principle, Tseitin formulas*
 
@@ -32,15 +32,16 @@ The analysis was run five times with different conditional compilation options.
   - Enables the use of Max Heap (a priority queue) with VSIDS heuristic to determine the decided variable.
 
 - `WLv2`
-  - "Watched Literals v2" uses an improved implementation of the watched literals scheme, where the use of linked list is replaced with arrays.
+  - "Watched Literals v2" uses an improved implementation of the watched literals scheme, where linked lists are replaced with arrays.
 
 - `WLv2 + Max Heap`
   - A combination of `WLv2` and `Max Heap`.
 
 - `Simple Clause Learning`
-  - this version uses the simple clause learning algorithm described in the course material.
+  - This version uses the simple clause learning algorithm described in the course material.
 
 Here is a full list of commands for compiling the solution with the different options:
+
 ```
 dotnet build -c Release --property:DefineConstants=""
 dotnet build -c Release --property:DefineConstants="USE_MAX_HEAP"
@@ -58,7 +59,7 @@ src\SatSolver.Perf\bin\Release\net10.0\SatSolver.Perf.exe --timeout=30 --iterati
 Here is a description of the options that were used:
 
 - `--timeout=30`: Forcibly stops the solver execution after 30 seconds (per formula). The choice of the value was arbitrary.
-- `--iterations=3`: Samples the solver execution three times per formula. Reports the average execution time in milliseconds.
+- `--iterations=3`: Samples the solver execution three times per formula and reports the average execution time in milliseconds.
 
 ## Results
 
@@ -68,13 +69,13 @@ The program performed surprisingly well in the "Ordering principle" category. Th
 
 The "Tseitin" category results are interesting. The program is able to solve the `tseitin23.cnf` formula easily in roughly two seconds. However, the next formula in the category `tseitin24.cnf`, which contains only two more variables and eight more clauses than the previous, was too difficult for the solver.
 
-The Sudoku problems turned out to be quite easy for the program. The program was able to solve all of the problems in the category in a couple of seconds at maximum.
+The Sudoku problems turned out to be quite easy for the program. The program was able to solve all of the problems in the category in a couple of seconds at most.
 
-The Watched Literals version 2 (WLv2) implementation performed better than the baseline implementation in all test scenarios. On average, the execution time was roughly 70 percent of the baseline. The improvement can be explained by the improved cache locality of arrays over linked lists, because unit propagation is a performance critical part of the algorithm.
+The Watched Literals version 2 (WLv2) implementation performed better than the baseline implementation in all test scenarios. On average, the execution time was roughly 70 percent of the baseline. The improvement can be explained by the improved cache locality of arrays over linked lists, because unit propagation is a performance-critical part of the algorithm.
 
-Overall, the Max Heap implementation of VSIDS had roughly the same level of performance as the baseline implementation. In the "Ordering principle" category, where the number of variables was higher, this technique seemed to have a positive impact. On the other hand, the performance impact was negligible in the "Factoring" catgegory, where the number of variables was comparable. More testing would be needed to determine when this technique becomes effective.
+Overall, the Max Heap implementation of VSIDS had roughly the same level of performance as the baseline implementation. In the "Ordering principle" category, where the number of variables was higher, this technique seemed to have a positive impact. On the other hand, the performance impact was negligible in the "Factoring" category, where the number of variables was comparable. More testing would be needed to determine when this technique becomes effective.
 
-The simple clause learning algorithm performed very poorly. When the simple clause learning algorithm was used, only 12 out of 42 formulas were solved before the 30 second forced timeout. In particular, none of the problems in the "Sudoku" category were solved by this implementation.
+The simple clause learning algorithm performed very poorly. When the simple clause learning algorithm was used, only 12 out of 42 formulas were solved before the 30-second forced timeout. In particular, none of the problems in the "Sudoku" category were solved by this implementation.
 
 ## Appendix 1 (Raw test results)
 

@@ -76,7 +76,6 @@ public class VsidsHeuristic : IUndo
 #endif
     }
 
-    /// <inheritdoc />
     public void Undo(int variable)
     {
 #if USE_MAX_HEAP

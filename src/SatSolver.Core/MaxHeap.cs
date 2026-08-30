@@ -2,15 +2,15 @@ namespace SatSolver.Core;
 
 /// <summary>
 /// A specialized max binary heap that can contain the integers 1..N (without
-/// duplicates) and tracks the position of each integer in the backing array.
-/// This structure allows the client to update a position of an element in the
+/// duplicates) and tracks the position of each integer in a backing array.
+/// This structure allows the client to update the position of an element in the
 /// heap by calling <see cref="UpHeap(int)"/> or <see cref="DownHeap(int)"/>
-/// after the relative position of an element has changed.
+/// after the relative position of the element is known to have changed.
 /// </summary>
 public class MaxHeap
 {
     /// <summary>
-    /// The backing array, values are indexed starting from 1. Value if _heap[0]
+    /// The backing array, values are indexed starting from 1. Value of _heap[0]
     /// will always be equal to zero. The root is _heap[1], the child nodes of
     /// _heap[n] are _heap[2*n] and _heap[2*n + 1].
     /// </summary>

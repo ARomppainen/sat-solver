@@ -8,7 +8,7 @@ The solver is tested with a suite of integration test cases. For each satisfiabl
 
 - the solver returns a `SATISFIABLE` status
 - the truth assignment contains the same number of variables as the formula
-- the formula is really satisfied, i.e. the truth assignment τ contains at least one literal l per clause such that τ(l) = TRUE.
+- the formula is really satisfied, i.e. the truth assignment $\tau$ contains at least one literal $l$ per clause such that $\tau(l) = \text{TRUE}$.
 
 For each unsatisfiable formula in the test suite, it is asserted that
 
@@ -140,4 +140,4 @@ The `USE_SIMPLE_CLAUSE_LEARNING` conditional compilation symbol is left out, bec
 
 ## Empirical test results
 
-See the [performance analysis](./performance_analysis.md) document for details.
+See the [performance analysis](./performance_analysis.md) document for detailed results.

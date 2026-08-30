@@ -3,12 +3,12 @@ using System.Runtime.InteropServices;
 namespace SatSolver.Core;
 
 /// <summary>
-/// Data structure that orchestrates the two-watched-literal scheme. Uses Lists
-/// as the backing data structure instead of LinkedLists (should be more
+/// Data structure that orchestrates the two-watched-literal scheme. Uses List
+/// as the backing data structure instead of LinkedList (should be more
 /// performant than V1).
 /// </summary>
 /// <remarks>
-/// The watched literals are always the first two elements in the list literals,
+/// The watched literals are always the first two elements in the list of literals,
 /// i.e. clause[0] and clause[1].
 /// </remarks>
 public class WatchedLiteralsV2

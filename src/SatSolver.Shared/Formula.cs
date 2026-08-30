@@ -8,8 +8,6 @@ namespace SatSolver.Shared;
 /// <param name="Clauses">list of clauses</param>
 public record Formula(string Name, int NumberOfVars, List<List<int>> Clauses)
 {
-
-    /// <inheritdoc />
     public override string ToString()
     {
         return Name;

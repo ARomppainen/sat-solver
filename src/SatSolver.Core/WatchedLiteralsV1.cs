@@ -4,7 +4,7 @@ namespace SatSolver.Core;
 /// Data structure that orchestrates the two-watched-literal scheme.
 /// </summary>
 /// <remarks>
-/// The watched literals are always the first two elements in the list literals,
+/// The watched literals are always the first two elements in the list of literals,
 /// i.e. clause[0] and clause[1].
 /// </remarks>
 public class WatchedLiteralsV1

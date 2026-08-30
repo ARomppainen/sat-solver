@@ -24,7 +24,7 @@ public interface IPartialAssignment
     /// Check if the variable is unassigned (i.e. neither the positive or the
     /// negated literal are part of the current truth assignment).
     /// </summary>
-    /// <param name="variable">literal value (a non-zero integer)</param>
-    /// <returns>true if the literal is unassigned; otherwise, false</returns>
+    /// <param name="variable">variable value (a positive integer)</param>
+    /// <returns>true if the variable is unassigned; otherwise, false</returns>
     public bool IsUnassigned(int variable);
 }
