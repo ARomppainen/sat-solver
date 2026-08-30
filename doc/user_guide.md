@@ -26,7 +26,7 @@ After compilation, the executable file is found in `src\SatSolver.Cli\bin\Releas
 
 The solution supports the following symbols for conditional compilation:
 
-- `USE_MAX_HEAP`: Use max heap data structure with VSIDS heuristic, this usually means improved performance.
+- `USE_MAX_HEAP`: Use max heap data structure (a priority queue) with VSIDS heuristic.
 - `USE_SIMPLE_CLAUSE_LEARNING`: Use simpler clause learning algorithm, this usually means reduced performance.
 - `USE_WATCHED_LITERALS_V2`: Use more optimized data structures, for improved performance.
 

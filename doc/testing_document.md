@@ -1,18 +1,10 @@
 # Testing document
 
-## Code coverage report
-
-The full code coverage report is available in GitHub Pages:
-
-https://aromppainen.github.io/sat-solver/coverage-report/
-
 ## What is tested
 
 ### Integration test cases
 
-The solver is tested with a suite of integration test cases.
-
-For each satisfiable formula in the test suite, it is asserted that
+The solver is tested with a suite of integration test cases. For each satisfiable formula in the test suite, it is asserted that
 
 - the solver returns a `SATISFIABLE` status
 - the truth assignment contains the same number of variables as the formula
@@ -22,24 +14,28 @@ For each unsatisfiable formula in the test suite, it is asserted that
 
 - the solver returns an `UNSATISFIABLE` status
 
-The test suite is copied directly from [kissat](https://github.com/arminbiere/kissat/tree/master/test/cnf). It contains many different categories of SAT problems. Here's a non-comprehensive list of descriptions
+The set of formulas in the test suite is copied directly from [kissat](https://github.com/arminbiere/kissat/tree/master/test/cnf). It contains many different categories of SAT problems of varying complexity. The expected result (satisfiable or unsatisfiable) of each formula was verified using the kissat solver itself.
+
+The test suite contains a total of 131 formulas. The most complex satisfiable formula ([prime2209.cnf](../tests/SatSolver.Core.Tests/testdata/kissat/sat/prime2209.cnf)) contains 1209 variables and 3562 clauses. The most complex unsatisfiable formula ([add128.cnf](../tests/SatSolver.Core.Tests/testdata/kissat/unsat/add128.cnf)) contains 2282 variables and 6586 clauses.
+
+Here's a non-comprehensive list of descriptions of the different categories of formulas:
 
 | Formula                             | Description                                                                                  |
 | ----------------------------------- | -------------------------------------------------------------------------------------------- |
-| `add4.cnf`, `add8.cnf`, ...         | Addition circuits, the number indicates bit-width.                                           |
+| `add4.cnf`, `add8.cnf`, ...         | Addition circuits (the number indicates bit-width)                                           |
 | `and1.cnf`, `and2.cnf`, ...         | AND-gate encodings                                                                           |
 | `congr1.cnf`, `congr2.cnf`, ...     | Modular arithmetic conditions                                                                |
-| `diamond1.cnf`, `diamond2.cnf`, ... | Problems related to a type of graph circuit.                                                 |
-| `eq1.cnf`, `eq2.cnf`, ...           | Simple equality constraints between boolean expressions.                                     |
+| `diamond1.cnf`, `diamond2.cnf`, ... | Problems related to a type of graph circuit                                                  |
+| `eq1.cnf`, `eq2.cnf`, ...           | Simple equality constraints between boolean expressions                                      |
 | `factor1.cnf`, `factor2.cnf`, ...   | Factorization problems                                                                       |
-| `false.cnf`                         | A trivial formula which is unsatisfiable.                                                    |
-| `full2.cnf`, `full3.cnf`, ...       | 'full' boolean constraints, corresponding to full-adder or complete combinational circuits.  |
+| `false.cnf`                         | A trivial formula which is unsatisfiable                                                     |
+| `full2.cnf`, `full3.cnf`, ...       | 'full' boolean constraints, corresponding to full-adder or complete combinational circuits   |
 | `ite0.cnf`, `ite1.cnf`, ...         | if-then-else constraints                                                                     |
-| `miter1.cnf`                        | This is a miter circuit, which are used to encode equivalence checking between two circuits. |
+| `miter1.cnf`                        | A miter circuit, which are used to encode equivalence checking between two circuits          |
 | `ph1.cnf`, `pn2.cnf`, ...           | Pigeonhole-principle formulas                                                                |
 | `prime4.cnf`, `prime9.cnf`, ...     | Primality checks for integers                                                                |
-| `sqrt2809.cnf`, `sqrt3481.cnf`, ... | Square root relations. The values used are perfect squares.                                  |
-| `true.cnf`                          | A trivial formula which is satisfiable.                                                      |
+| `sqrt2809.cnf`, `sqrt3481.cnf`, ... | Square root relations                                                                        |
+| `true.cnf`                          | A trivial formula which is satisfiable                                                       |
 | `xor1.cnf`, `xor2.cnf`, ...         | XOR-constraints                                                                              |
 
 ### Unit test cases
@@ -57,25 +53,31 @@ The following classes and methods are unit tested:
 
 `PartialAssignment` class:
 
-- The `Count` property returns a correct value after adding literals to the decision trail
+- The `Count` property returns a correct when literals are added to the decision trail
 - The `Count` property returns a correct value after backjumping
 - `Backjump` method call calls `Undo` method of the assigned `IUndo` object with correct arguments
-- `IsAssigned` method call returns a correct value based on the given literal parameter
-- `IsUnassigned` method call returns a correct value based in the given variable parameter
-- `AnalyzeConflict` method call returns a correct learned clause and decision level
+- `IsAssigned` method returns a correct value based on the given literal parameter
+- `IsUnassigned` method returns a correct value based in the given variable parameter
+- `AnalyzeConflict` method returns the correct learned clause and decision level (one simple test scenario)
 - `ToList` method call returns a sorted list
 
 `DimacsParser` class:
 
 - The clauses are parsed correctly when the input data contains empty rows
-- Error cases
-  - input is empty
-  - input is white space
-  - missing problem line
-  - invalid problem line
-  - missing value line
-  - invalid value line
+- Error cases, the parser throws an exception when
+  - the input is empty (or white space)
+  - the problem line is missing or invalid
+  - a value line is missing or invalid
 
+## How to run the tests
+
+The full test suite can be executed with `dotnet test` command.
+
+## Code coverage report
+
+The full code coverage report is available in GitHub Pages:
+
+https://aromppainen.github.io/sat-solver/coverage-report/
 
 ## Code coverage report generation
 
@@ -122,20 +124,6 @@ tests\SatSolver.Core.Tests\bin\Debug\net10.0\TestResults\coverage.cobertura3.xml
 
 The `USE_SIMPLE_CLAUSE_LEARNING` conditional compilation symbol is left out, because that version is not performant enough to execute all of the test cases in reasonable amount of time.
 
-## Performance comparison
+## Empirical test results
 
-In addition to unit and integration tests, I have created a performance comparison suite for analyzing the effect of various changes and optimizations.
-
-TO BE EXPANDED UPON
-
-![image](./img/Factoring.svg)
-
-![image](./img/OP.svg)
-
-![image](./img/PHP.svg)
-
-![image](./img/PP.svg)
-
-![image](./img/Sudoku.svg)
-
-![image](./img/Tseitin.svg)
+See the [performance analysis](./performance_analysis.md) document for details.
