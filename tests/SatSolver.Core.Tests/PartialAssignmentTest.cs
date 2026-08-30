@@ -98,6 +98,32 @@ public class PartialAssignmentTest
     }
 
     [Fact]
+    public void AnalyzeConflictSimple_ShouldReturnLearnedClause()
+    {
+        PartialAssignment assignment = new(12, Substitute.For<IUndo>());
+
+        assignment.Add(1, 1);
+        assignment.Add(-2, 1, [-1, -2]);
+        assignment.Add(3, 1, [-1, 3]);
+        assignment.Add(-4, 1, [-3, -4]);
+        assignment.Add(5, 1, [2, 4, 5]);
+        assignment.Add(-6, 2);
+        assignment.Add(-7, 2, [-5, 6, -7]);
+        assignment.Add(8, 2, [2, 7, 8]);
+        assignment.Add(-9, 2, [-8, -9]);
+        assignment.Add(10, 2, [-8, 10]);
+        assignment.Add(11, 2, [9, -10, 11]);
+        assignment.Add(-12, 2, [-10, -12]);
+
+        (List<int> clause, int level) = assignment.AnalyzeConflictSimple();
+
+        Assert.Equal(2, clause.Count);
+        Assert.Equal(6, clause[0]);
+        Assert.Equal(-1, clause[1]);
+        Assert.Equal(1, level);
+    }
+
+    [Fact]
     public void AnalyzeConflict_ShouldReturnLearnedClause()
     {
         PartialAssignment assignment = new(12, Substitute.For<IUndo>());

@@ -40,7 +40,39 @@ Here's a non-comprehensive list of descriptions of the different categories of f
 
 ### Unit test cases
 
-The following classes and methods are unit tested:
+The integration test suite ensures the correctness of the solver and is fast to execute. Because of that, the unit test scenarios I have included are rather simplistic and the number of test scenarios is low. The following classes and methods related directly to the CDCL algorithm are unit-tested.
+
+`PartialAssignment` class:
+
+- The `Count` property returns a correct value when literals are added to the decision trail
+- The `Count` property returns a correct value after backjumping
+- `Backjump` method call calls `Undo` method of the assigned `IUndo` object with correct arguments
+- `IsAssigned` method returns a correct value based on the given literal parameter
+- `IsUnassigned` method returns a correct value based on the given variable parameter
+- `AnalyzeConflictSimple` method returns a learned clause based on the simple clause learning algorithm
+- `AnalyzeConflict` method returns a learned clause based on first UIP cut
+- `ToList` method call returns a sorted list
+
+`VsidsHeuristic` class:
+
+- The `Choose` method returns a variable based on the initial variable scoring
+- The `Choose` method uses the variable number as a tiebreak when multiple variables have the same score
+- The `Update` method increments the variable scoring
+
+`WatchedLiteralsV1` & `WatchedLiteralsV2` classes:
+
+- The `FindUnitLiterals` method enqueues the found unit literals
+- The `FindUnitLiterals` method returns a conflict clause if present
+
+The following supporting classes and methods are also unit-tested:
+
+`DimacsParser` class:
+
+- The clauses are parsed correctly when the input data contains empty rows
+- Error cases, the parser throws an exception when
+  - the input is empty (or white space)
+  - the problem line is missing or invalid
+  - a value line is missing or invalid
 
 `MaxHeap` class:
 
@@ -50,24 +82,6 @@ The following classes and methods are unit tested:
   - the `Push` and `Pop` method are called
 - The parameterized comparison method is used
 - The heap is reordered when `UpHeap` and `DownHeap` methods are called
-
-`PartialAssignment` class:
-
-- The `Count` property returns a correct value when literals are added to the decision trail
-- The `Count` property returns a correct value after backjumping
-- `Backjump` method call calls `Undo` method of the assigned `IUndo` object with correct arguments
-- `IsAssigned` method returns a correct value based on the given literal parameter
-- `IsUnassigned` method returns a correct value based on the given variable parameter
-- `AnalyzeConflict` method returns the correct learned clause and decision level (one simple test scenario)
-- `ToList` method call returns a sorted list
-
-`DimacsParser` class:
-
-- The clauses are parsed correctly when the input data contains empty rows
-- Error cases, the parser throws an exception when
-  - the input is empty (or white space)
-  - the problem line is missing or invalid
-  - a value line is missing or invalid
 
 ## How to run the tests
 
